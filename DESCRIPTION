@@ -1,0 +1,19 @@
+Package: copertura
+Type: Package
+Title: Provides tools to solve the Maximal Coverage Problem
+Version: 0.0.1
+Author@R: person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
+    role = c("aut", "cre"))
+Description: solves the binary optimisation problem known as the "maximum
+    location coverage problem" as described by Church This package was
+    implemented to make it easier to solve this problem in the context of the
+    research initially presented by Chan et al to identify ideal locations to
+    place AEDs.
+Depends:
+    R (>= 3.2.2)
+License: MIT + file LICENSE
+RoxygenNote: 5.0.1
+LazyData: true
+URL: https://github.com/njtierney/copertura
+BugReports: https://github.com/njtierney/copertura/issues
+Imports: lpSolve
