@@ -10,9 +10,9 @@
 #' @export
 #'
 #' @examples
-max_coverage <- function(A, # 0-1 matrix
-                         num_aed,# the number of AEDs
-                         n_solutions = 1){  # of solutions
+max_coverage <- function(A,
+                         num_aed,
+                         n_solutions = 1){
 
 J <- nrow(A)
 I <- ncol(A)
