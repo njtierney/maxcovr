@@ -9,7 +9,7 @@
 #' @return returns
 #' @export
 #'
-#' @examples
+# @examples
 max_coverage <- function(A,
                          num_aed,
                          n_solutions = 1){

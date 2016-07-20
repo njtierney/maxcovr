@@ -3,7 +3,7 @@ Type: Package
 Title: Provides tools to solve the Maximal Coverage Problem
 Version: 0.0.1
 Author@R: person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
-    role = c("aut", "cre"))
+    role = c("aut", "cre", "maintainer"))
 Description: solves the binary optimisation problem known as the "maximum
     location coverage problem" as described by Church This package was
     implemented to make it easier to solve this problem in the context of the
