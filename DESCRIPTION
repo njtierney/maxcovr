@@ -4,11 +4,12 @@ Title: Provides tools to solve the Maximal Coverage Problem
 Version: 0.0.1
 Author@R: person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
     role = c("aut", "cre", "maintainer"))
-Description: solves the binary optimisation problem known as the "maximum
-    location coverage problem" as described by Church This package was
-    implemented to make it easier to solve this problem in the context of the
-    research initially presented by Chan et al to identify ideal locations to
-    place AEDs.
+Description: copertura provides an easier to use interface to solve the "binary optimisation problem known as the "maximum
+    location coverage problem" as described by Church, in particular the
+    implementation as initially presented by Chan et al to identify ideal
+    locations to place AEDs. Copertura also provides functions to make it easier
+    to calculate coverage of AEDs, and other helper functions that are used in
+    this area of research / applied math and statistics.
 Depends:
     R (>= 3.2.2)
 License: MIT + file LICENSE
@@ -16,4 +17,5 @@ RoxygenNote: 5.0.1
 LazyData: true
 URL: https://github.com/njtierney/copertura
 BugReports: https://github.com/njtierney/copertura/issues
-Imports: lpSolve
+Imports: lpSolve,
+    rnoaa
