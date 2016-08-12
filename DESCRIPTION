@@ -2,8 +2,11 @@ Package: copertura
 Type: Package
 Title: Provides tools to solve the Maximal Coverage Problem
 Version: 0.0.1
-Author@R: person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
-    role = c("aut", "cre", "maintainer"))
+Authors@R: c(
+    person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
+    role = c("aut", "cre"))
+    )
+Maintainer: Nicholas Tierney <nicholas.tierney@gmail.com>
 Description: copertura provides an easier to use interface to solve the "binary optimisation problem known as the "maximum
     location coverage problem" as described by Church, in particular the
     implementation as initially presented by Chan et al to identify ideal
@@ -17,5 +20,4 @@ RoxygenNote: 5.0.1
 LazyData: true
 URL: https://github.com/njtierney/copertura
 BugReports: https://github.com/njtierney/copertura/issues
-Imports: lpSolve,
-    rnoaa
+Imports: lpSolve
