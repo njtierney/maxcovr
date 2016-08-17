@@ -65,6 +65,8 @@ my_soln$solution
 
 ```
 
+
+
 # Speed
 
 When A is 20 rows and 100 columns
@@ -107,6 +109,33 @@ max_coverage(A = my_A,
 )
 
 ```
+
+When A is 2,500 rows and 10,000 columns
+
+```{r}
+my_A <- rand_A(I = 10000, # 10000 locations
+               J = 2500) # 2000 cases
+
+system.time(
+max_coverage(A = my_A,
+             num_aed = 5) # five AEDs
+)
+
+```
+
+When A is 2,600 rows and 10,000 columns
+
+```{r}
+my_A <- rand_A(I = 10000, # 10000 locations
+               J = 2600) # 2000 cases
+
+system.time(
+max_coverage(A = my_A,
+             num_aed = 5) # five AEDs
+)
+
+```
+
 
 # Known Issues
 
