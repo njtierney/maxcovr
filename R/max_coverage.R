@@ -27,7 +27,9 @@ c <- c(rep(0, Ny), rep(1,Nx))
 d <- c(rep(1, Ny), rep(0,Nx))
 
 # Aeq <- d;
-Aeq <- c # not d
+# Aeq <- c # not d
+Aeq <- d # not c # this is as of 2016/08/19 - unfortunately Ruth's suggestion
+# did not work
 # beq <- N;
 beq <- N
 
@@ -48,7 +50,8 @@ rhs_matrix <- rbind(bin, beq)
 constraint_directions <- c(rep("<=", Nx), "==")
 
 lp_solution <- lpSolve::lp(direction = "max",
-                           objective.in = d,
+                           # objective.in = d, # as of 2016/08/19
+                           objective.in = c,
                            const.mat = constraint_matrix,
                            const.dir = constraint_directions,
                            const.rhs = rhs_matrix,
