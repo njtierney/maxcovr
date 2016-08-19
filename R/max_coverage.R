@@ -65,10 +65,10 @@ lp_solution <- lpSolve::lp(direction = "max",
                            use.rw = TRUE)
 
 # which sites (OHCA incidents) are now covered
-n_incidents_2 <- mc_result$solution[1:ncol(a_mat_200m)]
-
-# the sites/locations (OHCA incidents) that are now covered
-lb_solution$solution[1:ncol(A)]
+# n_incidents_2 <- mc_result$solution[1:ncol(a_mat_200m)]
+#
+# # the sites/locations (OHCA incidents) that are now covered
+# lb_solution$solution[1:ncol(A)]
 
 return(lp_solution)
 
