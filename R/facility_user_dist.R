@@ -5,13 +5,15 @@
 #' I need to work on what you need to pass the function.
 #' Currently facility needs to have columns called aed_id, lat, and long, and user needs to have columns called ohca_id, lat, and long.
 #'
+#' Create a new dataframe - on the rows is every OHCA incident on the columns is
+#' every AED, the cells inside are the distance between that row and that column
+#'
 #' @param facility a dataframe containing lat/long
 #' @param user a dataframe containing
 #'
 #' @return a data frame containing the distance between each aed and each ohca
 #' @export
 #'
-#' @examples
 facility_user_dist <- function(facility,
                                user){
 

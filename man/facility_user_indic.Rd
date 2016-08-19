@@ -4,17 +4,17 @@
 \alias{facility_user_indic}
 \title{facility_user_indic}
 \usage{
-facility_user_indic(facility, user, indic = 0.1)
+facility_user_indic(facility, user, dist_indic)
 }
 \arguments{
 \item{facility}{a dataframe containing columns aed_id, lat, long}
 
 \item{user}{a dataframe containing columns ohca_id, lat, long}
 
-\item{indic}{the distance in km that you are interested in}
+\item{dist_indic}{the distance in km that you are interested in}
 }
 \value{
-a dataframe with a column of ohca IDs
+a matrix with distance
 }
 \description{
 Return a spread distance matrix

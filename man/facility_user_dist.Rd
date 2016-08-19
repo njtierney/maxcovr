@@ -20,4 +20,8 @@ Basically it returns a dataframe, not a mega-uber-list.
 I need to work on what you need to pass the function.
 Currently facility needs to have columns called aed_id, lat, and long, and user needs to have columns called ohca_id, lat, and long.
 }
+\details{
+Create a new dataframe - on the rows is every OHCA incident on the columns is
+every AED, the cells inside are the distance between that row and that column
+}
 
