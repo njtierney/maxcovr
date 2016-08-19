@@ -12,8 +12,7 @@ Why copertura?
 
 It is named "copertura" as this means "coverage" in Italian, and the research problem that created the need for this package is in Ticino, the Italian speaking canton of Switzerland.
 
-At this stage I'm strongly considering a renaming - perhaps to `macor` - **ma**ximum **co**verage in **r**.
-
+<!-- At this stage I'm strongly considering a renaming - perhaps to `macor` - **ma**ximum **co**verage in **r**. -->
 How to Install
 ==============
 
@@ -23,72 +22,8 @@ How to Install
 devtools::install_github("njtierney/copertura")
 ```
 
-Example Usage
--------------
-
-``` r
-
-library(copertura)
-
-# generate the A matrix with a function
-
-# courtesy of http://www.quantumforest.com/2012/08/m-x-n-matrix-with-randomly-assigned-01/
-rb_mat <- function(r,c,prob = 0.3) matrix(rbinom(r*c,1,prob),r,c)
-
-my_A <- rb_mat(r = 20, # 20 cases
-               c = 100, # 100 AED locations
-               prob = 0.3) # 30% probability of success
-
-# top corner
-my_A[1:5,1:5]
-#>      [,1] [,2] [,3] [,4] [,5]
-#> [1,]    0    1    0    0    1
-#> [2,]    0    0    1    0    0
-#> [3,]    0    0    0    0    0
-#> [4,]    1    0    0    1    0
-#> [5,]    0    0    1    0    0
-
-# bottom corner
-my_A[16:20,96:100]
-#>      [,1] [,2] [,3] [,4] [,5]
-#> [1,]    0    1    1    1    0
-#> [2,]    0    0    0    1    1
-#> [3,]    1    0    1    0    0
-#> [4,]    0    0    1    0    1
-#> [5,]    0    0    1    0    1
-
-my_soln <- max_coverage(A = my_A,
-                        num_aed = 5) # five AEDs
-# print the solution.
-my_soln$solution
-#>   [1] 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-#>  [36] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-#>  [71] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1
-#> [106] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-```
-
-interpretation
-==============
-
-The first I (number of columns of A) entries of the solution tell you which AEDs are used
-
-The next J (number of rows of A) entries of the solution tell you which OHCA are covered.
-
-``` r
-
-# which AEDs are to be used
-my_soln$solution[1:ncol(my_A)]
-#>   [1] 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-#>  [36] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-#>  [71] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
-
-# which OHCA are covered
-my_soln$solution[c(ncol(my_A)+1):c(ncol(my_A) + nrow(my_A))]
-#>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-```
-
-I will be adding functions soon which help you match up the AEDs and the OHCAs from the analysis.
-
+<!-- # Example Usage -->
+<!-- Need to find a good example dataset to use here -->
 Speed
 =====
 
