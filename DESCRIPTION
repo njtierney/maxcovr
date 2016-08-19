@@ -20,4 +20,6 @@ RoxygenNote: 5.0.1
 LazyData: true
 URL: https://github.com/njtierney/copertura
 BugReports: https://github.com/njtierney/copertura/issues
-Imports: lpSolve
+Imports: lpSolve,
+    dplyr,
+    tidyr

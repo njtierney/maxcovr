@@ -38,6 +38,9 @@ Ain <- cbind(-A, diag(Nx))
 bin <- matrix(rep(0,Nx),
               ncol = 1)
 
+# matrix of numeric constraint coefficients,
+# one row per constraint
+# one column per variable
 constraint_matrix <- rbind(Ain, Aeq)
 
 rhs_matrix <- rbind(bin, beq)
@@ -60,6 +63,12 @@ lp_solution <- lpSolve::lp(direction = "max",
                            # dense.const,
                            num.bin.solns = 1,
                            use.rw = TRUE)
+
+# which sites (OHCA incidents) are now covered
+n_incidents_2 <- mc_result$solution[1:ncol(a_mat_200m)]
+
+# the sites/locations (OHCA incidents) that are now covered
+lb_solution$solution[1:ncol(A)]
 
 return(lp_solution)
 
