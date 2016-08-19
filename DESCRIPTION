@@ -1,7 +1,7 @@
 Package: copertura
 Type: Package
 Title: Provides tools to solve the Maximal Coverage Problem
-Version: 0.0.1
+Version: 0.0.2.9000
 Authors@R: c(
     person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
     role = c("aut", "cre"))
@@ -22,4 +22,6 @@ URL: https://github.com/njtierney/copertura
 BugReports: https://github.com/njtierney/copertura/issues
 Imports: lpSolve,
     dplyr,
-    tidyr
+    tidyr,
+    tibble,
+    readr
