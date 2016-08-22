@@ -1,12 +1,12 @@
 #' facility_user_indic
 #'
-#' Return a spread distance matrix
+#' This is a data manipulation function for facility_user_dist. This function creates a spread matrix of the distances between each ohca and each aed. There is an ohca_id column, and then a column for each aed_id, with a given cell being the distance between an ohca in a row, and that column. This distance is converted into an indicator variable, based upon whether that distance is less than the provided dist_indic parameter. In the future I might change the dist_indic function to be optional, but this whole function mainly exists to make it easier to do the computation in the max_coverage function.
 #'
 #' @param facility a dataframe containing columns aed_id, lat, long
 #' @param user a dataframe containing columns ohca_id, lat, long
-#' @param dist_indic the distance in km that you are interested in
+#' @param dist_indic the distance in meters that you are interested in
 #'
-#' @return a matrix with distance
+#' @return a dataframe with variables ohca_id, and aed_id_number, with the id from each aed_id being transposed into each column name.
 #' @export
 #'
 facility_user_indic <- function(facility,

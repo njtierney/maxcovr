@@ -1,17 +1,16 @@
 #' max_coverage
 #'
-#' max_coverage solves the binary optimisation problem known as the "maximum location coverage problem" as described by Church.... This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al to identify ideal locations to place AEDs.
+#' max_coverage solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
 #'
 #' @param facility data.frame containing an ohca_id, lat, and long
 #' @param user data.frame containing an aed_id, lat, and long
-#' @param dist_indic numeric stating the distance in kilometers for facility-user distance
+#' @param dist_indic numeric stating the distance in meters for facility-user distance
 #' @param num_aed is the maximum number of AEDs that can be found
 #' @param n_solutions is the number of possible solutions to be returned. Default value is set to 1.
 #'
 #' @return returns
 #' @export
 #'
-# @examples
 max_coverage <- function(facility,
                          user,
                          dist_indic,
@@ -95,47 +94,10 @@ lp_solution <- lpSolve::lp(direction = "max",
 # # Which positions are 1?
 # which(my_soln_2$solution[1:I] == 1)
 
-# extract results ---------------------------------------------------------
-#
-# # which AEDs are to be used
-# facilities_affected <- lp_solution$solution[1:I]
-#
-# # which OHCAs
-# users_affected <- lp_solution$solution[c(I+1):c(I+J)]
-#
-# # which facilities are selected?
-# facilities_selected <- tibble::tibble(
-#     aed_id = readr::parse_number(colnames(A)),
-#     aed_chosen = facilities_affected) %>%
-#     dplyr::filter(aed_chosen == 1)
-#
-# users_selected <- tibble::tibble(
-#     ohca_id = ohca_id_list,
-#     ohca_chosen = users_affected) %>%
-#     dplyr::filter(ohca_chosen == 1)
-#
-# facilities_merge <- facility %>%
-#     dplyr::filter(aed_id %in% facilities_selected$aed_id)
-# # add this column to help doing a crazy join later
-#     # dplyr::mutate(key = 1)
-#
-# users_merge <- user %>%
-#     dplyr::filter(event_id %in% users_selected$ohca_id)
-# add this column to help do a crazy join later
-    # dplyr::mutate(key = 1)
-
-# facilities_users_merge <- facilities_merge %>%
-#     dplyr::left_join(users_merge, by = "key")
-
 # note: add a custom class to this object so that I can make sure the next function only accepts it once it has gone through there.
 
 return(
     list(
-        # facilities_affected = facilities_affected,
-        # users_affected = users_affected,
-        # facilities_merge = facilities_merge,
-        # users_merge = users_merge,
-        # # facilities_users_merge = facilities_users_merge,
         # #add the variables that were used here to get more info
         facility = facility,
         user = user,

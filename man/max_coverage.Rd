@@ -11,7 +11,7 @@ max_coverage(facility, user, dist_indic, num_aed, n_solutions = 1)
 
 \item{user}{data.frame containing an aed_id, lat, and long}
 
-\item{dist_indic}{numeric stating the distance in kilometers for facility-user distance}
+\item{dist_indic}{numeric stating the distance in meters for facility-user distance}
 
 \item{num_aed}{is the maximum number of AEDs that can be found}
 
@@ -21,6 +21,6 @@ max_coverage(facility, user, dist_indic, num_aed, n_solutions = 1)
 returns
 }
 \description{
-max_coverage solves the binary optimisation problem known as the "maximum location coverage problem" as described by Church.... This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al to identify ideal locations to place AEDs.
+max_coverage solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
 }
 
