@@ -18,7 +18,7 @@ spherical_distance(lat1, long1, lat2, long2, units = "deg")
 \item{units}{specify degrees or radians}
 }
 \value{
-A numeric value giving the distance (in kilometers) between the
+A numeric value giving the distance in meters between the
    pair of locations.
 }
 \description{
@@ -30,8 +30,10 @@ This function assumes an earth radius of 6,371 km.
 }
 \examples{
 
-spherical_distance(lat1 = -27.4667, long1 = 153.0217,
-                         lat2 = -27.4710, long2 = 153.0234)
+spherical_distance(lat1 = -27.4667,
+                   long1 = 153.0217,
+                   lat2 = -27.4710,
+                   long2 = 153.0234)
 
 }
 \author{

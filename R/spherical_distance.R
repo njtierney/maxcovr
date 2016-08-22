@@ -9,7 +9,7 @@
 #' @param long2 Longitude of the second location.
 #' @param units specify degrees or radians
 #'
-#' @return A numeric value giving the distance (in kilometers) between the
+#' @return A numeric value giving the distance in meters between the
 #'    pair of locations.
 #'
 #' @note This function assumes an earth radius of 6,371 km.
@@ -19,8 +19,10 @@
 #'
 #' @examples
 #'
-#' spherical_distance(lat1 = -27.4667, long1 = 153.0217,
-#'                          lat2 = -27.4710, long2 = 153.0234)
+#' spherical_distance(lat1 = -27.4667,
+#'                    long1 = 153.0217,
+#'                    lat2 = -27.4710,
+#'                    long2 = 153.0234)
 #'
 #' @export
 spherical_distance <- function(lat1,
@@ -46,10 +48,11 @@ spherical_distance <- function(lat1,
         sin((long2 - long1) / 2) ^ 2
 
     d <- 2 * atan2(sqrt(a), sqrt(1 - a)) * radius_earth
+    # return distance in metres
+    d <- d * 100
     return(d)
 
 } # End function
-
 #' Convert from degrees to radians
 #'
 #' @param deg A numeric vector in units of degrees.
@@ -58,3 +61,4 @@ spherical_distance <- function(lat1,
 deg2rad <- function(deg) {
     return(deg*pi/180)
 } # End deg2rad
+
