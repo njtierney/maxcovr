@@ -48,8 +48,11 @@ spherical_distance <- function(lat1,
         sin((long2 - long1) / 2) ^ 2
 
     d <- 2 * atan2(sqrt(a), sqrt(1 - a)) * radius_earth
-    # return distance in metres
-    d <- d * 100
+
+    # return distance in kilometres
+    d <- d * 1000
+    # return(d)
+    # return the distance in kilometers
     return(d)
 
 } # End function
