@@ -4,13 +4,17 @@
 #'
 #' @param facility a dataframe containing columns aed_id, lat, and long
 #' @param user a dataframe containing columns ohca_id, lat, and long
+#' @param coverage_distance numeric indicating the coverage level for the facilities to be within in metres to a user. Default value is 100 metres.
+#' @param nearest character When "facility", it returns the dataframe with the nearest facilities to each user. When "user", it returns the dataframe with the nearest users to each facility. when NULL it returns the complete pairwise distances
 #'
 #' @return a data frame containing the distance between each aed and each ohca, with columns named aed_id, lat_aed, long_aed, ohca_id, lat_ohca, long_ohca, and distance - the distance in meters between each aed and ohca in a row.
 #'
 #' @export
 #'
 facility_user_dist <- function(facility,
-                               user){
+                               user,
+                               coverage_distance = 100,
+                               nearest = "facility"){
 
 # dodgy method to get the cross product ---------------------------------------
 
@@ -44,8 +48,42 @@ facility_user_dist <- function(facility,
         # drop key
         dplyr::select(-key)
 
+    # calculate information about coverage for the OHCAs to AEDs.
+    # switch here either :
+        # finds the nearest AED to each OHCA
+        # finds the nearest OHCA to each AED
+
+    if (nearest == "facility"){
+
+        dist_df <-
+            dist_df %>%
+            arrange(distance) %>%
+            group_by(ohca_id) %>%
+            mutate(rank_distance = 1:n()) %>%
+            filter(rank_distance == 1) %>%
+            mutate(is_covered = (distance < coverage_distance))
+
+        return(dist_df)
+
+    } else if (nearest == "user"){
+
+        dist_df <- dist_df %>%
+            group_by(aed_id) %>%
+            arrange(distance) %>%
+            mutate(rank_distance = 1:n()) %>%
+            filter(rank_distance == 1) %>%
+            mutate(is_covered = (distance < coverage_distance))
+
+        return(dist_df)
+
+    } else if (is.null(nearest) == TRUE){
+
+        return(dist_df)
+
+    }
+
     # return a dataframe
-    return(dist_df)
+    # return(dist_df)
 
     # option to spread?
         # select(ohca_id,
