@@ -4,14 +4,14 @@
 \alias{max_coverage}
 \title{max_coverage}
 \usage{
-max_coverage(facility, user, dist_indic, num_aed, n_solutions = 1)
+max_coverage(A, facility, user, num_aed, n_solutions = 1)
 }
 \arguments{
+\item{A}{is a spread data matrix for all of the distances, it is obtained using facility_user_dist, then facilit_user_indic.}
+
 \item{facility}{data.frame containing an ohca_id, lat, and long}
 
 \item{user}{data.frame containing an aed_id, lat, and long}
-
-\item{dist_indic}{numeric stating the distance in meters for facility-user distance}
 
 \item{num_aed}{is the maximum number of AEDs that can be found}
 
