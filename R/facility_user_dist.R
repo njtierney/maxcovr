@@ -5,7 +5,7 @@
 #' @param facility a dataframe containing columns aed_id, lat, and long
 #' @param user a dataframe containing columns ohca_id, lat, and long
 #' @param coverage_distance numeric indicating the coverage level for the facilities to be within in metres to a user. Default value is 100 metres.
-#' @param nearest character When "facility", it returns the dataframe with the nearest facilities to each user. When "user", it returns the dataframe with the nearest users to each facility. when NULL it returns the complete pairwise distances
+#' @param nearest character When "facility", it returns the dataframe with the nearest facilities to each user. When "user", it returns the dataframe with the nearest users to each facility. when "both" it returns the complete pairwise distances
 #'
 #' @return a data frame containing the distance between each aed and each ohca, with columns named aed_id, lat_aed, long_aed, ohca_id, lat_ohca, long_ohca, and distance - the distance in meters between each aed and ohca in a row.
 #'
@@ -16,50 +16,61 @@ facility_user_dist <- function(facility,
                                coverage_distance = 100,
                                nearest = "facility"){
 
-# dodgy method to get the cross product ---------------------------------------
+    # check that lat and long are specified -----------------------------------
+    stopifnot(
+        (c("lat") %in% names(facility) == TRUE),
+        (c("long") %in% names(facility) == TRUE),
+        (c("lat") %in% names(user) == TRUE),
+        (c("long") %in% names(user) == TRUE)
+    )
+
+    # dodgy method to get the cross product ---------------------------------------
 
     # do a dodgy cross product by adding a column of 1
     # and then joining on this column
     facility <- dplyr::mutate(facility, key = 1) %>%
         # downsize to
-        dplyr::select(key,
-               aed_id,
-               lat,
-               long) %>%
-        dplyr::rename(lat_aed = lat,
-               long_aed = long)
+        # dplyr::select(key,
+        #        aed_id,
+        #        lat,
+        #        long) %>%
+        dplyr::rename(lat_facility = lat,
+                      long_facility = long) %>%
+        # create an ID for each row
+        dplyr::mutate(facility_id = 1:n())
 
     user <- dplyr::mutate(user, key = 1) %>%
-        dplyr::select(key,
-               event_id,
-               lat,
-               long) %>%
-        dplyr::rename(lat_ohca = lat,
-               long_ohca = long,
-               ohca_id = event_id)
+        # dplyr::select(key,
+        #        event_id,
+        #        lat,
+        #        long) %>%
+        dplyr::rename(lat_user = lat,
+                      long_user = long) %>%
+        dplyr::mutate(user_id = 1:n())
 
     dist_df <- user %>%
         dplyr::left_join(facility,
-                  by = "key") %>%
-        dplyr::mutate(distance = spherical_distance(lat1 = lat_ohca,
-                                                    long1 = long_ohca,
-                                                    lat2 = lat_aed,
-                                                    long2 = long_aed)) %>%
+                         by = "key") %>%
+        dplyr::mutate(distance = spherical_distance(lat1 = lat_user,
+                                                    long1 = long_user,
+                                                    lat2 = lat_facility,
+                                                    long2 = long_facility)) %>%
         # drop key
         dplyr::select(-key)
 
     # calculate information about coverage for the OHCAs to AEDs.
     # switch here either :
-        # finds the nearest AED to each OHCA
-        # finds the nearest OHCA to each AED
+    # finds the nearest AED to each OHCA
+    # finds the nearest OHCA to each AED
 
     if (nearest == "facility"){
 
         dist_df <-
             dist_df %>%
             arrange(distance) %>%
-            group_by(ohca_id) %>%
+            group_by(user_id) %>%
             mutate(rank_distance = 1:n()) %>%
+            ungroup() %>%
             filter(rank_distance == 1) %>%
             mutate(is_covered = (distance < coverage_distance))
 
@@ -68,15 +79,16 @@ facility_user_dist <- function(facility,
     } else if (nearest == "user"){
 
         dist_df <- dist_df %>%
-            group_by(aed_id) %>%
+            group_by(facility_id) %>%
             arrange(distance) %>%
             mutate(rank_distance = 1:n()) %>%
+            ungroup() %>%
             filter(rank_distance == 1) %>%
             mutate(is_covered = (distance < coverage_distance))
 
         return(dist_df)
 
-    } else if (is.null(nearest) == TRUE){
+    } else if (nearest == "both"){
 
         return(dist_df)
 
@@ -86,11 +98,11 @@ facility_user_dist <- function(facility,
     # return(dist_df)
 
     # option to spread?
-        # select(ohca_id,
-        #        aed_id,
-        #        distance) %>%
-        # spread(key = "aed_id",
-        #        value = "distance",
-        #        sep = "_")
+    # select(ohca_id,
+    #        aed_id,
+    #        distance) %>%
+    # spread(key = "aed_id",
+    #        value = "distance",
+    #        sep = "_")
 
 }
