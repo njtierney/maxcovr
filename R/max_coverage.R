@@ -17,12 +17,15 @@ max_coverage <- function(A,
                          num_aed,
                          n_solutions = 1){
 
+    # just to make it clear:
+    # - facility = aed
+    # - user = ohca
     # A <- facility_user_indic(facility = facility,
     #                          user = user,
     #                          dist_indic = dist_indic) # 100m
 
     # hang on to the list of OHCA ids
-    ohca_id_list <- A[,"user_id"]
+    user_id_list <- A[,"user_id"]
 
     # drop ohca_id
     A <- A[ ,-1]
@@ -95,8 +98,7 @@ lp_solution <- lpSolve::lp(direction = "max",
 
 # note: add a custom class to this object so that I can make sure the next function only accepts it once it has gone through there.
 
-return(
-    list(
+x <- list(
         # #add the variables that were used here to get more info
         facility = facility,
         user = user,
@@ -104,9 +106,12 @@ return(
         num_aed = num_aed,
         n_solutions = n_solutions,
         A = A,
-        ohca_id = ohca_id_list,
+        user_id = user_id_list,
         lp_solution = lp_solution
     )
-    )
+
+model_result <- extract_mc_results(x)
+
+return(model_result)
 
 } # end of function

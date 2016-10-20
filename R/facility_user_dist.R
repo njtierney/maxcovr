@@ -17,33 +17,26 @@ facility_user_dist <- function(facility,
                                nearest = "facility"){
 
     # check that lat and long are specified -----------------------------------
-    stopifnot(
-        (c("lat") %in% names(facility) == TRUE),
-        (c("long") %in% names(facility) == TRUE),
-        (c("lat") %in% names(user) == TRUE),
-        (c("long") %in% names(user) == TRUE)
-    )
+    # if(
+    #     (c("lat") %in% names(facility) == TRUE) |
+    #     (c("long") %in% names(facility) == TRUE) |
+    #     (c("lat") %in% names(user) == TRUE) |
+    #     (c("long") %in% names(user) == TRUE)
+    #     ){
+    #     warning("make sure lat and long are in the names")
+    # }
 
     # dodgy method to get the cross product ---------------------------------------
 
     # do a dodgy cross product by adding a column of 1
     # and then joining on this column
     facility <- dplyr::mutate(facility, key = 1) %>%
-        # downsize to
-        # dplyr::select(key,
-        #        aed_id,
-        #        lat,
-        #        long) %>%
         dplyr::rename(lat_facility = lat,
                       long_facility = long) %>%
         # create an ID for each row
         dplyr::mutate(facility_id = 1:n())
 
     user <- dplyr::mutate(user, key = 1) %>%
-        # dplyr::select(key,
-        #        event_id,
-        #        lat,
-        #        long) %>%
         dplyr::rename(lat_user = lat,
                       long_user = long) %>%
         dplyr::mutate(user_id = 1:n())
