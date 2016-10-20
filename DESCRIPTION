@@ -24,4 +24,6 @@ Imports: lpSolve,
     dplyr,
     tidyr,
     tibble,
-    readr
+    readr,
+    Rcpp
+LinkingTo: Rcpp
