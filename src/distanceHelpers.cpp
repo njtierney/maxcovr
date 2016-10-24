@@ -60,6 +60,8 @@ double spherical_distance(double lat1,
 //' @return a matrix of distances in metres between each user and facility,
 //' with nrow(user) rows and nrow(facility) columns.
 //'
+//' @export
+//'
 // [[Rcpp::export]]
 NumericMatrix distance_matrix_cpp(NumericMatrix facility,
                                   NumericMatrix user){
