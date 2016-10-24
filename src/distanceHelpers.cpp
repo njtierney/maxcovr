@@ -25,8 +25,10 @@ double deg2rad(double deg) {
 //'
 //' @return distance in metres between two locations
 //'
+//' @export
+//'
 // [[Rcpp::export]]
-double spherical_distance_cpp(double lat1,
+double spherical_distance(double lat1,
                               double long1,
                               double lat2,
                               double long2) {
@@ -69,7 +71,7 @@ NumericMatrix distance_matrix_cpp(NumericMatrix facility,
 
     for(int i = 0; i < n1; i++){
         for(int j = 0; j < n2; j++){
-            dist_mat(i,j) = spherical_distance_cpp(facility(j, 2), //lat
+            dist_mat(i,j) = spherical_distance(facility(j, 2), //lat
                                                    facility(j, 1), //long
                                                    user(i, 2), //lat
                                                    user(i, 1)); //long
@@ -81,15 +83,15 @@ return dist_mat;
 }
 
 /*** R
-dist_cpp <- spherical_distance_cpp(lat1 = 46.19616,
+dist_cpp <- spherical_distance(lat1 = 46.19616,
                                    long1 = 8.731278,
                                    lat2 = 46.16850,
                                    long2 = 9.004392)
 
-dist_copertura <- copertura::spherical_distance(lat1 = 46.19616,
-                                                long1 = 8.731278,
-                                                lat2 = 46.16850,
-                                                long2 = 9.004392)
+# dist_copertura <- copertura::spherical_distance(lat1 = 46.19616,
+#                                                 long1 = 8.731278,
+#                                                 lat2 = 46.16850,
+#                                                 long2 = 9.004392)
 
 dist_cpp
 dist_copertura
@@ -144,19 +146,24 @@ library(tibble)
 options(tibble.print_max = 20, tibble.print_min = 10)
 as_tibble(dplyr::select(my_dist_regular, distance))
 
-microbenchmark::microbenchmark(
-    dist_cpp <- spherical_distance_cpp(lat1 = 46.19616,
-                                       long1 = 8.731278,
-                                       lat2 = 46.16850,
-                                       long2 = 9.004392),
+# microbenchmark::microbenchmark(
+#    "cpp" =  dist_cpp <- copertura:::spherical_distance_cpp(lat1 = 46.19616,
+#                                        long1 = 8.731278,
+#                                        lat2 = 46.16850,
+#                                        long2 = 9.004392),
+#
+#     "regular" = dist_copertura <- copertura::spherical_distance(lat1 = 46.19616,
+#                                                     long1 = 8.731278,
+#                                                     lat2 = 46.16850,
+#                                                     long2 = 9.004392),
+#    times = 1000
+#
+# )
+# expr     min      lq     mean    median     uq      max    neval
+# cpp     7.018  8.2065  10.02779  8.7370   9.577   145.504  1000
+# regular 14.089 16.2820 20.06131  17.1765  20.812  160.338  1000
+#
+#
 
-    dist_copertura <- copertura::spherical_distance(lat1 = 46.19616,
-                                                    long1 = 8.731278,
-                                                    lat2 = 46.16850,
-                                                    long2 = 9.004392),
-    unit = "eps"
-
-)
-# indicator_matrix_cpp(my_new_dist, indic_dist = 100)
 
 */

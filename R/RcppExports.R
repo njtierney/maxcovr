@@ -21,8 +21,10 @@ deg2rad <- function(deg) {
 #'
 #' @return distance in metres between two locations
 #'
-spherical_distance_cpp <- function(lat1, long1, lat2, long2) {
-    .Call('copertura_spherical_distance_cpp', PACKAGE = 'copertura', lat1, long1, lat2, long2)
+#' @export
+#'
+spherical_distance <- function(lat1, long1, lat2, long2) {
+    .Call('copertura_spherical_distance', PACKAGE = 'copertura', lat1, long1, lat2, long2)
 }
 
 #' Create a matrix of distances between two areas
