@@ -33,6 +33,8 @@ spherical_distance_cpp <- function(lat1, long1, lat2, long2) {
 #' @return a matrix of distances in metres between each user and facility,
 #' with nrow(user) rows and nrow(facility) columns.
 #'
+#' @export
+#'
 distance_matrix_cpp <- function(facility, user) {
     .Call('copertura_distance_matrix_cpp', PACKAGE = 'copertura', facility, user)
 }
