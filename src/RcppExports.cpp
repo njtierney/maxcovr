@@ -16,9 +16,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// spherical_distance
-double spherical_distance(double lat1, double long1, double lat2, double long2);
-RcppExport SEXP copertura_spherical_distance(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
+// spherical_distance_cpp
+double spherical_distance_cpp(double lat1, double long1, double lat2, double long2);
+RcppExport SEXP copertura_spherical_distance_cpp(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -26,7 +26,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type long1(long1SEXP);
     Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
     Rcpp::traits::input_parameter< double >::type long2(long2SEXP);
-    rcpp_result_gen = Rcpp::wrap(spherical_distance(lat1, long1, lat2, long2));
+    rcpp_result_gen = Rcpp::wrap(spherical_distance_cpp(lat1, long1, lat2, long2));
     return rcpp_result_gen;
 END_RCPP
 }
