@@ -5,14 +5,14 @@
 
 using namespace Rcpp;
 
-// deg2rad
-double deg2rad(double deg);
-RcppExport SEXP copertura_deg2rad(SEXP degSEXP) {
+// deg2rad_cpp
+double deg2rad_cpp(double deg);
+RcppExport SEXP copertura_deg2rad_cpp(SEXP degSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type deg(degSEXP);
-    rcpp_result_gen = Rcpp::wrap(deg2rad(deg));
+    rcpp_result_gen = Rcpp::wrap(deg2rad_cpp(deg));
     return rcpp_result_gen;
 END_RCPP
 }

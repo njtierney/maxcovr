@@ -11,7 +11,7 @@ using namespace Rcpp;
 //'
 //' @export
 // [[Rcpp::export]]
-double deg2rad(double deg) {
+double deg2rad_cpp(double deg) {
     return ((deg*M_PI)/180);
 } // End deg2rad
 
@@ -34,10 +34,10 @@ double spherical_distance_cpp(double lat1,
     int radius_earth = 6371;
 
     // convert angle values into radians
-    lat1 = deg2rad(lat1);
-    long1 = deg2rad(long1);
-    lat2 = deg2rad(lat2);
-    long2 = deg2rad(long2);
+    lat1 = deg2rad_cpp(lat1);
+    long1 = deg2rad_cpp(long1);
+    lat2 = deg2rad_cpp(lat2);
+    long2 = deg2rad_cpp(long2);
 
     // Determine distance using the haversine formula, assuming a spherical earth
     double a = pow(sin((lat2 - lat1) / 2), 2) + (cos(lat1) * cos(lat2)) * pow(sin((long2 - long1) / 2), 2);

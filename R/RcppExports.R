@@ -8,8 +8,8 @@
 #' @return radians
 #'
 #' @export
-deg2rad <- function(deg) {
-    .Call('copertura_deg2rad', PACKAGE = 'copertura', deg)
+deg2rad_cpp <- function(deg) {
+    .Call('copertura_deg2rad_cpp', PACKAGE = 'copertura', deg)
 }
 
 #' Calculate distance using haversines formula
