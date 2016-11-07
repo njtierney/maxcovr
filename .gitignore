@@ -4,3 +4,4 @@
 .rbd
 .rdx
 inst/doc
+*.DS_Store

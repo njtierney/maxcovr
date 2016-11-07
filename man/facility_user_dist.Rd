@@ -14,7 +14,7 @@ facility_user_dist(facility, user, coverage_distance = 100,
 
 \item{coverage_distance}{numeric indicating the coverage level for the facilities to be within in metres to a user. Default value is 100 metres.}
 
-\item{nearest}{character When "facility", it returns the dataframe with the nearest facilities to each user. When "user", it returns the dataframe with the nearest users to each facility. when NULL it returns the complete pairwise distances}
+\item{nearest}{character When "facility", it returns the dataframe with the nearest facilities to each user. When "user", it returns the dataframe with the nearest users to each facility. when "both" it returns the complete pairwise distances}
 }
 \value{
 a data frame containing the distance between each aed and each ohca, with columns named aed_id, lat_aed, long_aed, ohca_id, lat_ohca, long_ohca, and distance - the distance in meters between each aed and ohca in a row.

@@ -2,28 +2,30 @@
 #'
 #' max_coverage solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
 #'
+#' @param A is a spread data matrix for all of the distances, it is obtained using facility_user_dist, then facilit_user_indic.
 #' @param facility data.frame containing an ohca_id, lat, and long
 #' @param user data.frame containing an aed_id, lat, and long
-#' @param dist_indic numeric stating the distance in meters for facility-user distance
 #' @param num_aed is the maximum number of AEDs that can be found
 #' @param n_solutions is the number of possible solutions to be returned. Default value is set to 1.
 #'
 #' @return returns
 #' @export
 #'
-max_coverage <- function(facility,
+max_coverage <- function(A,
+                         facility,
                          user,
-                         dist_indic,
-                         # A,
                          num_aed,
                          n_solutions = 1){
 
-    A <- facility_user_indic(facility = facility,
-                             user = user,
-                             dist_indic = dist_indic) # 100m
+    # just to make it clear:
+    # - facility = aed
+    # - user = ohca
+    # A <- facility_user_indic(facility = facility,
+    #                          user = user,
+    #                          dist_indic = dist_indic) # 100m
 
     # hang on to the list of OHCA ids
-    ohca_id_list <- A[,"ohca_id"]
+    user_id_list <- A[,"user_id"]
 
     # drop ohca_id
     A <- A[ ,-1]
@@ -96,18 +98,20 @@ lp_solution <- lpSolve::lp(direction = "max",
 
 # note: add a custom class to this object so that I can make sure the next function only accepts it once it has gone through there.
 
-return(
-    list(
+x <- list(
         # #add the variables that were used here to get more info
         facility = facility,
         user = user,
-        dist_indic = dist_indic,
+        # dist_indic = dist_indic,
         num_aed = num_aed,
         n_solutions = n_solutions,
         A = A,
-        ohca_id = ohca_id_list,
+        user_id = user_id_list,
         lp_solution = lp_solution
     )
-    )
+
+model_result <- extract_mc_results(x)
+
+return(model_result)
 
 } # end of function

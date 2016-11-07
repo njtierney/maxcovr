@@ -1,7 +1,7 @@
 Package: copertura
 Type: Package
 Title: Provides tools to solve the Maximal Coverage Problem
-Version: 0.0.2.9500
+Version: 0.0.2.9600
 Authors@R: c(
     person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
     role = c("aut", "cre"))
@@ -24,4 +24,6 @@ Imports: lpSolve,
     dplyr,
     tidyr,
     tibble,
-    readr
+    readr,
+    Rcpp
+LinkingTo: Rcpp

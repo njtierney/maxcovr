@@ -4,14 +4,12 @@
 \alias{facility_user_indic}
 \title{facility_user_indic}
 \usage{
-facility_user_indic(facility, user, dist_indic)
+facility_user_indic(df_dist, dist_indic)
 }
 \arguments{
-\item{facility}{a dataframe containing columns aed_id, lat, long}
+\item{df_dist}{a dataframe from facility_user_dist. Requires nearest = "both"}
 
-\item{user}{a dataframe containing columns ohca_id, lat, long}
-
-\item{dist_indic}{the distance in meters that you are interested in}
+\item{dist_indic}{an indicator of the distance you want to be TRUE / FALSE}
 }
 \value{
 a dataframe with variables ohca_id, and aed_id_number, with the id from each aed_id being transposed into each column name.
