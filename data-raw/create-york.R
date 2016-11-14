@@ -1,11 +1,11 @@
 library(readr)
 
 download.file(url = "http://data.cyc.opendata.arcgis.com/datasets/fd6a709a29bf4f6ca085adb956ce127c_15.csv",
-              destfile = "york_listed_buildings.csv")
+              destfile = "york.csv")
 
-york_listed_buildings <- readr::read_csv("york_listed_buildings.csv")
+york <- readr::read_csv("york.csv")
 
-names(york_listed_buildings) <- c("long",
+names(york) <- c("long",
                                   "lat",
                                   "object_id",
                                   "desig_id",
