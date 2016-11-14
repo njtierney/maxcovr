@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // deg2rad_cpp
 double deg2rad_cpp(double deg);
-RcppExport SEXP copertura_deg2rad_cpp(SEXP degSEXP) {
+RcppExport SEXP maxcovr_deg2rad_cpp(SEXP degSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // spherical_distance_cpp
 double spherical_distance_cpp(double lat1, double long1, double lat2, double long2);
-RcppExport SEXP copertura_spherical_distance_cpp(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
+RcppExport SEXP maxcovr_spherical_distance_cpp(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -32,7 +32,7 @@ END_RCPP
 }
 // distance_matrix_cpp
 NumericMatrix distance_matrix_cpp(NumericMatrix facility, NumericMatrix user);
-RcppExport SEXP copertura_distance_matrix_cpp(SEXP facilitySEXP, SEXP userSEXP) {
+RcppExport SEXP maxcovr_distance_matrix_cpp(SEXP facilitySEXP, SEXP userSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;

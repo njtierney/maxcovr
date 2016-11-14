@@ -9,7 +9,7 @@
 #'
 #' @export
 deg2rad_cpp <- function(deg) {
-    .Call('copertura_deg2rad_cpp', PACKAGE = 'copertura', deg)
+    .Call('maxcovr_deg2rad_cpp', PACKAGE = 'maxcovr', deg)
 }
 
 #' Calculate distance using haversines formula
@@ -22,7 +22,7 @@ deg2rad_cpp <- function(deg) {
 #' @return distance in metres between two locations
 #'
 spherical_distance_cpp <- function(lat1, long1, lat2, long2) {
-    .Call('copertura_spherical_distance_cpp', PACKAGE = 'copertura', lat1, long1, lat2, long2)
+    .Call('maxcovr_spherical_distance_cpp', PACKAGE = 'maxcovr', lat1, long1, lat2, long2)
 }
 
 #' Create a matrix of distances between two areas
@@ -36,6 +36,6 @@ spherical_distance_cpp <- function(lat1, long1, lat2, long2) {
 #' @export
 #'
 distance_matrix_cpp <- function(facility, user) {
-    .Call('copertura_distance_matrix_cpp', PACKAGE = 'copertura', facility, user)
+    .Call('maxcovr_distance_matrix_cpp', PACKAGE = 'maxcovr', facility, user)
 }
 

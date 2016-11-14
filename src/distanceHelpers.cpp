@@ -88,15 +88,15 @@ dist_cpp <- spherical_distance_cpp(lat1 = 46.19616,
                                    lat2 = 46.16850,
                                    long2 = 9.004392)
 
-dist_copertura <- copertura::spherical_distance(lat1 = 46.19616,
+dist_maxcovr <- maxcovr::spherical_distance(lat1 = 46.19616,
                                                 long1 = 8.731278,
                                                 lat2 = 46.16850,
                                                 long2 = 9.004392)
 
 dist_cpp
-dist_copertura
+dist_maxcovr
 
-dist_cpp == dist_copertura
+dist_cpp == dist_maxcovr
 
 facility_test_cpp <- as.matrix(tibble::tribble(
     ~lat_facility, ~long_facility, ~facility_id, ~key,
@@ -129,18 +129,18 @@ my_dist <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
 my_dist
 
 
-facility_test_copertura <- dplyr::as_data_frame(facility_test_cpp)
-facility_test_copertura <- dplyr::rename(facility_test_copertura,
+facility_test_maxcovr <- dplyr::as_data_frame(facility_test_cpp)
+facility_test_maxcovr <- dplyr::rename(facility_test_maxcovr,
                                          lat = lat_facility,
                                          long = long_facility)
 
-user_test_copertura <- dplyr::as_data_frame(user_test_cpp)
-user_test_copertura <- dplyr::rename(user_test_copertura,
+user_test_maxcovr <- dplyr::as_data_frame(user_test_cpp)
+user_test_maxcovr <- dplyr::rename(user_test_maxcovr,
                                          lat = lat_user,
                                          long = long_user)
 
-my_dist_regular <- copertura::facility_user_dist(facility_test_copertura,
-                                                 user_test_copertura,
+my_dist_regular <- maxcovr::facility_user_dist(facility_test_maxcovr,
+                                                 user_test_maxcovr,
                                                  nearest = "both")
 library(tibble)
 options(tibble.print_max = 20, tibble.print_min = 10)
@@ -152,7 +152,7 @@ microbenchmark::microbenchmark(
                                        lat2 = 46.16850,
                                        long2 = 9.004392),
 
-    dist_copertura <- copertura::spherical_distance(lat1 = 46.19616,
+    dist_maxcovr <- maxcovr::spherical_distance(lat1 = 46.19616,
                                                     long1 = 8.731278,
                                                     lat2 = 46.16850,
                                                     long2 = 9.004392),

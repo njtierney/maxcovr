@@ -1,10 +1,10 @@
-#' copertura.
+#' maxcovr.
 #'
-#' @name copertura
+#' @name maxcovr
 #' @import lpSolve
 #' @import dplyr
 #' @import tidyr
-#' @useDynLib copertura
+#' @useDynLib maxcovr
 #' @importFrom Rcpp sourceCpp
 NULL
 

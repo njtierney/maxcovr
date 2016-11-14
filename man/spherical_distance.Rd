@@ -23,7 +23,7 @@ A numeric value giving the distance in meters between the
 }
 \description{
 This function uses the haversine formula to calculate the great circle
-distance between two locations, identified by their latitudes and longitudes. It is borrowed from rnoaa (https://github.com/ropenscilabs/rnoaa/blob/master/R/meteo_distance.R) and included here as rnoaa is a large package that is rather unrelated to copertura. I have renamed it from meteo_spherical_distance to spherical_distance
+distance between two locations, identified by their latitudes and longitudes. It is borrowed from rnoaa (https://github.com/ropenscilabs/rnoaa/blob/master/R/meteo_distance.R) and included here as rnoaa is a large package that is rather unrelated to maxcovr. I have renamed it from meteo_spherical_distance to spherical_distance
 }
 \note{
 This function assumes an earth radius of 6,371 km.

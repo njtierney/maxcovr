@@ -12,24 +12,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-# copertura
+# maxcovr
 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/copertura?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/copertura)[![Travis-CI Build Status](https://travis-ci.org/njtierney/copertura.svg?branch=master)](https://travis-ci.org/njtierney/copertura)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI Build Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)
 
-The goal of copertura is to make it easy to solve the binary optimisation problem known as the "maximal covering location problem" as described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
-
-# Why copertura?
-
-It is named "copertura" as this means "coverage" in Italian, and the research problem that created the need for this package is in Ticino, the Italian speaking canton of Switzerland.
-
-<!-- At this stage I'm strongly considering a renaming - perhaps to `maxcovr` - **max**imum **cov**erage in **r**. -->
+maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
 
 # How to Install
 
 ```{r install, eval = FALSE}
 
 # install.packages("devtools")
-devtools::install_github("njtierney/copertura")
+devtools::install_github("njtierney/maxcovr")
 
 ```
 
