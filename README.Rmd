@@ -36,9 +36,19 @@ devtools::install_github("njtierney/copertura")
 <!-- # Example Usage -->
 <!-- Need to find a good example dataset to use here -->
 
+# Usage
+
+```{r}
+
+
+
+
+```
+
+
 # Speed
 
-At the moment the main function, `max_coverage` is not super fast, but I will be providing more scalable methods by formulating the model using something like  [`ompr`](https://github.com/dirkschumacher/ompr), which will give users their own choice of solver, in case they want to use something proprietary like `gurobi` or `CPLEX`.
+At the moment the main function, `max_coverage` is not super fast, but I will be providing more scalable methods by formulating the model using something like  [`ompr`](https://github.com/dirkschumacher/ompr), which will give users their own choice of solver, in case they want to use something proprietary like `CPLEX`. In the future I will also be looking to create a solver using the `gurobi` interface.
 
 # Known Issues
 
