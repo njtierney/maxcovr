@@ -4,7 +4,8 @@
 \alias{max_coverage}
 \title{max_coverage}
 \usage{
-max_coverage(A, facility, user, num_aed, n_solutions = 1)
+max_coverage(A, facility, user, num_aed, n_solutions = 1,
+  solver = "lpSolve")
 }
 \arguments{
 \item{A}{is a spread data matrix for all of the distances, it is obtained using facility_user_dist, then facilit_user_indic.}
@@ -16,6 +17,8 @@ max_coverage(A, facility, user, num_aed, n_solutions = 1)
 \item{num_aed}{is the maximum number of AEDs that can be found}
 
 \item{n_solutions}{is the number of possible solutions to be returned. Default value is set to 1.}
+
+\item{solver}{character default is lpSolve, but currently in development is a Gurobi solver}
 }
 \value{
 returns

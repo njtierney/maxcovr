@@ -7,6 +7,7 @@
 #' @param user data.frame containing an aed_id, lat, and long
 #' @param num_aed is the maximum number of AEDs that can be found
 #' @param n_solutions is the number of possible solutions to be returned. Default value is set to 1.
+#' @param solver character default is lpSolve, but currently in development is a Gurobi solver
 #'
 #' @return returns
 #' @export
@@ -15,7 +16,8 @@ max_coverage <- function(A,
                          facility,
                          user,
                          num_aed,
-                         n_solutions = 1){
+                         n_solutions = 1,
+                         solver = "lpSolve"){
 
     # just to make it clear:
     # - facility = aed
@@ -33,43 +35,37 @@ max_coverage <- function(A,
     # A is a matrix containing 0s and 1s
     # 1 indicates that the OHCA in row I is covered by an AED in location J
 
-J <- nrow(A)
-I <- ncol(A)
+if(solver == "lpSolve"){
 
-Nx <- nrow(A)
-Ny <- ncol(A)
-N <- num_aed
+    J <- nrow(A)
+    I <- ncol(A)
 
-# c <- -[zeros(Ny,1); ones(Nx,1)];
-c <- c(rep(0, Ny), rep(1,Nx))
+    Nx <- nrow(A)
+    Ny <- ncol(A)
+    N <- num_aed
 
-# d <- [ones(1,Ny) zeros(1,Nx)];
-d <- c(rep(1, Ny), rep(0,Nx))
+    # c <- -[zeros(Ny,1); ones(Nx,1)];
+    c <- c(rep(0, Ny), rep(1,Nx))
 
-# Aeq <- d;
-# Aeq <- c # not d
-Aeq <- d # not c # this is as of 2016/08/19 - unfortunately Ruth's suggestion
-# did not work
-# beq <- N;
-beq <- N
+    # d <- [ones(1,Ny) zeros(1,Nx)];
+    d <- c(rep(1, Ny), rep(0,Nx))
 
-# Ain <- [-A eye(Nx)];
-Ain <- cbind(-A, diag(Nx))
+    Aeq <- d
+    beq <- N
+    Ain <- cbind(-A, diag(Nx))
 
-# bin <- zeros(Nx,1);
-bin <- matrix(rep(0,Nx),
-              ncol = 1)
+    bin <- matrix(rep(0,Nx), ncol = 1)
 
-# matrix of numeric constraint coefficients,
-# one row per constraint
-# one column per variable
-constraint_matrix <- rbind(Ain, Aeq)
+    # matrix of numeric constraint coefficients,
+    # one row per constraint
+    # one column per variable
+    constraint_matrix <- rbind(Ain, Aeq)
 
-rhs_matrix <- rbind(bin, beq)
+    rhs_matrix <- rbind(bin, beq)
 
-constraint_directions <- c(rep("<=", Nx), "==")
+    constraint_directions <- c(rep("<=", Nx), "==")
 
-lp_solution <- lpSolve::lp(direction = "max",
+    lp_solution <- lpSolve::lp(direction = "max",
                            # objective.in = d, # as of 2016/08/19
                            objective.in = c,
                            const.mat = constraint_matrix,
@@ -113,5 +109,57 @@ x <- list(
 model_result <- extract_mc_results(x)
 
 return(model_result)
+
+} else if(solver == "gurobi"){
+
+    # model <- list()
+    # model$A          <- matrix(c(1,1,0,0,1,1), nrow=2, byrow=T)
+    # model$obj        <- c(1,1,2)
+    # model$modelsense <- "max"
+    # model$rhs        <- c(1,1)
+    # model$sense      <- c('<=', '<=')
+
+    # J <- nrow(A)
+    # I <- ncol(A)
+
+    model <- list()
+
+    # set A matrix
+    model$A <- A
+
+        Nx <- nrow(A)
+        Ny <- ncol(A)
+        N <- num_aed
+
+    # c <- -[zeros(Ny,1); ones(Nx,1)];
+    model$obj <- c(rep(0, Ny), rep(1,Nx))
+
+    model$modelsense <- "max"
+
+        Aeq <- d
+
+        beq <- N
+
+        Ain <- cbind(-A, diag(Nx))
+
+        bin <- matrix(rep(0,Nx), ncol = 1)
+
+    # matrix of numeric constraint coefficients,
+    # one row per constraint
+    # one column per variable
+        # constraint matrix??
+    # constraint_matrix <- rbind(Ain, Aeq)
+    # rhs_matrix <- rbind(bin, beq)
+        model$rhs <- rbind(bin, beq)
+
+
+    # model$sense      <- c('<=', '<=')
+    model$sense <- c(rep("<=", Nx), "==")
+
+    result <- gurobi::gurobi(model)
+
+    return(result)
+
+} # end gurobi
 
 } # end of function

@@ -25,5 +25,6 @@ Imports: lpSolve,
     tidyr,
     tibble,
     readr,
-    Rcpp
+    Rcpp,
+    gurobi
 LinkingTo: Rcpp
