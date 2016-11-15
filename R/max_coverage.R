@@ -131,7 +131,10 @@ return(model_result)
         Ny <- ncol(A)
         N <- num_aed
 
+        # d <- [ones(1,Ny) zeros(1,Nx)];
+        d <- c(rep(1, Ny), rep(0,Nx))
     # c <- -[zeros(Ny,1); ones(Nx,1)];
+        # c <- c(rep(0, Ny), rep(1,Nx))
     model$obj <- c(rep(0, Ny), rep(1,Nx))
 
     model$modelsense <- "max"

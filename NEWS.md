@@ -1,8 +1,24 @@
+# maxcovr 0.0.0.9750 (2016-11-15)
+
+## NEW FEATURES
+
+* added `coverage()` function, which calculates coverage based upon a distance dataframe created from `facility_user_dist()`.
+
+## MINOR IMPROVEMENTS
+
+* improved README to include examples of usage
+
 # maxcovr 0.0.0.9700 (2016-11-14)
 
 # NEW FEATURES
 
 * renamed from `copertura` to `maxcovr`
+* added `york` listed building data, taken from [data.gov.uk](https://data.gov.uk/dataset/listed-buildings24/resource/8c32fb55-0e40-457f-98f9-6494503e283b)
+
+## UNDER DEVELOPMENT
+
+* gurobi solver in max_coverage.
+* faster matrix methods in max_coverage
 
 # maxcovr 0.0.0.9600 (2016-11-07)
 
