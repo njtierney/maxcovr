@@ -2,7 +2,7 @@
 
 ## NEW FEATURES
 
-* added `coverage()` function, which calculates coverage based upon a distance dataframe created from `facility_user_dist()`.
+* added `summarise_coverage()` function, which calculates coverage based upon a distance dataframe created from `facility_user_dist()`.
 
 ## MINOR IMPROVEMENTS
 

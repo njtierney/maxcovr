@@ -89,7 +89,7 @@ The `coverage()` function calculates the coverage on the distance data frame. He
 ```{r example-coverage}
 
 coverage(york_distance,
-         dist_indic = 100,
+         dist_indic = 200,
          spread = TRUE)
 ```
 
@@ -103,6 +103,11 @@ york_distance %>%
 
 ```
 
+```{r}
+
+
+
+```
 
 # Known Issues
 

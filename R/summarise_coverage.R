@@ -1,4 +1,6 @@
-#' coverage
+#' summarise_coverage
+#'
+#' Provides summary information of the coverage, using the distance dataframe created by maxcovr::facility_user_dist().
 #'
 #' @param df_dist distance matrix, as computed by facility_user_dist
 #' @param dist_indic the critical distance range that you would like to know,
@@ -6,14 +8,12 @@
 #' @param spread do you want this in a one row summary, or a two row summary?
 #'     Default is TRUE, a one row summary
 #'
-# @importFrom magrittr %>%
-#'
 #' @return dataframe
 #' @export
 #'
-coverage <- function(df_dist,
-                     dist_indic = 100,
-                     spread = TRUE){
+summarise_coverage <- function(df_dist,
+                               dist_indic = 100,
+                               spread = TRUE){
 
     if(spread == FALSE){
 
