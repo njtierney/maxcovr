@@ -1,8 +1,10 @@
-# maxcovr 0.0.0.9750 (2016-11-15)
+# maxcovr 0.0.0.9800 (2016-11-24)
 
 ## NEW FEATURES
 
 * added `summarise_coverage()` function, which calculates coverage based upon a distance dataframe created from `facility_user_dist()`.
+
+* added `york_crime` data containing crime locations around the city of york.
 
 ## MINOR IMPROVEMENTS
 

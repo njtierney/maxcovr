@@ -166,3 +166,11 @@ return(model_result)
 } # end gurobi
 
 } # end of function
+#
+# # try out gurobi
+# system.time(
+# test_cov_lp <- max_coverage(A = a_indic_mat_old,
+#                          facility = dat_building,
+#                          user = dat_ohca_not_cov,
+#                          num_aed = 20)
+# )
