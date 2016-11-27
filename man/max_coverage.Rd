@@ -4,7 +4,7 @@
 \alias{max_coverage}
 \title{max_coverage}
 \usage{
-max_coverage(A, facility, user, num_aed, n_solutions = 1,
+max_coverage(A, facility, user, n_added, n_solutions = 1,
   solver = "lpSolve")
 }
 \arguments{
@@ -14,7 +14,7 @@ max_coverage(A, facility, user, num_aed, n_solutions = 1,
 
 \item{user}{data.frame containing an aed_id, lat, and long}
 
-\item{num_aed}{is the maximum number of AEDs that can be found}
+\item{n_added}{the maximum number of facilities to add.}
 
 \item{n_solutions}{is the number of possible solutions to be returned. Default value is set to 1.}
 

@@ -5,7 +5,7 @@
 #' @param A is a spread data matrix for all of the distances, it is obtained using facility_user_dist, then facilit_user_indic.
 #' @param facility data.frame containing an ohca_id, lat, and long
 #' @param user data.frame containing an aed_id, lat, and long
-#' @param num_aed is the maximum number of AEDs that can be found
+#' @param n_added the maximum number of facilities to add.
 #' @param n_solutions is the number of possible solutions to be returned. Default value is set to 1.
 #' @param solver character default is lpSolve, but currently in development is a Gurobi solver
 #'
@@ -15,7 +15,7 @@
 max_coverage <- function(A,
                          facility,
                          user,
-                         num_aed,
+                         n_added,
                          n_solutions = 1,
                          solver = "lpSolve"){
 
@@ -25,6 +25,16 @@ max_coverage <- function(A,
     # A <- facility_user_indic(facility = facility,
     #                          user = user,
     #                          dist_indic = dist_indic) # 100m
+
+
+    # testing...
+    # A = dat_dist_indic
+    # facility = york_unselected
+    # user = dat_crime_not_cov
+    # n_added = 20
+    # n_solutions = 1
+    # solver = "lpSolve"
+    # end testing ....
 
     # hang on to the list of OHCA ids
     user_id_list <- A[,"user_id"]
@@ -42,7 +52,7 @@ if(solver == "lpSolve"){
 
     Nx <- nrow(A)
     Ny <- ncol(A)
-    N <- num_aed
+    N <- n_added
 
     # c <- -[zeros(Ny,1); ones(Nx,1)];
     c <- c(rep(0, Ny), rep(1,Nx))
@@ -99,7 +109,7 @@ x <- list(
         facility = facility,
         user = user,
         # dist_indic = dist_indic,
-        num_aed = num_aed,
+        n_added = n_added,
         n_solutions = n_solutions,
         A = A,
         user_id = user_id_list,
@@ -129,7 +139,7 @@ return(model_result)
 
         Nx <- nrow(A)
         Ny <- ncol(A)
-        N <- num_aed
+        N <- n_added
 
         # d <- [ones(1,Ny) zeros(1,Nx)];
         d <- c(rep(1, Ny), rep(0,Nx))
