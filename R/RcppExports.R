@@ -21,6 +21,7 @@ deg2rad_cpp <- function(deg) {
 #'
 #' @return distance in metres between two locations
 #'
+#' @export
 spherical_distance_cpp <- function(lat1, long1, lat2, long2) {
     .Call('maxcovr_spherical_distance_cpp', PACKAGE = 'maxcovr', lat1, long1, lat2, long2)
 }
