@@ -28,3 +28,4 @@ Imports: lpSolve,
     Rcpp,
     gurobi
 LinkingTo: Rcpp
+Suggests: testthat
