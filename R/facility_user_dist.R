@@ -87,6 +87,8 @@ facility_user_dist <- function(facility,
 
     } else if (nearest == "both"){
 
+        dist_df <- dist_df %>%
+            mutate(is_covered = (distance < coverage_distance))
         return(dist_df)
 
     }
