@@ -33,8 +33,8 @@ summarise_coverage <- function(df_dist,
                              pct_cov = (sum(is_covered) / nrow(.)),
                              n_not_cov =  (sum(is_covered == 0)),
                              pct_not_cov = (sum(is_covered == 0) / nrow(.)),
-                             avg_aed_dist = mean(distance),
-                             sd_aed_dist = sd(distance))
+                             dist_avg = mean(distance),
+                             dist_sd = sd(distance))
     }
 
 }
