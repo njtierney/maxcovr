@@ -25,6 +25,7 @@ double deg2rad_cpp(double deg) {
 //'
 //' @return distance in metres between two locations
 //'
+//' @export
 // [[Rcpp::export]]
 double spherical_distance_cpp(double lat1,
                               double long1,
