@@ -2,9 +2,11 @@
 #'
 #' max_coverage solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
 #'
-#' @param A is a spread data matrix for all of the distances, it is obtained using facility_user_dist, then facilit_user_indic.
 #' @param facility data.frame containing an ohca_id, lat, and long
 #' @param user data.frame containing an aed_id, lat, and long
+#' @param distance_cutoff numeric indicating the distance cutoff (in metres)
+#' you are interested in. If a number is less than distance_cutoff, it will be
+#' 1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
 #' @param n_solutions is the number of possible solutions to be returned. Default value is set to 1.
 #' @param solver character default is lpSolve, but currently in development is a Gurobi solver
@@ -12,9 +14,9 @@
 #' @return returns
 #' @export
 #'
-max_coverage <- function(A,
-                         facility,
+max_coverage <- function(facility,
                          user,
+                         distance_cutoff,
                          n_added,
                          n_solutions = 1,
                          solver = "lpSolve"){
@@ -31,24 +33,40 @@ max_coverage <- function(A,
     # A = dat_dist_indic
     # facility = york_unselected
     # user = dat_crime_not_cov
+    # distance_cutoff = 100
     # n_added = 20
     # n_solutions = 1
     # solver = "lpSolve"
     # end testing ....
 
+    facility_cpp <- facility %>%
+        select(lat, long) %>%
+        as.matrix()
+
+    user_cpp <- user %>%
+        select(lat, long) %>%
+        as.matrix()
+
+    A <- binary_matrix_cpp(facility = facility_cpp,
+                           user = user_cpp,
+                           distance_cutoff = distance_cutoff)
+
+    facility_names <- sprintf("facility_id_%s",1:nrow(facility))
+    colnames(A) <- facility_names
     # hang on to the list of OHCA ids
-    user_id_list <- A[,"user_id"]
+    # user_id_list <- A[,"user_id"]
+    user_id_list <- sprintf("user_id_%s",1:nrow(user))
 
     # drop ohca_id
-    A <- A[ ,-1]
+    # A <- A[ ,-1]
 
     # A is a matrix containing 0s and 1s
     # 1 indicates that the OHCA in row I is covered by an AED in location J
 
 if(solver == "lpSolve"){
 
-    J <- nrow(A)
-    I <- ncol(A)
+    # J <- nrow(A)
+    # I <- ncol(A)
 
     Nx <- nrow(A)
     Ny <- ncol(A)
