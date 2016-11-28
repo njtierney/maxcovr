@@ -87,7 +87,9 @@ return dist_mat;
 //'
 //' @param facility a matrix with longitude and latitude in the first two columns
 //' @param user a matrix with longitude and latitude in the first two columns
-//' @param distance_cutoff
+//' @param distance_cutoff numeric indicating the distance cutoff (in metres)
+//' you are interested in. If a number is less than distance_cutoff, it will be
+//' 1, if it is greater than it, it will be 0.
 //'
 //' @return a logical matrix 1 if distance between element[i,j] is less than or
 //' equal to the distance_cutoff, and 0 otherwise
