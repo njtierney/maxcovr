@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 
 # maxcovr
 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI Build Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI Build Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)[![Coverage Status](https://img.shields.io/codecov/c/github/njtierney/maxcovr/master.svg)](https://codecov.io/github/njtierney/maxcovr?branch=master)
 
 maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
 
@@ -79,7 +79,15 @@ Let's have a look at how far away the towers are from current crime, using the `
 
 ```{r}
 
-dat_dist <- facility_user_dist(facility = york_selected, user = york_crime)
+dat_dist <- facility_user_dist(facility = york_selected, 
+                               user = york_crime,
+                               nearest = )
+# remove distance indicator as an argument
+```
+
+```{r}
+
+# View(dat_dist)
 
 ```
 
@@ -121,7 +129,7 @@ To evaluate the coverage we use `summarise_coverage()`.
 
 ```{r}
 
-dist_summary <- summarise_coverage(dat_dist)
+dist_summary <- summarise_coverage(dat_dist, dist_indic = 100)
 dist_summary
 ```
 
@@ -147,6 +155,7 @@ dat_crime_not_cov <- tower_id_not_covered %>%
     left_join(york_crime, by = "id")
 
 ```
+
 
 ```{r}
 
@@ -181,6 +190,7 @@ mc_20 <- max_coverage(A = dat_dist_indic,
                       n_added = 20)
 )
 
+# mc_20$user_affected
 ```
 
 If you want to calculate the improvement in coverage from the previous model, we do the following:
@@ -214,6 +224,7 @@ map_mc_model <- map(.x = n_add_vec,
 )
 
 ```
+
 
 ```{r}
 
