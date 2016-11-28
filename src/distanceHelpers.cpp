@@ -72,10 +72,10 @@ NumericMatrix distance_matrix_cpp(NumericMatrix facility,
 
     for(int i = 0; i < n1; i++){
         for(int j = 0; j < n2; j++){
-            dist_mat(i,j) = spherical_distance_cpp(facility(j, 2), //lat
-                                                   facility(j, 1), //long
-                                                   user(i, 2), //lat
-                                                   user(i, 1)); //long
+            dist_mat(i,j) = spherical_distance_cpp(user(i, 0), //lat
+                                                   user(i, 1), //long
+                                                   facility(j, 0), //lat
+                                                   facility(j, 1)); //long);
         }
     }
 
@@ -94,10 +94,10 @@ dist_maxcovr <- maxcovr::spherical_distance(lat1 = 46.19616,
                                                 lat2 = 46.16850,
                                                 long2 = 9.004392)
 
-dist_cpp
-dist_maxcovr
+# dist_cpp
+# dist_maxcovr
 
-dist_cpp == dist_maxcovr
+# dist_cpp == dist_maxcovr
 
 facility_test_cpp <- as.matrix(tibble::tribble(
     ~lat_facility, ~long_facility, ~facility_id, ~key,
@@ -125,9 +125,14 @@ user_test_cpp <- as.matrix(tibble::tribble(
 #
 # 30368.89
 
-my_dist <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
+my_dist_cpp <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
 
-my_dist
+my_dist_cpp
+
+my_dist <- maxcovr::facility_user_dist(facility = ,
+                                       user = )
+
+my_indic_cpp <- maxcovr::facility_user_indic()
 
 
 facility_test_maxcovr <- dplyr::as_data_frame(facility_test_cpp)
