@@ -42,3 +42,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// binary_matrix_cpp
+IntegerMatrix binary_matrix_cpp(NumericMatrix facility, NumericMatrix user, double distance_cutoff);
+RcppExport SEXP maxcovr_binary_matrix_cpp(SEXP facilitySEXP, SEXP userSEXP, SEXP distance_cutoffSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type facility(facilitySEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type user(userSEXP);
+    Rcpp::traits::input_parameter< double >::type distance_cutoff(distance_cutoffSEXP);
+    rcpp_result_gen = Rcpp::wrap(binary_matrix_cpp(facility, user, distance_cutoff));
+    return rcpp_result_gen;
+END_RCPP
+}

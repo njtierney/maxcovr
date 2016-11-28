@@ -83,6 +83,45 @@ return dist_mat;
 
 }
 
+//' Create a binary matrix TRUE if distance satisfies a condition
+//'
+//' @param facility a matrix with longitude and latitude in the first two columns
+//' @param user a matrix with longitude and latitude in the first two columns
+//' @param distance_cutoff
+//'
+//' @return a logical matrix 1 if distance between element[i,j] is less than or
+//' equal to the distance_cutoff, and 0 otherwise
+//'
+//' @export
+//'
+// [[Rcpp::export]]
+IntegerMatrix binary_matrix_cpp(NumericMatrix facility,
+                                NumericMatrix user,
+                                double distance_cutoff){
+
+
+    int n1 = user.nrow();
+    int n2 = facility.nrow();
+
+    IntegerMatrix bin_mat(n1,n2);
+    NumericMatrix dist_mat(n1, n2);
+
+    dist_mat = distance_matrix_cpp(facility, user);
+
+    for(int i = 0; i < n1; i++){
+        for(int j = 0; j < n2; j++){
+            if (dist_mat(i,j) <= distance_cutoff){
+                bin_mat(i,j) = 1;
+            } else if (dist_mat(i,j) > distance_cutoff){
+                bin_mat(i,j) = 0;
+            }
+        }
+    }
+
+    return bin_mat;
+
+}
+
 /*** R
 dist_cpp <- spherical_distance_cpp(lat1 = 46.19616,
                                    long1 = 8.731278,

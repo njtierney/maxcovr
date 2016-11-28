@@ -40,3 +40,18 @@ distance_matrix_cpp <- function(facility, user) {
     .Call('maxcovr_distance_matrix_cpp', PACKAGE = 'maxcovr', facility, user)
 }
 
+#' Create a binary matrix TRUE if distance satisfies a condition
+#'
+#' @param facility a matrix with longitude and latitude in the first two columns
+#' @param user a matrix with longitude and latitude in the first two columns
+#' @param distance_cutoff
+#'
+#' @return a logical matrix 1 if distance between element[i,j] is less than or
+#' equal to the distance_cutoff, and 0 otherwise
+#'
+#' @export
+#'
+binary_matrix_cpp <- function(facility, user, distance_cutoff) {
+    .Call('maxcovr_binary_matrix_cpp', PACKAGE = 'maxcovr', facility, user, distance_cutoff)
+}
+
