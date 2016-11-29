@@ -33,7 +33,7 @@ max_coverage <- function(existing_facility = NULL,
     # end testing ....
 
     # testing for the new use of three dataframes ------------------------------
-    if (is.null(existing_facility)){
+    # if (is.null(existing_facility)){
     # existing_facility <- york %>% filter(grade == "I")
     #
     # # add an index to the user
@@ -77,7 +77,7 @@ max_coverage <- function(existing_facility = NULL,
     # # update user to be the new users, those who are not covered
     # user <- user_not_covered
 
-} # end NULL
+# } # end NULL
 
     proposed_facility_cpp <- proposed_facility %>%
         select(lat, long) %>%
@@ -105,12 +105,17 @@ max_coverage <- function(existing_facility = NULL,
 
 if(solver == "lpSolve"){
 
+    # optim_result_box <- vector("list", length(n_added))
+    # n_added <- c(20,40)
+    # for(i in n_added){
+
     # J <- nrow(A)
     # I <- ncol(A)
 
     Nx <- nrow(A)
     Ny <- ncol(A)
     N <- n_added
+    # N <- n_added[i]
 
     # c <- -[zeros(Ny,1); ones(Nx,1)];
     c <- c(rep(0, Ny), rep(1,Nx))
@@ -133,6 +138,7 @@ if(solver == "lpSolve"){
 
     constraint_directions <- c(rep("<=", Nx), "==")
 
+    # optim_result_box[[i]] <-
     lp_solution <- lpSolve::lp(direction = "max",
                            # objective.in = d, # as of 2016/08/19
                            objective.in = c,
