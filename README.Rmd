@@ -75,7 +75,7 @@ leaflet() %>%
 
 Currently they are very squashed, we want to build towers out further to maximise the coverage. The question is, where do you put them?
 
-Let's have a look at how far away the towers are from current crime, using the `facility_user_dist` function, which treats the current locations as "facilities", and the individuals as "users". `facility_user_dist` takes the arguments `facility`, a data.frame with columns names "lat" and "long", and `user`, a data.frame with columns "lat" and "long". To reiterate, **facility** is where we want to build the surveillance towers, and **user** is each crime location. 
+Let's have a look at how far away the towers are from current crime, using the `nearest_` function, which treats the current locations as "facilities", and the individuals as "users". `facility_user_dist` takes the arguments `facility`, a data.frame with columns names "lat" and "long", and `user`, a data.frame with columns "lat" and "long". To reiterate, **facility** is where we want to build the surveillance towers, and **user** is each crime location. 
 
 ```{r}
 
@@ -184,10 +184,11 @@ dat_dist_indic <- facility_user_indic(dat_dist_all, dist_indic = 100)
 ```{r}
 
 system.time(
-mc_20 <- max_coverage(A = dat_dist_indic,
-                      facility = york_unselected,
+# mc_20 <- max_coverage(A = dat_dist_indic,
+mc_20 <- max_coverage(facility = york_unselected,
                       user = dat_crime_not_cov,
-                      n_added = 20)
+                      n_added = 20,
+                      distance_cutoff = 100)
 )
 
 # mc_20$user_affected
