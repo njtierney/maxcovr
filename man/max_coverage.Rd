@@ -4,15 +4,19 @@
 \alias{max_coverage}
 \title{max_coverage}
 \usage{
-max_coverage(A, facility, user, n_added, n_solutions = 1,
-  solver = "lpSolve")
+max_coverage(existing_facility = NULL, proposed_facility, user,
+  distance_cutoff, n_added, n_solutions = 1, solver = "lpSolve")
 }
 \arguments{
-\item{A}{is a spread data matrix for all of the distances, it is obtained using facility_user_dist, then facilit_user_indic.}
+\item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
 
-\item{facility}{data.frame containing an ohca_id, lat, and long}
+\item{proposed_facility}{data.frame containing the facilities that are being proposed, with column names lat, and long.}
 
-\item{user}{data.frame containing an aed_id, lat, and long}
+\item{user}{data.frame containing the users of the facilities, along with column names lat, and long.}
+
+\item{distance_cutoff}{numeric indicating the distance cutoff (in metres)
+you are interested in. If a number is less than distance_cutoff, it will be
+1, if it is greater than it, it will be 0.}
 
 \item{n_added}{the maximum number of facilities to add.}
 

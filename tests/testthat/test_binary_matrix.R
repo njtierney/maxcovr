@@ -2,6 +2,14 @@ library(tidyverse)
 library(maxcovr)
 context("equality of binary matrices")
 
+facility_test_cpp <- york %>%
+    select(lat, long) %>%
+    as.matrix()
+
+user_test_cpp <- york_crime %>%
+    select(lat, long) %>%
+    as.matrix()
+
 my_bin_cpp <- binary_matrix_cpp(facility = facility_test_cpp,
                                 user = user_test_cpp,
                                 distance_cutoff = 100)

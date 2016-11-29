@@ -21,7 +21,7 @@ extract_mc_results <- function(x){
 
     facility_id <- readr::parse_number(colnames(x$A))
 
-    user_id <- x$user_id
+    # user_id <- x$user_id
 
     # which facilities are selected?
     facility_temp <- tibble::tibble(
@@ -30,7 +30,7 @@ extract_mc_results <- function(x){
         facility_chosen = facility_solution) %>%
         dplyr::filter(facility_chosen == 1)
 
-    facility_selected <- x$facility %>%
+    facility_selected <- x$proposed_facility %>%
         mutate(facility_id = facility_id) %>%
         dplyr::filter(facility_id %in% facility_temp$facility_id) %>%
         # drop facility_id as it is not needed anymore
@@ -44,17 +44,51 @@ extract_mc_results <- function(x){
         user_chosen = user_solution) %>%
         dplyr::filter(user_chosen == 1)
 
-    user_affected <- x$user %>%
-        mutate(user_id = user_id) %>%
-        dplyr::filter(user_id %in% user_temp$user_id) %>%
-        # drop user_id, as it not needed anymore
-        select(-user_id)
+    user_affected <- left_join(user_temp,
+                               x$user_not_covered,
+                               by = "user_id")
+        # x$user %>%
+        # mutate(user_id = user_id) %>%
+        # dplyr::filter(user_id %in% user_temp$user_id) %>%
+        # # drop user_id, as it not needed anymore
+        # select(-user_id)
         # dplyr::filter(event_id %in% user_temp$user_id)
+
+# now to return some more summaries ...
+
+    facility_sum_prep <- dplyr::bind_rows(facility_selected,
+                                          x$existing_facility) %>%
+        select(lat,long) %>%
+        as.matrix()
+
+    user_sum_prep <- x$existing_user %>%
+        select(lat,long) %>%
+        as.matrix()
+
+    dist_sum_df <- nearest_facility_dist(facility = facility_sum_prep,
+                                      user = user_sum_prep) %>%
+        dplyr::as_data_frame() %>%
+        rename(user_id = V1,
+               facility_id = V2,
+               distance = V3) %>%
+        mutate(is_covered = (distance <= x$distance_cutoff))
+
+    mc_summary <- dist_sum_df %>%
+        dplyr::summarise(n_added = as.numeric(x$n_added),
+                         distance_within = as.numeric(x$distance_cutoff),
+                         n_cov = sum(is_covered),
+                         pct_cov = (sum(is_covered) / nrow(.)),
+                         n_not_cov =  (sum(is_covered == 0)),
+                         pct_not_cov = (sum(is_covered == 0) / nrow(.)),
+                         dist_avg = mean(distance),
+                         dist_sd = sd(distance))
+
 
     return(
         list(
             facility_selected = facility_selected,
             user_affected = user_affected,
+            summary = mc_summary,
             n_added = x$n_added
             # not really sure if I need to provide the user + facility solution
             # but perhaps I could provide this in another function to extract

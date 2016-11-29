@@ -44,7 +44,9 @@ distance_matrix_cpp <- function(facility, user) {
 #'
 #' @param facility a matrix with longitude and latitude in the first two columns
 #' @param user a matrix with longitude and latitude in the first two columns
-#' @param distance_cutoff
+#' @param distance_cutoff numeric indicating the distance cutoff (in metres)
+#' you are interested in. If a number is less than distance_cutoff, it will be
+#' 1, if it is greater than it, it will be 0.
 #'
 #' @return a logical matrix 1 if distance between element[i,j] is less than or
 #' equal to the distance_cutoff, and 0 otherwise
@@ -53,5 +55,21 @@ distance_matrix_cpp <- function(facility, user) {
 #'
 binary_matrix_cpp <- function(facility, user, distance_cutoff) {
     .Call('maxcovr_binary_matrix_cpp', PACKAGE = 'maxcovr', facility, user, distance_cutoff)
+}
+
+#' nearest facility + distance to a user
+#'
+#' @param facility a matrix with longitude and latitude in the first two columns
+#' @param user a matrix with longitude and latitude in the first two columns
+#'
+#' @return matrix with 3 columns: user_id, facility_id, distance, where the
+#' user_id is the identifier for the user, the facility_id is the identifier
+#' for the facility that is closest to that user, and the distance is the
+#' distance in metres from that user to that facility.
+#'
+#' @export
+#'
+nearest_facility_dist <- function(facility, user) {
+    .Call('maxcovr_nearest_facility_dist', PACKAGE = 'maxcovr', facility, user)
 }
 
