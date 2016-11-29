@@ -89,7 +89,8 @@ extract_mc_results <- function(x){
             facility_selected = facility_selected,
             user_affected = user_affected,
             summary = mc_summary,
-            n_added = x$n_added
+            n_added = x$n_added,
+            distance_cutoff = x$distance_cutoff
             # not really sure if I need to provide the user + facility solution
             # but perhaps I could provide this in another function to extract
             # the working parts of the optimisation
