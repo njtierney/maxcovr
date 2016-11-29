@@ -55,3 +55,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// nearest_facility_dist
+NumericMatrix nearest_facility_dist(NumericMatrix facility, NumericMatrix user);
+RcppExport SEXP maxcovr_nearest_facility_dist(SEXP facilitySEXP, SEXP userSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type facility(facilitySEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type user(userSEXP);
+    rcpp_result_gen = Rcpp::wrap(nearest_facility_dist(facility, user));
+    return rcpp_result_gen;
+END_RCPP
+}

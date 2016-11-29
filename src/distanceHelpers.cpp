@@ -87,7 +87,9 @@ return dist_mat;
 //'
 //' @param facility a matrix with longitude and latitude in the first two columns
 //' @param user a matrix with longitude and latitude in the first two columns
-//' @param distance_cutoff
+//' @param distance_cutoff numeric indicating the distance cutoff (in metres)
+//' you are interested in. If a number is less than distance_cutoff, it will be
+//' 1, if it is greater than it, it will be 0.
 //'
 //' @return a logical matrix 1 if distance between element[i,j] is less than or
 //' equal to the distance_cutoff, and 0 otherwise
@@ -121,6 +123,91 @@ IntegerMatrix binary_matrix_cpp(NumericMatrix facility,
     return bin_mat;
 
 }
+
+//' nearest facility + distance to a user
+//'
+//' @param facility a matrix with longitude and latitude in the first two columns
+//' @param user a matrix with longitude and latitude in the first two columns
+//'
+//' @return matrix with 3 columns: user_id, facility_id, distance, where the
+//' user_id is the identifier for the user, the facility_id is the identifier
+//' for the facility that is closest to that user, and the distance is the
+//' distance in metres from that user to that facility.
+//'
+//' @export
+//'
+// [[Rcpp::export]]
+
+NumericMatrix nearest_facility_dist(NumericMatrix facility,
+                                    NumericMatrix user){
+
+    int n1 = user.nrow();
+    int n2 = facility.nrow();
+
+    NumericMatrix dist_mat(n1, n2);
+
+// # calculate `distance_matrix`
+    dist_mat = distance_matrix_cpp(facility, user);
+
+// # find the nearest distance:
+// # find the rowwise minimum. This is the nearest distance
+
+// set up the results matrix
+    NumericMatrix results_mat(n1,3);
+
+// fill with appropriate values
+
+// for(int i = 0; i < results_mat.nrow(); i ++){
+for(int i = 0; i < n1; i++){
+
+    // for col 1, user ID
+    results_mat(i,0) = i+1;
+
+    // for col 2, facility ID
+    results_mat(i,1) = 0;
+
+    // for col 3, large distance
+    results_mat(i,2) = 100000000;
+
+} // end i loop
+
+// make min_val, the way to determine if something is the minimum
+// this is a huge number, 100'000 kilomteres, as the circumference of the earth
+// is about 41 000 km, we make it much larger than that.
+//     NumericVector min_val(n1,100000000);
+//
+// // min_index is the way we record the position
+//     IntegerVector min_index(n1);
+
+for(int i = 0; i < n1; i++){
+    for(int j = 0; j < n2; j++){
+        // if (dist_mat(i,j) < min_val(i)){
+        if (dist_mat(i,j) < results_mat(i,2)){
+            // min_val[i] = dist_mat(i,j);
+            results_mat(i,2) = dist_mat(i,j);
+
+            // min_index[i] = j;
+            // +1 to correct for indices
+            results_mat(i,1) = j+1;
+
+            } // if loop
+        } // j loop
+    } // i loop
+
+return results_mat;
+
+
+// # find the nearerst facility.
+// # which column contains that minimum distance found. Return that in a column
+// # so the data input are:
+// # user:        user_id, lat, long
+// # facility:    facility_id, lat, long
+// # And the columns returned are:
+// # || user_id | facility_id | distance ||
+
+
+} // end function
+
 
 /*** R
 dist_cpp <- spherical_distance_cpp(lat1 = 46.19616,
