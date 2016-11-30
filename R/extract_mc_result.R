@@ -31,10 +31,10 @@ extract_mc_results <- function(x){
         dplyr::filter(facility_chosen == 1)
 
     facility_selected <- x$proposed_facility %>%
-        mutate(facility_id = facility_id) %>%
+        dplyr::mutate(facility_id = facility_id) %>%
         dplyr::filter(facility_id %in% facility_temp$facility_id) %>%
         # drop facility_id as it is not needed anymore
-        select(-facility_id)
+        dplyr::select(-facility_id)
 
     # which OHCAs are affected
     user_solution <- x$lp_solution$solution[c(I+1):c(I+J)]
@@ -44,7 +44,7 @@ extract_mc_results <- function(x){
         user_chosen = user_solution) %>%
         dplyr::filter(user_chosen == 1)
 
-    user_affected <- left_join(user_temp,
+    user_affected <- dplyr::left_join(user_temp,
                                x$user_not_covered,
                                by = "user_id")
         # x$user %>%
@@ -59,23 +59,23 @@ extract_mc_results <- function(x){
 # NOTE: I really should use `nearest`
     facility_sum_prep <- dplyr::bind_rows(facility_selected,
                                           x$existing_facility) %>%
-        select(lat,long) %>%
+        dplyr::select(lat,long) %>%
         as.matrix()
 
     user_sum_prep <- x$existing_user %>%
-        select(lat,long) %>%
+        dplyr::select(lat,long) %>%
         as.matrix()
 
     dist_sum_df <-
         maxcovr::nearest_facility_dist(facility = facility_sum_prep,
                                        user = user_sum_prep) %>%
         dplyr::as_data_frame() %>%
-        rename(user_id = V1,
+        dplyr::rename(user_id = V1,
                facility_id = V2,
                distance = V3) %>%
-        mutate(is_covered = (distance <= x$distance_cutoff))
+        dplyr::mutate(is_covered = (distance <= x$distance_cutoff))
 
-    mc_summary <- dist_sum_df %>%
+    model_coverage <- dist_sum_df %>%
         dplyr::summarise(n_added = as.numeric(x$n_added),
                          distance_within = as.numeric(x$distance_cutoff),
                          n_cov = sum(is_covered),
@@ -85,14 +85,33 @@ extract_mc_results <- function(x){
                          dist_avg = mean(distance),
                          dist_sd = sd(distance))
 
+    # add the original coverage
+    existing_coverage <- x$existing_facility %>%
+        maxcovr::nearest(x$existing_user) %>%
+        dplyr::mutate(is_covered = (distance <= x$distance_cutoff)) %>%
+        dplyr::summarise(n_added = 0,
+                         distance_within = as.numeric(x$distance_cutoff),
+                         n_cov = sum(is_covered),
+                         pct_cov = (sum(is_covered) / nrow(.)),
+                         n_not_cov =  (sum(is_covered == 0)),
+                         pct_not_cov = (sum(is_covered == 0) / nrow(.)),
+                         dist_avg = mean(distance),
+                         dist_sd = sd(distance))
+
+    # add a summary coverage
+    summary_coverage = dplyr::bind_rows(existing_coverage,
+                                        model_coverage)
+
 
     return(
-        list(
-            facility_selected = facility_selected,
-            user_affected = user_affected,
-            summary = mc_summary,
-            n_added = x$n_added,
-            distance_cutoff = x$distance_cutoff
+        tibble::tibble(
+            facility_selected = list(facility_selected),
+            user_affected = list(user_affected),
+            model_coverage = list(model_coverage),
+            existing_coverage = list(existing_coverage),
+            summary = list(summary_coverage),
+            n_added = list(x$n_added),
+            distance_cutoff = list(x$distance_cutoff)
             # not really sure if I need to provide the user + facility solution
             # but perhaps I could provide this in another function to extract
             # the working parts of the optimisation
