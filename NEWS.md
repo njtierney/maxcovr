@@ -1,3 +1,16 @@
+# maxcovr 0.0.2.9991 (2016-11-30)
+
+## NEW FEATURES
+
+* added c++ functions to calculate the distance matrices and binary matrices
+* added wrapper function `nearest` to find the nearest lat/long points from one dataframe to another and then calculate the distance between the two. This is at least 10 times faster than the previous method using joins and dplyr.
+* changed API for max_coverage, it now takes 3 dataframes, but it does more of the behind the scenes work, at the cost of taking slightly longer as it calculates the A matrix. Speedups are definitely still available though, as the c++ functions are yet to be parallelised.
+* max_coverage now also calculates a summary, which can be retrieved as `mc_model$summary`.
+
+## BUG FIXES
+
+* fixed c++ code for distance_matrix
+
 # maxcovr 0.0.0.9800 (2016-11-27)
 
 ## NEW FEATURES
