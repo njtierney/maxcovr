@@ -13,6 +13,37 @@
 #' @param solver character default is lpSolve, but currently in development is a Gurobi solver
 #'
 #' @return returns
+#'
+#' @examples
+#'
+#' \dontrun{
+#' library(maxcovr)
+#' library(tidyverse)
+#'
+#' # already existing locations
+#' york_selected <- york %>% filter(grade == "I")
+#'
+#' # proposed locations
+#' york_unselected <- york %>% filter(grade != "I")
+#'
+#'mc_result <- max_coverage(existing_facility = york_selected,
+#'                          proposed_facility = york_unselected,
+#'                          user = york_crime,
+#'                          distance_cutoff = 100,
+#'                          n_added = 20)
+#'
+#'  # get the facilities chosen out
+#'  mc_result$facility_selected
+#'
+#'  # get the users affected out
+#'  mc_result$user_affected
+#'
+#'  # get the summaries out
+#'  mc_result$summary
+#'
+#' }
+#'
+#'
 #' @export
 #'
 max_coverage <- function(existing_facility = NULL,

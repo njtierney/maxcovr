@@ -30,4 +30,35 @@ returns
 \description{
 max_coverage solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
 }
+\examples{
+
+\dontrun{
+library(maxcovr)
+library(tidyverse)
+
+# already existing locations
+york_selected <- york \%>\% filter(grade == "I")
+
+# proposed locations
+york_unselected <- york \%>\% filter(grade != "I")
+
+mc_result <- max_coverage(existing_facility = york_selected,
+                         proposed_facility = york_unselected,
+                         user = york_crime,
+                         distance_cutoff = 100,
+                         n_added = 20)
+
+ # get the facilities chosen out
+ mc_result$facility_selected
+
+ # get the users affected out
+ mc_result$user_affected
+
+ # get the summaries out
+ mc_result$summary
+
+}
+
+
+}
 
