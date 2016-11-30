@@ -61,21 +61,28 @@ library(leaflet)
 leaflet() %>%
     addCircleMarkers(data = york, 
                      radius = 1,
-                     color = "blue") %>%
+                     color = "steelblue") %>%
     addCircles(data = york_selected, 
                radius = 100,
-               stroke = FALSE,
-               color = "red") %>%
-    addTiles()
+               stroke = TRUE,
+               fill = NULL,
+               opacity = 0.8,
+               weight = 2,
+               color = "coral") %>%
+    # addTiles() %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    setView(lng = median(york$long),
+            lat = median(york$lat),
+            zoom = 15)
 #> Assuming 'long' and 'lat' are longitude and latitude, respectively
 #> Assuming 'long' and 'lat' are longitude and latitude, respectively
 ```
 
 ![](README-unnamed-chunk-2-1.png)
 
-Currently they are very squashed, we want to build towers out further to maximise the coverage. The question is, where do you put them?
+Currently the coverage looks alright, but we are pretty zoomed in here.
 
-Let's have a look at how far away the towers are from current crime, using the `nearest` function, takes the two data.frames and calculates the distance between every building (york\_selected) and crime (york\_crime), and returns a dataframe with every crime and the distance to the nearest building, along with the appropriate columns from the building dataframe.
+Let's get a better look at the coverage by looking using the `nearest` function. `nearest` take two dataframes, and returns the nearest lat/long coords from the first dataframe to the second dataframe, along with the distances between them and the appropriate columns from the building dataframe.
 
 ``` r
 
@@ -152,7 +159,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.735   0.187   1.986
+#>   1.824   0.198   2.054
 ```
 
 If you want to find the improvement in coverage from the original state we do the following:
@@ -173,7 +180,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  14.447   1.107  16.725
+#>  13.743   1.010  14.887
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -204,9 +211,9 @@ performing cross validation on max\_coverage
 Thanks to the `modelr` package, it is relatively straightforward to perform cross validation.
 
 ``` r
-# first we partition the data into 5 folds
+# first we partition the data into 10 folds
 library(modelr)
-mc_cv <- modelr::crossv_kfold(york_crime, 5) %>% 
+mc_cv <- modelr::crossv_kfold(york_crime, 10) %>% 
     # we change the test and train sets from the `resample`
     # to tibbles
     mutate(test = map(test,as_tibble),
@@ -218,14 +225,19 @@ This creates a dataframe with test and training sets
 ``` r
 
 mc_cv
-#> # A tibble: 5 × 3
-#>                   train                test   .id
-#>                  <list>              <list> <chr>
-#> 1 <tibble [1,451 × 12]> <tibble [363 × 12]>     1
-#> 2 <tibble [1,451 × 12]> <tibble [363 × 12]>     2
-#> 3 <tibble [1,451 × 12]> <tibble [363 × 12]>     3
-#> 4 <tibble [1,451 × 12]> <tibble [363 × 12]>     4
-#> 5 <tibble [1,452 × 12]> <tibble [362 × 12]>     5
+#> # A tibble: 10 × 3
+#>                    train                test   .id
+#>                   <list>              <list> <chr>
+#> 1  <tibble [1,632 × 12]> <tibble [182 × 12]>    01
+#> 2  <tibble [1,632 × 12]> <tibble [182 × 12]>    02
+#> 3  <tibble [1,632 × 12]> <tibble [182 × 12]>    03
+#> 4  <tibble [1,632 × 12]> <tibble [182 × 12]>    04
+#> 5  <tibble [1,633 × 12]> <tibble [181 × 12]>    05
+#> 6  <tibble [1,633 × 12]> <tibble [181 × 12]>    06
+#> 7  <tibble [1,633 × 12]> <tibble [181 × 12]>    07
+#> 8  <tibble [1,633 × 12]> <tibble [181 × 12]>    08
+#> 9  <tibble [1,633 × 12]> <tibble [181 × 12]>    09
+#> 10 <tibble [1,633 × 12]> <tibble [181 × 12]>    10
 ```
 
 We then fit the model on the training set using `map_df`
@@ -242,27 +254,32 @@ system.time(
                                    distance_cutoff = 100))
 )
 #>    user  system elapsed 
-#>   5.202   0.549   5.928
+#>  12.775   1.284  14.530
 ```
 
-Then we can use the `summary_mc_cv` function to extract out the summaries from each fold
+Then we can use the `summary_mc_cv` function to extract out the summaries from each fold. This summary takes the facilities placed using the training set of users, and then takes the test set of users and counts what percent of these are being covered by the training model.
 
 ``` r
 
 summarised_cv <- summary_mc_cv(mc_cv_fit, mc_cv)
-summarised_cv
-#> # A tibble: 5 × 9
-#>   n_added n_fold distance_within n_cov   pct_cov n_not_cov pct_not_cov
-#>     <dbl>  <chr>           <dbl> <int>     <dbl>     <int>       <dbl>
-#> 1      20      1             100   196 0.1350793      1255   0.8649207
-#> 2      20      2             100   226 0.1557547      1225   0.8442453
-#> 3      20      3             100   207 0.1426602      1244   0.8573398
-#> 4      20      4             100   216 0.1488629      1235   0.8511371
-#> 5      20      5             100   194 0.1336088      1258   0.8663912
-#> # ... with 2 more variables: dist_avg <dbl>, dist_sd <dbl>
+
+summarised_cv %>% knitr::kable()
 ```
 
-You can then do nifty things like explore how the coverage changes over the folds
+|  n\_added| n\_fold |  distance\_within|  n\_cov|   pct\_cov|  n\_not\_cov|  pct\_not\_cov|  dist\_avg|  dist\_sd|
+|---------:|:--------|-----------------:|-------:|----------:|------------:|--------------:|----------:|---------:|
+|        20| 01      |               100|      24|  0.1318681|          158|      0.8681319|   997.0186|  1252.190|
+|        20| 02      |               100|      13|  0.0714286|          169|      0.9285714|  1169.9142|  1404.890|
+|        20| 03      |               100|      19|  0.1043956|          163|      0.8956044|  1011.6782|  1284.263|
+|        20| 04      |               100|      22|  0.1208791|          160|      0.8791209|  1199.9469|  1647.803|
+|        20| 05      |               100|      24|  0.1325967|          157|      0.8674033|  1457.7315|  1811.095|
+|        20| 06      |               100|      18|  0.0994475|          163|      0.9005525|  1381.8468|  1857.821|
+|        20| 07      |               100|      17|  0.0939227|          164|      0.9060773|  1147.6061|  1461.748|
+|        20| 08      |               100|      37|  0.2044199|          144|      0.7955801|   953.8162|  1115.511|
+|        20| 09      |               100|      17|  0.0939227|          164|      0.9060773|  1297.5737|  1527.136|
+|        20| 10      |               100|      18|  0.0994475|          163|      0.9005525|  1385.7074|  1873.214|
+
+Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
 
 ``` r
 
@@ -271,15 +288,158 @@ summarised_cv %>%
                y = pct_cov)) + 
     geom_point() +
     geom_line(group = 1) + 
-    ylim(0.05,0.25) + 
-    theme_minimal()
+    theme_minimal() +
+    ylim(0,0.20)
+#> Warning: Removed 1 rows containing missing values (geom_point).
 ```
 
 ![](README-unnamed-chunk-15-1.png)
 
 Here we see that the pct\_coverage doesn't seem to change much across the folds.
 
-Coming up next, we will explore how to perform cross validation over all areas
+Coming up next, we will explore how to perform cross validation as we increase the number of facilities added.
+
+Ideally, there should be a way to do this using purrr, so we don't have to fic 5 separate models, but perhaps this will change when we enable n\_added to take a vector of values.
+
+``` r
+
+# then we fit the model
+system.time(
+    mc_cv_fit_n20 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 20,
+                                   distance_cutoff = 100))
+)
+#>    user  system elapsed 
+#>  13.460   1.249  15.463
+
+system.time(
+    mc_cv_fit_n40 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 40,
+                                   distance_cutoff = 100))
+)
+#>    user  system elapsed 
+#>  13.103   1.223  14.963
+
+system.time(
+    mc_cv_fit_n60 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 60,
+                                   distance_cutoff = 100))
+)
+#>    user  system elapsed 
+#>  12.818   1.219  14.375
+system.time(
+    mc_cv_fit_n80 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 80,
+                                   distance_cutoff = 100))
+)
+#>    user  system elapsed 
+#>  12.730   1.157  14.199
+system.time(
+    mc_cv_fit_n100 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 100,
+                                   distance_cutoff = 100))
+)
+#>    user  system elapsed 
+#>  12.987   1.302  14.630
+```
+
+``` r
+
+summarised_cv_n20 <- summary_mc_cv(mc_cv_fit_n20, mc_cv)
+summarised_cv_n40 <- summary_mc_cv(mc_cv_fit_n40, mc_cv)
+summarised_cv_n60 <- summary_mc_cv(mc_cv_fit_n60, mc_cv)
+summarised_cv_n80 <- summary_mc_cv(mc_cv_fit_n80, mc_cv)
+summarised_cv_n100 <- summary_mc_cv(mc_cv_fit_n100, mc_cv)
+
+bound_testing_summaries <- bind_rows(summarised_cv_n20,
+                                     summarised_cv_n40,
+                                     summarised_cv_n60,
+                                     summarised_cv_n80,
+                                     summarised_cv_n100) %>%
+    mutate(type = "test")
+```
+
+It looks like the more facilities we add, the better the coverage...mostly.
+
+``` r
+bound_training_summaries <- bind_rows(mc_cv_fit_n20$model_coverage,
+                                      mc_cv_fit_n40$model_coverage,
+                                      mc_cv_fit_n60$model_coverage,
+                                      mc_cv_fit_n80$model_coverage,
+                                      mc_cv_fit_n100$model_coverage) %>%
+    mutate(type = "training")
+
+bound_all_summaries <- bind_rows(bound_testing_summaries,
+                                 bound_training_summaries)
+```
+
+``` r
+
+ggplot(bound_testing_summaries,
+       aes(x = n_fold,
+               y = pct_cov,
+               colour = factor(n_added),
+               group = factor(n_added))) + 
+    geom_point() + 
+    geom_line() + 
+    theme_minimal()
+```
+
+![](README-unnamed-chunk-19-1.png)
+
+Let's look at this another way, with boxplots for the number of facilities added.
+
+``` r
+
+ggplot(bound_testing_summaries,
+       aes(x = factor(n_added),
+           y = n_cov)) +
+    geom_boxplot() + 
+    theme_minimal()
+```
+
+![](README-unnamed-chunk-20-1.png)
+
+We can also compare the % coverage for the test and training datasets
+
+``` r
+
+bound_all_summaries %>%
+    ggplot(aes(x = factor(n_added),
+               y = pct_cov,
+               fill = type)) + 
+    geom_boxplot() + 
+    theme_minimal()
+```
+
+![](README-unnamed-chunk-21-1.png)
+
+Known Issues
+============
+
+-   `max_coverage()` may take a bit of time to run, depending on your data size. From initial testing, if the product of the number of rows of the `proposed_facilities` and `users` exceeds 100 million, it might take more than 1 minute. Of course, this may depend on the structure / complexity of your data and problem.
+
+Future Work
+===========
+
+Through December 2016 I will be focussing on making `maxcovr` more usable, building in better summaries into the model fitting process, keeping the work in a dataframe, adding speed improvements using c++ where possible, and implementing an optional gurobi solver. I will also be creating standardized plots for exploration of data and results.
+
+In 2017 I will be providing alternative interfaces to other solvers, potentially using something like [`ompr`](https://github.com/dirkschumacher/ompr), to give users their own choice of solver, such as glpk or CPLEX. In this time I will also be looking into exploiting embarassingly parallel features for data preprocessing.
 
 ``` r
 # 
@@ -306,18 +466,6 @@ Coming up next, we will explore how to perform cross validation over all areas
 #              distance_cutoff = 100)
 # )
 ```
-
-Known Issues
-============
-
--   `max_coverage()` may take a bit of time to run, depending on your data size. From initial testing, if the product of the number of rows of the `proposed_facilities` and `users` exceeds 100 million, it might take more than 1 minute. Of course, this may depend on the structure / complexity of your data and problem.
-
-Future Work
-===========
-
-Through December 2016 I will be focussing on making `maxcovr` more usable, building in better summaries into the model fitting process, keeping the work in a dataframe, adding speed improvements using c++ where possible, and implementing an optional gurobi solver. We will also be creating standardized plots for exploration of data and results.
-
-In 2017 I will be providing alternative interfaces to other solvers, potentially using something like [`ompr`](https://github.com/dirkschumacher/ompr), to give users their own choice of solver, such as glpk or CPLEX. In this time I will also be looking into exploiting embarassingly parallel features for data preprocessing.
 
 If you have any suggestions, please file an issue and I will get to it as soon as I can.
 
