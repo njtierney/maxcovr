@@ -26,6 +26,7 @@ Imports: lpSolve,
     tibble,
     readr,
     Rcpp,
+    purrr
 LinkingTo: Rcpp
 Suggests: testthat,
     covr,
