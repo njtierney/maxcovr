@@ -227,6 +227,7 @@ return(model_result)
 
 } else if(solver == "gurobi"){
 
+    warning("Make sure that you have installed the Gurobi software and accompanying Gurobi R package")
     # model <- list()
     # model$A          <- matrix(c(1,1,0,0,1,1), nrow=2, byrow=T)
     # model$obj        <- c(1,1,2)
