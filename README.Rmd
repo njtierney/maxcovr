@@ -75,62 +75,32 @@ leaflet() %>%
 
 Currently they are very squashed, we want to build towers out further to maximise the coverage. The question is, where do you put them?
 
-Let's have a look at how far away the towers are from current crime, using the `nearest_` function, which treats the current locations as "facilities", and the individuals as "users". `facility_user_dist` takes the arguments `facility`, a data.frame with columns names "lat" and "long", and `user`, a data.frame with columns "lat" and "long". To reiterate, **facility** is where we want to build the surveillance towers, and **user** is each crime location. 
+Let's have a look at how far away the towers are from current crime, using the `nearest` function, takes the two data.frames and calculates the distance between every building (york_selected) and crime (york_crime), and returns a dataframe with every crime and the distance to the nearest building, along with the appropriate columns from the building dataframe.
+
 
 ```{r}
 
-dat_dist <- facility_user_dist(facility = york_selected, 
-                               user = york_crime,
-                               nearest = )
-# remove distance indicator as an argument
+dat_dist <- york_selected %>% nearest(york_crime)
+
+head(dat_dist)
 ```
 
+You can instead return a dataframe which has every building in the rows, and the nearest crime to the building, by simply changing the order.
+
 ```{r}
 
-# View(dat_dist)
-
+dat_dist_bldg <- york_crime %>% nearest(york_selected)
+head(dat_dist_bldg)
 ```
 
-`facility_user_dist` calculates the distance between every building (york_selected) and crime (york_crime), and by default returns a dataframe with every crime and the distance to the nearest building, along with the appropriate columns from the building dataframe. 
+To evaluate the coverage we can use `summarise_coverage`
 
 ```{r}
 
-dim(york_crime)
-dim(york_selected)
-dim(dat_dist)
+dat_dist %>% 
+    mutate(is_covered = distance <= 100) %>%
+    summarise_coverage()
 
-```
-
-You can instead return a dataframe which has every building in the rows, and the nearest crime to the building. This is achieved by setting the "nearest" option to be "nearest = user", instead of the default "nearest = facility".
-
-```{r}
-
-facility_user_dist(facility = york_selected, 
-                   user = york_crime, 
-                   nearest = "user")
-
-```
-
-The distances between all buildings and crimes can be returned using "nearest = both".
-
-```{r}
-
-facility_user_dist(facility = york_selected,
-                   user = york_crime,
-                   nearest = "both")
-
-```
-
-Note: `facility_user_dist` might take a while to run as it creates the cross product of the rows and calculates the distances using haversines formula. It then filters the rows to return the closest facility to a user (when nearest = facility), the closest user to a facility (when nearest = user). The entire cross product is returned when nearest = "both". Future work will explore custom c++ code to make this process faster.
-
-To evaluate the coverage we use `summarise_coverage()`.
-
-`summarise_coverage` uses the distance matrix calculated by `facility_user_dist`.
-
-```{r}
-
-dist_summary <- summarise_coverage(dat_dist, dist_indic = 100)
-dist_summary
 ```
 
 This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes are covered, but the mean distance to the surveillance camera is 1400m.
@@ -139,77 +109,27 @@ This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes
 
 Say then we want to add another 20 surveillance towers, but we want to use the best 20, we use `max_coverage`.
 
-However, `max_coverage` requires an "A Matrix", which we create using `dat_dist_indic`, which cannot contain crime incidents that are already covered, as we want to maximise the coverage of the crimes not yet covered.
-
-
-```{r}
-
-# identify those crime (user) events that are not covered
-# so that they aren't used in the optimisation
-
-tower_id_not_covered <- dat_dist %>%
-    filter(is_covered == FALSE) %>%
-    select(id)
-
-dat_crime_not_cov <- tower_id_not_covered %>%
-    left_join(york_crime, by = "id")
-
-```
-
-
-```{r}
-
-system.time(
-    dat_dist_all <- facility_user_dist(facility = york_unselected,
-                                       user = dat_crime_not_cov,
-                                       coverage_distance = 100,
-                                       nearest = "both")
-)
-
-# we also need to ensure two things:
-# Only consider crimes that aren't already covered
-
-# dat_dist_all <- dat_dist_all %>% filter(is_covered == FALSE)
-
-# remove facilities that have class == I (are currently used).
-
-
-system.time(
-dat_dist_indic <- facility_user_indic(dat_dist_all, dist_indic = 100)
-)
-
-```
-
-
 ```{r}
 
 system.time(
 # mc_20 <- max_coverage(A = dat_dist_indic,
-mc_20 <- max_coverage(facility = york_unselected,
-                      user = dat_crime_not_cov,
+mc_20 <- max_coverage(existing_facility = york_selected,
+                      proposed_facility = york_unselected,
+                      user = york_crime,
                       n_added = 20,
                       distance_cutoff = 100)
 )
 
-# mc_20$user_affected
 ```
 
-If you want to calculate the improvement in coverage from the previous model, we do the following:
+If you want to find the improvement in coverage from the original state we do the following:
 
 ```{r}
 
-model_20_coverage <- bind_rows(mc_20$facility_selected,
-                               york_selected) %>%
-    facility_user_dist(facility = .,
-                       user = york_crime) %>%
-    summarise_coverage()
-
-bind_rows(dist_summary,
-          model_20_coverage)
 ```
 
-One can also use `map` from `purrr` to fit many different configurations of `n_added`
-
+One can also use `map` from `purrr` to fit many different configurations of `n_added`.
+(Future work will look into allowing `n_added` to take a vector of arguments).
 
 ```{r}
 library(purrr)
@@ -217,42 +137,21 @@ library(purrr)
 n_add_vec <- c(20, 40, 60, 80, 100)
 
 system.time(
-map_mc_model <- map(.x = n_add_vec,
-                    .f = ~max_coverage(A = dat_dist_indic,
-                                       facility = york_unselected,
-                                       user = dat_crime_not_cov,
-                                       n_added = .))
+map_mc_model <- map_df(.x = n_add_vec,
+                       .f = ~max_coverage(existing_facility = york_selected,
+                                          proposed_facility = york_unselected,
+                                          user = york,
+                                          distance_cutoff = 100,
+                                          n_added = .))
 )
 
 ```
 
+This returns a list of dataframes, which we can bind together like so:
 
 ```{r}
 
-# map_model_coverage <- map(.x = map_mc_model,
-#                           .f = ~bind_rows(.$facility_selected)) %>%
-#     bind_rows(york_selected) %>%
-    
-    
-map_model_coverage <- map_mc_summary <- function(mc_model,
-                                                 york_selected,
-                                                 york_crime){
-    
-    bind_rows(mc_model$facility_selected,
-              york_selected) %>%
-    facility_user_dist(facility = .,
-                       user = york_crime) %>%
-    summarise_coverage()
-}
-
-
-```
-
-```{r}
-map_cov_results <- map(.x = map_mc_model,
-                       .f = ~map_model_coverage(mc_model = .,
-                                                york_selected = york_selected,
-                                                york_crime = york_crime))
+map_cov_results <- bind_rows(map_mc_model$model_coverage)
 
 ```
 
@@ -260,11 +159,8 @@ We can then visualise the effect on coverage:
 
 ```{r}
 
-bind_rows(dist_summary,
+bind_rows(map_mc_model$existing_coverage[[1]],
           map_cov_results) %>%
-    mutate(n_added = c(0,20,40,60,80,100)) %>%
-    select(n_added,
-           everything()) %>%
     ggplot(aes(x = factor(n_added),
                y = pct_cov)) + 
     geom_point() +
@@ -273,21 +169,107 @@ bind_rows(dist_summary,
 
 ```
 
+# performing cross validation on max_coverage
+
+Thanks to the `modelr` package, it is relatively straightforward to perform cross validation.
+
+```{r}
+# first we partition the data into 5 folds
+library(modelr)
+mc_cv <- modelr::crossv_kfold(york_crime, 5) %>% 
+    # we change the test and train sets from the `resample`
+    # to tibbles
+    mutate(test = map(test,as_tibble),
+           train = map(train,as_tibble))
+
+```
+
+This creates a dataframe with test and training sets
+
+```{r}
+
+mc_cv
+
+```
+
+We then fit the model on the training set using `map_df`
+
+```{r}
+
+# then we fit the model
+system.time(
+    mc_cv_fit <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 20,
+                                   distance_cutoff = 100))
+)
+
+```
+
+Then we can use the `summary_mc_cv` function to extract out the summaries from each fold
+
+```{r}
+
+summarised_cv <- summary_mc_cv(mc_cv_fit, mc_cv)
+summarised_cv
+```
+
+You can then do nifty things like explore how the coverage changes over the folds
+
+```{r}
+
+summarised_cv %>%
+    ggplot(aes(x = n_fold,
+               y = pct_cov)) + 
+    geom_point() +
+    geom_line(group = 1) + 
+    ylim(0.05,0.25) + 
+    theme_minimal()
+
+```
+
+Here we see that the pct_coverage doesn't seem to change much across the folds.
+
+Coming up next, we will explore how to perform cross validation over all areas
+
+```{r}
+# 
+# n_add_vec <- c(20,40)
+# 
+# system.time(
+#     mc_cv_fit_many <- 
+#         map2_df(mc_cv$train, # training set goes here
+#                 n_add_vec,
+#                 .f = ~max_coverage,
+#                 existing_facility = york_selected,
+#                 proposed_facility = york_unselected,
+#                 distance_cutoff = 100)
+# )
+# 
+# 
+# system.time(
+#     mc_cv_fit_many <- 
+#         pmap(.l = list(user = mc_cv$train, # training set goes here
+#                        n_added = n_add_vec),
+#              .f = ~max_coverage,
+#              existing_facility = york_selected,
+#              proposed_facility = york_unselected,
+#              distance_cutoff = 100)
+# )
+
+```
 
 # Known Issues
 
-- `facility_user_dist()` is slow for larger datasets (if the row product is larger than 1 billion rows), as it requires calculating the pairwise combination of every distance, and then subsetting based on what is closest. Future work is investigating faster, more sensible approaches that use the minimal (and sensible) amount of information from data
-
-- `max_coverage()` may take a bit of time to run, depending on your data size. If the product of your pairwise distance matrix exceeds 1 billion rows, it might take more than 1 minute.
-
-`maxcovr` is still in beta, so there are likely to be unidentified bugs, please keep this in mind!
+- `max_coverage()` may take a bit of time to run, depending on your data size. From initial testing, if the product of the number of rows of the `proposed_facilities` and `users` exceeds 100 million, it might take more than 1 minute. Of course, this may depend on the structure / complexity of your data and problem.
 
 # Future Work
 
-Through December 2016 I will be focussing on making `maxcovr` more usable, building in summaries into the model fitting process, keeping the work in a dataframe, making it faster using c++ for common summaries, and implementing gurobi for the Solver Engine. Also on the cards are some standardized plots for exploration of data and results.
+Through December 2016 I will be focussing on making `maxcovr` more usable, building in better summaries into the model fitting process, keeping the work in a dataframe, adding speed improvements using c++ where possible, and implementing an optional gurobi solver. We will also be creating standardized plots for exploration of data and results.
 
-
-In 2017 I will be providing alternative interfaces to other solvers, potentially using something like [`ompr`](https://github.com/dirkschumacher/ompr), to give users their own choice of solver, such as glpk or CPLEX.
+In 2017 I will be providing alternative interfaces to other solvers, potentially using something like [`ompr`](https://github.com/dirkschumacher/ompr), to give users their own choice of solver, such as glpk or CPLEX. In this time I will also be looking into exploiting embarassingly parallel features for data preprocessing.
 
 If you have any suggestions, please file an issue and I will get to it as soon as I can.
 
