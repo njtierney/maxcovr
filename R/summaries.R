@@ -40,7 +40,7 @@ summary_mc_cv <- function(model,
 
     purrr::pmap_df(.l = list(
         facility_selected = model$facility_selected,
-        test_data = test_data$train,
+        test_data = test_data$test,
         dist_cutoff = model$distance_cutoff,
         n_added = model$n_added,
         n_fold = test_data$.id
