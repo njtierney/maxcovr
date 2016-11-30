@@ -56,6 +56,7 @@ extract_mc_results <- function(x){
 
 # now to return some more summaries ...
 
+# NOTE: I really should use `nearest`
     facility_sum_prep <- dplyr::bind_rows(facility_selected,
                                           x$existing_facility) %>%
         select(lat,long) %>%
@@ -65,8 +66,9 @@ extract_mc_results <- function(x){
         select(lat,long) %>%
         as.matrix()
 
-    dist_sum_df <- nearest_facility_dist(facility = facility_sum_prep,
-                                      user = user_sum_prep) %>%
+    dist_sum_df <-
+        maxcovr::nearest_facility_dist(facility = facility_sum_prep,
+                                       user = user_sum_prep) %>%
         dplyr::as_data_frame() %>%
         rename(user_id = V1,
                facility_id = V2,
