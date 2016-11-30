@@ -43,6 +43,7 @@ max_coverage <- function(existing_facility = NULL,
     # proposed_facility <- york %>% filter(grade != "I")
 
     # turn existing_facility into a matrix suitable for cpp
+
     existing_facility_cpp <- existing_facility %>%
         select(lat,long) %>%
         as.matrix()
@@ -51,8 +52,9 @@ max_coverage <- function(existing_facility = NULL,
         select(lat,long) %>%
         as.matrix()
 
-    dat_nearest_dist <- nearest_facility_dist(facility = existing_facility_cpp,
-                                              user = user_cpp)
+    dat_nearest_dist <-
+        maxcovr::nearest_facility_dist(facility = existing_facility_cpp,
+                                       user = user_cpp)
 
     # make nearest dist into dataframe
     # leave only those not covered
@@ -61,7 +63,7 @@ max_coverage <- function(existing_facility = NULL,
         rename(user_id = V1,
                facility_id = V2,
                distance = V3) %>%
-        filter(distance > 100) # 100m would be distance_curoff
+        filter(distance > distance_cutoff) # 100m would be distance_cutoff
 
     # give user an index
     user <- user %>% mutate(user_id = 1:n())
@@ -87,9 +89,9 @@ max_coverage <- function(existing_facility = NULL,
         select(lat, long) %>%
         as.matrix()
 
-    A <- binary_matrix_cpp(facility = proposed_facility_cpp,
-                           user = user_cpp,
-                           distance_cutoff = distance_cutoff)
+    A <- maxcovr::binary_matrix_cpp(facility = proposed_facility_cpp,
+                                    user = user_cpp,
+                                    distance_cutoff = distance_cutoff)
 
     facility_names <- sprintf("facility_id_%s",1:nrow(proposed_facility))
     colnames(A) <- facility_names
@@ -111,7 +113,7 @@ if(solver == "lpSolve"){
 
     # J <- nrow(A)
     # I <- ncol(A)
-
+# profvis::profvis({
     Nx <- nrow(A)
     Ny <- ncol(A)
     N <- n_added
@@ -125,6 +127,8 @@ if(solver == "lpSolve"){
 
     Aeq <- d
     beq <- N
+
+    # this is a line to optimise with cpp
     Ain <- cbind(-A, diag(Nx))
 
     bin <- matrix(rep(0,Nx), ncol = 1)
@@ -136,9 +140,12 @@ if(solver == "lpSolve"){
 
     rhs_matrix <- rbind(bin, beq)
 
+    # this is another line to optimise with c++
     constraint_directions <- c(rep("<=", Nx), "==")
+# }) # end profvis
 
     # optim_result_box[[i]] <-
+# for the york data, it takes 0.658 seconds
     lp_solution <- lpSolve::lp(direction = "max",
                            # objective.in = d, # as of 2016/08/19
                            objective.in = c,
