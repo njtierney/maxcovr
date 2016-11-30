@@ -16,10 +16,12 @@ mc_result <- max_coverage(existing_facility = york_selected,
 
 testthat::test_that("maximum coverage returns the correct names",{
     testthat::expect_named(mc_result, c("facility_selected",
-                                                "user_affected",
-                                                "summary",
-                                                "n_added",
-                                                "distance_cutoff"))
+                                        "user_affected",
+                                        "model_coverage",
+                                        "existing_coverage",
+                                        "summary",
+                                        "n_added",
+                                        "distance_cutoff"))
 
 })
 
