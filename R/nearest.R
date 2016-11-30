@@ -53,8 +53,8 @@ nearest <- function(nearest_df,
     # nearest(nearest_df = facility, to_df = user)
     # nearest(nearest_df = user, to_df = facility)
 
-    nearest_mat <- as.matrix(nearest_df[c("lat","long")])
-    to_mat <- as.matrix(to_df[c("lat","long")])
+    nearest_mat <- as.matrix(nearest_df[c(nearest_lat,nearest_long)])
+    to_mat <- as.matrix(to_df[c(to_lat,to_long)])
 
     dist_mat <- nearest_facility_dist(facility = nearest_mat, # aed or building
                                       user = to_mat) # ohca or crime
@@ -64,8 +64,8 @@ nearest <- function(nearest_df,
 
     dist_df <- dist_mat %>%
         tibble::as_tibble() %>%
-        dplyr::rename(nearest_id = V1,
-                      to_id = V2,
+        dplyr::rename(to_id = V1,
+                      nearest_id = V2,
                       distance = V3)
 
     # there will need to be an option to add your own special ID
@@ -74,13 +74,20 @@ nearest <- function(nearest_df,
 
     # create some IDs to join by
     to_df_id <- to_df %>% dplyr::mutate(to_id = 1:n())
-
+    nearest_df_id <- nearest_df %>% dplyr::mutate(nearest_id = 1:n())
 
     # dat_user_facility_dist <- dist_df %>%
     nearest_to_dist_df <- dist_df %>%
-        left_join(to_df_id,
-                  by = "to_id")
+        dplyr::left_join(to_df_id,
+                         by = "to_id") %>%
+        dplyr::left_join(nearest_df_id,
+                         by = "nearest_id") %>%
+        dplyr::rename(long_to = long.x,
+                      lat_to = lat.x,
+                      long_nearest = long.y,
+                      lat_nearest = lat.y)
 
+    # consider
     # unsure if I want to join on the OHCA (user) data to this?
     # this line would follow the above
     # nearest_df_id <- nearest_df %>% dplyr::mutate(nearest_id = 1:n())
