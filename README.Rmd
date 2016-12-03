@@ -54,9 +54,9 @@ york_unselected <- york %>% filter(grade != "I")
 
 The purpose of the game is to build towers in places so that they are within 100m of crime. We are going to use the crime data that we have to help us choose ideal locations to place towers.
 
-This can be illustrated with the following graphic, where the red circles indicate the current coverage of the building locations. 
+This can be illustrated with the following graphic, where the red circles indicate the current coverage of the building locations, so those blue crimes within the circles are within the coverage.
 
-```{r}
+```{r leaflet, echo = FALSE}
 
 library(leaflet)
 
@@ -79,9 +79,7 @@ leaflet() %>%
 
 ```
 
-Currently the coverage looks alright, but we are pretty zoomed in here. 
-
-Let's get a better look at the coverage by looking using the `nearest` function. `nearest` take two dataframes, and returns the nearest lat/long coords from the first dataframe to the second dataframe, along with the distances between them and the appropriate columns from the building dataframe.
+Currently the coverage looks alright, but let's verify the coverage using the `nearest` function. `nearest` takes two dataframes and returns the nearest lat/long coords from the first dataframe to the second dataframe, along with the distances between them and the appropriate columns from the building dataframe.
 
 ```{r}
 
@@ -128,17 +126,29 @@ mc_20 <- max_coverage(existing_facility = york_selected,
 
 ```
 
-If you want to find the improvement in coverage from the original state we do the following:
+`max_coverage` actually returns a dataframe of lists.
 
 ```{r}
-
+mc_20
 ```
+
+This is handy because it means that later when you want to explore multiple `n_added`, say you want to explore how coverage changes for 20, 40, 60, 80, 100 `n_added`, then these are added as rows in the dataframe, which makes it easier to do summaries and manipulate.
+
+Important features here of this dataframe are:
+
+- `facility_selected`: A dataframe from `proposed_facilities`, containing the facilities selected by the optimisation.
+- `user_affected`: A dataframe from `user`, that contains the users that were affected by the new optimised placement
+- `model_coverage`: A dataframe containing summary info on the number of users covered, the percentage of coverage, and the average distance.
+- `existing_coverage`: returns a similar summary dataframe the original coverage, from `existing_facilities`.
+- `summary`: returns the binded `model_coverage` and `existing_coverage`.
+- `n_added`: The number of things added
+- `distance_cutoff`: the distance cutoff selected
+
 
 One can also use `map` from `purrr` to fit many different configurations of `n_added`.
 (Future work will look into allowing `n_added` to take a vector of arguments).
 
 ```{r}
-library(purrr)
 
 n_add_vec <- c(20, 40, 60, 80, 100)
 
@@ -175,195 +185,7 @@ bind_rows(map_mc_model$existing_coverage[[1]],
 
 ```
 
-# performing cross validation on max_coverage
-
-Thanks to the `modelr` package, it is relatively straightforward to perform cross validation.
-
-```{r}
-# first we partition the data into 10 folds
-library(modelr)
-mc_cv <- modelr::crossv_kfold(york_crime, 10) %>% 
-    # we change the test and train sets from the `resample`
-    # to tibbles
-    mutate(test = map(test,as_tibble),
-           train = map(train,as_tibble))
-
-```
-
-This creates a dataframe with test and training sets
-
-```{r}
-
-mc_cv
-
-```
-
-We then fit the model on the training set using `map_df`
-
-```{r}
-
-# then we fit the model
-system.time(
-    mc_cv_fit <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 20,
-                                   distance_cutoff = 100))
-)
-
-```
-
-Then we can use the `summary_mc_cv` function to extract out the summaries from each fold.
-This summary takes the facilities placed using the training set of users, and then takes the test set of users and counts what percent of these are being covered by the training model.
-
-```{r}
-
-summarised_cv <- summary_mc_cv(mc_cv_fit, mc_cv)
-
-summarised_cv %>% knitr::kable()
-```
-
-Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
-
-```{r}
-
-summarised_cv %>%
-    ggplot(aes(x = n_fold,
-               y = pct_cov)) + 
-    geom_point() +
-    geom_line(group = 1) + 
-    theme_minimal()
-    
-        
-
-```
-
-Here we see that the pct_coverage doesn't seem to change much across the folds.
-
-Coming up next, we will explore how to perform cross validation as we increase the number of facilities added.
-
-Ideally, there should be a way to do this using purrr, so we don't have to fic 5 separate models, but perhaps this will change when we enable n_added to take a vector of values.
-
-```{r}
-
-# then we fit the model
-system.time(
-    mc_cv_fit_n20 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 20,
-                                   distance_cutoff = 100))
-)
-
-system.time(
-    mc_cv_fit_n40 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 40,
-                                   distance_cutoff = 100))
-)
-
-system.time(
-    mc_cv_fit_n60 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 60,
-                                   distance_cutoff = 100))
-)
-system.time(
-    mc_cv_fit_n80 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 80,
-                                   distance_cutoff = 100))
-)
-system.time(
-    mc_cv_fit_n100 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 100,
-                                   distance_cutoff = 100))
-)
-
-```
-
-```{r}
-
-summarised_cv_n20 <- summary_mc_cv(mc_cv_fit_n20, mc_cv)
-summarised_cv_n40 <- summary_mc_cv(mc_cv_fit_n40, mc_cv)
-summarised_cv_n60 <- summary_mc_cv(mc_cv_fit_n60, mc_cv)
-summarised_cv_n80 <- summary_mc_cv(mc_cv_fit_n80, mc_cv)
-summarised_cv_n100 <- summary_mc_cv(mc_cv_fit_n100, mc_cv)
-
-bound_testing_summaries <- bind_rows(summarised_cv_n20,
-                                     summarised_cv_n40,
-                                     summarised_cv_n60,
-                                     summarised_cv_n80,
-                                     summarised_cv_n100) %>%
-    mutate(type = "test")
-
-```
-
-It looks like the more facilities we add, the better the coverage...mostly.
-
-```{r}
-bound_training_summaries <- bind_rows(mc_cv_fit_n20$model_coverage,
-                                      mc_cv_fit_n40$model_coverage,
-                                      mc_cv_fit_n60$model_coverage,
-                                      mc_cv_fit_n80$model_coverage,
-                                      mc_cv_fit_n100$model_coverage) %>%
-    mutate(type = "training")
-
-bound_all_summaries <- bind_rows(bound_testing_summaries,
-                                 bound_training_summaries)
-
-```
-
-
-```{r}
-
-ggplot(bound_testing_summaries,
-       aes(x = n_fold,
-               y = pct_cov,
-               colour = factor(n_added),
-               group = factor(n_added))) + 
-    geom_point() + 
-    geom_line() + 
-    theme_minimal()
-
-```
-
-Let's look at this another way, with boxplots for the number of facilities added.
-
-```{r}
-
-ggplot(bound_testing_summaries,
-       aes(x = factor(n_added),
-           y = n_cov)) +
-    geom_boxplot() + 
-    theme_minimal()
-
-```
-
-We can also compare the % coverage for the test and training datasets
-
-```{r}
-
-bound_all_summaries %>%
-    ggplot(aes(x = factor(n_added),
-               y = pct_cov,
-               fill = type)) + 
-    geom_boxplot() + 
-    theme_minimal()
-
-```
-
+You can read more about the use of `max_coverage`, covering topics like cross validation in the vignette.
 
 # Known Issues
 
