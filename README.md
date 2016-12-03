@@ -159,7 +159,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.824   0.198   2.054
+#>   1.750   0.170   1.947
 ```
 
 If you want to find the improvement in coverage from the original state we do the following:
@@ -180,7 +180,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  13.743   1.010  14.887
+#>  13.700   0.940  14.887
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -254,7 +254,7 @@ system.time(
                                    distance_cutoff = 100))
 )
 #>    user  system elapsed 
-#>  12.775   1.284  14.530
+#>  12.727   1.096  13.955
 ```
 
 Then we can use the `summary_mc_cv` function to extract out the summaries from each fold. This summary takes the facilities placed using the training set of users, and then takes the test set of users and counts what percent of these are being covered by the training model.
@@ -266,18 +266,18 @@ summarised_cv <- summary_mc_cv(mc_cv_fit, mc_cv)
 summarised_cv %>% knitr::kable()
 ```
 
-|  n\_added| n\_fold |  distance\_within|  n\_cov|   pct\_cov|  n\_not\_cov|  pct\_not\_cov|  dist\_avg|  dist\_sd|
-|---------:|:--------|-----------------:|-------:|----------:|------------:|--------------:|----------:|---------:|
-|        20| 01      |               100|      24|  0.1318681|          158|      0.8681319|   997.0186|  1252.190|
-|        20| 02      |               100|      13|  0.0714286|          169|      0.9285714|  1169.9142|  1404.890|
-|        20| 03      |               100|      19|  0.1043956|          163|      0.8956044|  1011.6782|  1284.263|
-|        20| 04      |               100|      22|  0.1208791|          160|      0.8791209|  1199.9469|  1647.803|
-|        20| 05      |               100|      24|  0.1325967|          157|      0.8674033|  1457.7315|  1811.095|
-|        20| 06      |               100|      18|  0.0994475|          163|      0.9005525|  1381.8468|  1857.821|
-|        20| 07      |               100|      17|  0.0939227|          164|      0.9060773|  1147.6061|  1461.748|
-|        20| 08      |               100|      37|  0.2044199|          144|      0.7955801|   953.8162|  1115.511|
-|        20| 09      |               100|      17|  0.0939227|          164|      0.9060773|  1297.5737|  1527.136|
-|        20| 10      |               100|      18|  0.0994475|          163|      0.9005525|  1385.7074|  1873.214|
+|  n\_added| n\_fold |  distance\_within|  n\_cov|   pct\_cov|  n\_not\_cov|  pct\_not\_cov|  dist\_avg|   dist\_sd|
+|---------:|:--------|-----------------:|-------:|----------:|------------:|--------------:|----------:|----------:|
+|        20| 01      |               100|      26|  0.1428571|          156|      0.8571429|  1386.7895|  1815.0866|
+|        20| 02      |               100|      21|  0.1153846|          161|      0.8846154|  1258.6292|  1549.4160|
+|        20| 03      |               100|      19|  0.1043956|          163|      0.8956044|  1293.6325|  1676.3622|
+|        20| 04      |               100|      24|  0.1318681|          158|      0.8681319|  1435.7361|  1812.9066|
+|        20| 05      |               100|      15|  0.0828729|          166|      0.9171271|  1278.8781|  1804.4648|
+|        20| 06      |               100|      27|  0.1491713|          154|      0.8508287|   956.4925|   973.4245|
+|        20| 07      |               100|      23|  0.1270718|          158|      0.8729282|   921.9236|  1188.4502|
+|        20| 08      |               100|      28|  0.1546961|          153|      0.8453039|  1082.6999|  1389.3083|
+|        20| 09      |               100|      17|  0.0939227|          164|      0.9060773|  1118.0887|  1394.5509|
+|        20| 10      |               100|      19|  0.1049724|          162|      0.8950276|  1247.7385|  1552.6097|
 
 Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
 
@@ -288,9 +288,7 @@ summarised_cv %>%
                y = pct_cov)) + 
     geom_point() +
     geom_line(group = 1) + 
-    theme_minimal() +
-    ylim(0,0.20)
-#> Warning: Removed 1 rows containing missing values (geom_point).
+    theme_minimal()
 ```
 
 ![](README-unnamed-chunk-15-1.png)
@@ -313,7 +311,7 @@ system.time(
                                    distance_cutoff = 100))
 )
 #>    user  system elapsed 
-#>  13.460   1.249  15.463
+#>  12.641   0.979  13.699
 
 system.time(
     mc_cv_fit_n40 <- map_df(mc_cv$train,
@@ -324,7 +322,7 @@ system.time(
                                    distance_cutoff = 100))
 )
 #>    user  system elapsed 
-#>  13.103   1.223  14.963
+#>  12.692   0.988  13.740
 
 system.time(
     mc_cv_fit_n60 <- map_df(mc_cv$train,
@@ -335,7 +333,7 @@ system.time(
                                    distance_cutoff = 100))
 )
 #>    user  system elapsed 
-#>  12.818   1.219  14.375
+#>  12.497   1.036  13.641
 system.time(
     mc_cv_fit_n80 <- map_df(mc_cv$train,
                      ~max_coverage(existing_facility = york_selected,
@@ -345,7 +343,7 @@ system.time(
                                    distance_cutoff = 100))
 )
 #>    user  system elapsed 
-#>  12.730   1.157  14.199
+#>  12.986   1.191  15.570
 system.time(
     mc_cv_fit_n100 <- map_df(mc_cv$train,
                      ~max_coverage(existing_facility = york_selected,
@@ -355,7 +353,7 @@ system.time(
                                    distance_cutoff = 100))
 )
 #>    user  system elapsed 
-#>  12.987   1.302  14.630
+#>  12.905   1.158  14.228
 ```
 
 ``` r

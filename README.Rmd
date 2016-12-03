@@ -233,8 +233,7 @@ summarised_cv %>%
                y = pct_cov)) + 
     geom_point() +
     geom_line(group = 1) + 
-    theme_minimal() +
-    ylim(0,0.20)
+    theme_minimal()
     
         
 
