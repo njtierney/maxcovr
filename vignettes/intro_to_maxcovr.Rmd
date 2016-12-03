@@ -1,0 +1,340 @@
+---
+title: "Using maxcovr"
+author: "Nicholas Tierney"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
+
+This vignette aims to teach people how to use maxcovr. More detail on the workings of the optimisation algorithm and the maximum covering location problem can be read about in other (perhaps soon to be released vignettes).
+
+# About maxcovr
+
+maxcovr was created to make it easy for a novice user to correctly solve the maximum covering location problem. This problem is beginning to be applied in problems in AED placement, but many of the implementations in papers was lacking for a variety of reasons:
+
+- They use commercial software such as AMPL, Gurobi, or CPLEX
+- They do not provide code to implement the optimisation
+- Their code will be specific to their data
+
+maxcovr was created to address these issues by:
+
+- Using R, a free and open source language
+- Using the source solver, lpSolve
+- Providing accessible, commented source code
+- Providing code and a simple tidy syntax that can be applied to datasets of similar structure
+- Adhering to tidyverse principles, to make it easy to code and think about.
+
+# Using maxcovr
+
+Disclaimer: The following is a fictitious example using real world data.
+
+Consider the toy example where we are playing a tower defense game and we need to place crime surveillance towers to detect crime. 
+
+We have two datasets, `york`, and `york_crime`:
+
+- `york` contains listed building GPS locations in the city of York, provided by the city of york 
+- `york_crime` contains a set of crime data from the [`ukpolice`  package](https://www.github.com/njtierney/ukpolice), containing crime data from September 2016.
+
+In this game we already have a few towers built, which are placed on top of the listed buildings with a grade of I. We will call this dataset `york_selected`, and the remaining building locations `york_unselected`
+
+```{r york-towers}
+
+library(maxcovr)
+library(tidyverse)
+
+# subset to be the places with towers built on them.
+york_selected <- york %>% filter(grade == "I")
+
+york_unselected <- york %>% filter(grade != "I")
+
+```
+
+The purpose of the game is to build towers in places so that they are within 100m of crime. We are going to use the crime data that we have to help us choose ideal locations to place towers.
+
+This can be illustrated with the following graphic, where the red circles indicate the current coverage of the building locations, so those blue crimes within the circles are within the coverage.
+
+```{r leaflet, echo = FALSE}
+
+library(leaflet)
+
+leaflet() %>%
+    addCircleMarkers(data = york, 
+                     radius = 1,
+                     color = "steelblue") %>%
+    addCircles(data = york_selected, 
+               radius = 100,
+               stroke = TRUE,
+               fill = NULL,
+               opacity = 0.8,
+               weight = 2,
+               color = "coral") %>%
+    # addTiles() %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    setView(lng = median(york$long),
+            lat = median(york$lat),
+            zoom = 15)
+
+```
+
+Currently the coverage looks alright, but let's verify the coverage using the `nearest` function. `nearest` takes two dataframes and returns the nearest lat/long coords from the first dataframe to the second dataframe, along with the distances between them and the appropriate columns from the building dataframe.
+
+```{r}
+
+dat_dist <- york_selected %>% nearest(york_crime)
+
+head(dat_dist)
+
+```
+
+You can instead return a dataframe which has every building in the rows, and the nearest crime to the building, by simply changing the order.
+
+```{r}
+
+dat_dist_bldg <- york_crime %>% nearest(york_selected)
+head(dat_dist_bldg)
+```
+
+To evaluate the coverage we can use `summarise_coverage`
+
+```{r}
+
+dat_dist %>% 
+    mutate(is_covered = distance <= 100) %>%
+    summarise_coverage()
+
+```
+
+This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes are covered, but the mean distance to the surveillance camera is 1400m.
+
+# performing cross validation on max_coverage
+
+Thanks to the `modelr` package, it is relatively straightforward to perform cross validation.
+
+```{r}
+# first we partition the data into 10 folds
+library(modelr)
+mc_cv <- modelr::crossv_kfold(york_crime, 10) %>% 
+    # we change the test and train sets from the `resample`
+    # to tibbles
+    mutate(test = map(test,as_tibble),
+           train = map(train,as_tibble))
+
+```
+
+This creates a dataframe with test and training sets
+
+```{r}
+
+mc_cv
+
+```
+
+We then fit the model on the training set using `map_df`
+
+```{r}
+
+# then we fit the model
+system.time(
+    mc_cv_fit <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 20,
+                                   distance_cutoff = 100))
+)
+
+```
+
+Then we can use the `summary_mc_cv` function to extract out the summaries from each fold.
+This summary takes the facilities placed using the training set of users, and then takes the test set of users and counts what percent of these are being covered by the training model.
+
+```{r}
+
+summarised_cv <- summary_mc_cv(mc_cv_fit, mc_cv)
+
+summarised_cv %>% knitr::kable()
+```
+
+Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
+
+```{r}
+
+summarised_cv %>%
+    ggplot(aes(x = n_fold,
+               y = pct_cov)) + 
+    geom_point() +
+    geom_line(group = 1) + 
+    theme_minimal()
+    
+        
+
+```
+
+Here we see that the pct_coverage doesn't seem to change much across the folds.
+
+Coming up next, we will explore how to perform cross validation as we increase the number of facilities added.
+
+Ideally, there should be a way to do this using purrr, so we don't have to fic 5 separate models, but perhaps this will change when we enable n_added to take a vector of values.
+
+```{r}
+
+# then we fit the model
+system.time(
+    mc_cv_fit_n20 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 20,
+                                   distance_cutoff = 100))
+)
+
+system.time(
+    mc_cv_fit_n40 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 40,
+                                   distance_cutoff = 100))
+)
+
+system.time(
+    mc_cv_fit_n60 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 60,
+                                   distance_cutoff = 100))
+)
+system.time(
+    mc_cv_fit_n80 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 80,
+                                   distance_cutoff = 100))
+)
+system.time(
+    mc_cv_fit_n100 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 100,
+                                   distance_cutoff = 100))
+)
+
+```
+
+```{r}
+
+summarised_cv_n20 <- summary_mc_cv(mc_cv_fit_n20, mc_cv)
+summarised_cv_n40 <- summary_mc_cv(mc_cv_fit_n40, mc_cv)
+summarised_cv_n60 <- summary_mc_cv(mc_cv_fit_n60, mc_cv)
+summarised_cv_n80 <- summary_mc_cv(mc_cv_fit_n80, mc_cv)
+summarised_cv_n100 <- summary_mc_cv(mc_cv_fit_n100, mc_cv)
+
+bound_testing_summaries <- bind_rows(summarised_cv_n20,
+                                     summarised_cv_n40,
+                                     summarised_cv_n60,
+                                     summarised_cv_n80,
+                                     summarised_cv_n100) %>%
+    mutate(type = "test")
+
+```
+
+It looks like the more facilities we add, the better the coverage...mostly.
+
+```{r}
+bound_training_summaries <- bind_rows(mc_cv_fit_n20$model_coverage,
+                                      mc_cv_fit_n40$model_coverage,
+                                      mc_cv_fit_n60$model_coverage,
+                                      mc_cv_fit_n80$model_coverage,
+                                      mc_cv_fit_n100$model_coverage) %>%
+    mutate(type = "training")
+
+bound_all_summaries <- bind_rows(bound_testing_summaries,
+                                 bound_training_summaries)
+
+```
+
+
+```{r}
+
+ggplot(bound_testing_summaries,
+       aes(x = n_fold,
+               y = pct_cov,
+               colour = factor(n_added),
+               group = factor(n_added))) + 
+    geom_point() + 
+    geom_line() + 
+    theme_minimal()
+
+```
+
+Let's look at this another way, with boxplots for the number of facilities added.
+
+```{r}
+
+ggplot(bound_testing_summaries,
+       aes(x = factor(n_added),
+           y = n_cov)) +
+    geom_boxplot() + 
+    theme_minimal()
+
+```
+
+We can also compare the % coverage for the test and training datasets
+
+```{r}
+
+bound_all_summaries %>%
+    ggplot(aes(x = factor(n_added),
+               y = pct_cov,
+               fill = type)) + 
+    geom_boxplot() + 
+    theme_minimal()
+
+```
+
+
+
+
+<!-- ## Vignette Info -->
+
+<!-- Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette. -->
+
+<!-- ## Styles -->
+
+<!-- The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows: -->
+
+<!--     output:  -->
+<!--       rmarkdown::html_vignette: -->
+<!--         css: mystyles.css -->
+
+<!-- ## Figures -->
+
+<!-- The figure sizes have been customised so that you can easily put two images side-by-side.  -->
+<!-- You can enable figure captions by `fig_caption: yes` in YAML: -->
+
+<!--     output: -->
+<!--       rmarkdown::html_vignette: -->
+<!--         fig_caption: yes -->
+
+<!-- Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**. -->
+
+<!-- ## More Examples -->
+
+<!-- You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`. -->
+
+<!-- ```{r, echo=FALSE, results='asis'} -->
+<!-- knitr::kable(head(mtcars, 10)) -->
+<!-- ``` -->
+
+<!-- Also a quote using `>`: -->
+
+<!-- > "He who gives up [code] safety for [code] speed deserves neither." -->
+<!-- ([via](https://twitter.com/hadleywickham/status/504368538874703872)) -->
