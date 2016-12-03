@@ -1,5 +1,7 @@
 library(maxcovr)
-library(tidyverse)
+library(dplyr)
+library(tibble)
+library(tidyr)
 # library(testthat)
 # my_dist_cpp <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
 

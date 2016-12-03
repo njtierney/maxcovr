@@ -1,4 +1,6 @@
-library(tidyverse)
+library(dplyr)
+library(tibble)
+library(tidyr)
 library(maxcovr)
 
 context("equality of nearest distances")
@@ -36,32 +38,32 @@ near_dplyr <- user %>%
                                                 long2 = long_facility)) %>%
     # drop key
     dplyr::select(-key) %>%
-    arrange(distance) %>%
-    group_by(user_id) %>%
+    dplyr::arrange(distance) %>%
+    dplyr::group_by(user_id) %>%
     # find those that are closest to each other
-    mutate(rank_distance = 1:n()) %>%
-    ungroup() %>%
-    filter(rank_distance == 1) %>%
+    dplyr::mutate(rank_distance = 1:n()) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(rank_distance == 1) %>%
     # drop the rank_distance
-    select(-rank_distance)
+    dplyr::select(-rank_distance)
 
 near_dplyr_test <- near_dplyr %>%
-    arrange(user_id,
+    dplyr::arrange(user_id,
             facility_id) %>%
-    select(distance) %>%
+    dplyr::select(distance) %>%
     as.matrix()
     # select(user_id,
     #        facility_id,
     #        distance)
 
 near_cpp_test <- near_cpp %>%
-    as_tibble() %>%
-    rename(user_id = V1,
+    tibble::as_tibble() %>%
+    dplyr::rename(user_id = V1,
            facility_id = V2,
            distance = V3) %>%
-    arrange(user_id,
+    dplyr::arrange(user_id,
             facility_id) %>%
-    select(distance) %>%
+    dplyr::select(distance) %>%
     as.matrix()
 
 testthat::test_that("Nearest distances in cpp are same as dplyr method",{

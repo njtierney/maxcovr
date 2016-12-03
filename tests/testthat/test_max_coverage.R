@@ -1,10 +1,12 @@
 library(maxcovr)
-library(tidyverse)
+library(dplyr)
+library(tibble)
+library(tidyr)
 
 context("max_coverage works")
 
-york_selected <- york %>% filter(grade == "I")
-york_unselected <- york %>% filter(grade != "I")
+york_selected <- york %>% dplyr::filter(grade == "I")
+york_unselected <- york %>% dplyr::filter(grade != "I")
 
 mc_result <- max_coverage(existing_facility = york_selected,
                           proposed_facility = york_unselected,

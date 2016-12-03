@@ -1,4 +1,4 @@
-library(tidyverse)
+library(tibble)
 library(maxcovr)
 context("spherical_distance")
 

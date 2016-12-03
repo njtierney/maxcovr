@@ -1,13 +1,15 @@
-library(tidyverse)
+library(dplyr)
+library(tibble)
+library(tidyr)
 library(maxcovr)
 context("equality of binary matrices")
 
 facility_test_cpp <- york %>%
-    select(lat, long) %>%
+    dplyr::select(lat, long) %>%
     as.matrix()
 
 user_test_cpp <- york_crime %>%
-    select(lat, long) %>%
+    dplyr::select(lat, long) %>%
     as.matrix()
 
 my_bin_cpp <- binary_matrix_cpp(facility = facility_test_cpp,
@@ -48,7 +50,7 @@ my_bin_dplyr <- user %>%
                   value = "distance_indic",
                   sep = "_") %>%
     # drop the ID column (for proper comparison)
-    select(-user_id) %>%
+    dplyr::select(-user_id) %>%
     as.matrix()
 
 
