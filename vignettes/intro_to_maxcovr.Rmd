@@ -45,7 +45,9 @@ In this game we already have a few towers built, which are placed on top of the 
 ```{r york-towers}
 
 library(maxcovr)
-library(tidyverse)
+library(purrr)
+library(dplyr)
+library(tibble)
 
 # subset to be the places with towers built on them.
 york_selected <- york %>% filter(grade == "I")
@@ -163,7 +165,7 @@ summarised_cv %>% knitr::kable()
 Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
 
 ```{r}
-
+library(ggplot2)
 summarised_cv %>%
     ggplot(aes(x = n_fold,
                y = pct_cov)) + 
