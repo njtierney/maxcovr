@@ -22,12 +22,12 @@ on_failure:
   - 7z a failure.zip *.Rcheck\*
   - appveyor PushArtifact failure.zip
 
+on_success:
+  - Rscript -e 'covr::codecov()'
+
 environment:
   global:
     _R_CHECK_FORCE_SUGGESTS_: false
-
-after_success:
-  - Rscript -e 'covr::codecov()'
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
