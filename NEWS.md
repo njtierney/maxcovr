@@ -1,3 +1,12 @@
+# maxcovr 0.0.3.9000 (2016-12-03)
+
+# UNDER DEVELOPMENT
+
+* added a vignette that describes how to perform cross validation on the maxcovr problem using modelr and purrr
+
+* maxcovr now returns a tibble of lists. This makes it easier to perform other tasks, and more consistent and easier to work with.
+
+
 # maxcovr 0.0.2.9991 (2016-11-30)
 
 ## NEW FEATURES
