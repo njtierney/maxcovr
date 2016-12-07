@@ -16,7 +16,14 @@ knitr::opts_chunk$set(
 
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI Build Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)[![Coverage Status](https://img.shields.io/codecov/c/github/njtierney/maxcovr/master.svg)](https://codecov.io/github/njtierney/maxcovr?branch=master)
 
-maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
+maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This problem has been applied to solve real world problem such as [optimimum AED placement](http://circ.ahajournals.org/content/127/17/1801.short). Implementations of this problem may use commercial software such as AMPL, Gurobi, or CPLEX, which require an expensive license. Additionally, the code that they use in the paper to implement the optimisation is not provided and has to be requested. As a result, these analyses are more difficult to implement and more difficult to reproduce.
+
+maxcovr was created to make results easy to implement, reproduce, and extend by using:
+
+- R, a free and open source language
+- An open source solver, lpSolve, that can be used on Linux, Windows, and OSX.
+- Real-world, open source example data.
+- Tidyverse principles to make it easy to use and reason with.
 
 # How to Install
 
@@ -27,7 +34,7 @@ devtools::install_github("njtierney/maxcovr")
 
 ```
 
-# Usage
+# Using maxcovr
 
 Disclaimer: The following is a fictitious example using real world data.
 

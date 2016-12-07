@@ -5,7 +5,14 @@ maxcovr
 
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI Build Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)[![Coverage Status](https://img.shields.io/codecov/c/github/njtierney/maxcovr/master.svg)](https://codecov.io/github/njtierney/maxcovr?branch=master)
 
-maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
+maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This problem has been applied to solve real world problem such as [optimimum AED placement](http://circ.ahajournals.org/content/127/17/1801.short). Implementations of this problem may use commercial software such as AMPL, Gurobi, or CPLEX, which require an expensive license. Additionally, the code that they use in the paper to implement the optimisation is not provided and has to be requested. As a result, these analyses are more difficult to implement and more difficult to reproduce.
+
+maxcovr was created to make results easy to implement, reproduce, and extend by using:
+
+-   R, a free and open source language
+-   An open source solver, lpSolve, that can be used on Linux, Windows, and OSX.
+-   Real-world, open source example data.
+-   Tidyverse principles to make it easy to use and reason with.
 
 How to Install
 ==============
@@ -16,8 +23,8 @@ How to Install
 devtools::install_github("njtierney/maxcovr")
 ```
 
-Usage
-=====
+Using maxcovr
+=============
 
 Disclaimer: The following is a fictitious example using real world data.
 
@@ -113,9 +120,9 @@ dat_dist %>%
     mutate(is_covered = distance <= 100) %>%
     summarise_coverage()
 #> # A tibble: 1 × 7
-#>   distance_within n_cov   pct_cov n_not_cov pct_not_cov dist_avg  dist_sd
-#>             <dbl> <int>     <dbl>     <int>       <dbl>    <dbl>    <dbl>
-#> 1             100   339 0.1868798      1475   0.8131202 1400.192 1596.676
+#>   distance_within n_cov n_not_cov   pct_cov pct_not_cov dist_avg  dist_sd
+#>             <dbl> <int>     <int>     <dbl>       <dbl>    <dbl>    <dbl>
+#> 1             100   339      1475 0.1868798   0.8131202 1400.192 1596.676
 ```
 
 This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes are covered, but the mean distance to the surveillance camera is 1400m.
@@ -136,7 +143,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.875   0.197   2.146
+#>   2.222   0.300   3.402
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -178,7 +185,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  13.870   1.026  15.120
+#>  14.570   1.176  16.292
 ```
 
 This returns a list of dataframes, which we can bind together like so:
