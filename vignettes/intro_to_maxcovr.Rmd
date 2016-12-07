@@ -11,25 +11,32 @@ vignette: >
 
 maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
 
-This vignette aims to teach people how to use maxcovr. More detail on the workings of the optimisation algorithm and the maximum covering location problem can be read about in other (perhaps soon to be released vignettes).
+This vignette aims to get users started with using maxcovr. Other vignettes are provided in the package:
 
-# About maxcovr
+- "Cross Validation with maxcovr", which explains how to perform and interpret cross validation results in a maximum covering location framework
+- "Understanding the maximum covering location problem"
+- other (perhaps soon to be released vignettes).
 
-maxcovr was created to make it easy for a novice user to correctly solve the maximum covering location problem. This problem is beginning to be applied in problems in AED placement, but many of the implementations in papers was lacking for a variety of reasons:
+This vignette first explains the motivation behind maxcovr, briefly introduces the maximum covering location problem with some real data, and explains how to explore current coverage, and improve it using maxcovr, and interpret the results.
 
-- They use commercial software such as AMPL, Gurobi, or CPLEX
-- They do not provide code to implement the optimisation
-- Their code will be specific to their data
+# Why maxcovr
 
-maxcovr was created to address these issues by:
+maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem. This problem is beginning to be applied in problems in AED placement around the world. However, many of the implementations in papers commercial software such as AMPL, Gurobi, or CPLEX. Additionally, the code that they use in the paper to implement the optimisation is not provided and has to be requested. As a result, these analyses are more difficult to implement and more difficult to reproduce.
 
-- Using R, a free and open source language
-- Using the source solver, lpSolve
-- Providing accessible, commented source code
-- Providing code and a simple tidy syntax that can be applied to datasets of similar structure
-- Adhering to tidyverse principles, to make it easy to code and think about.
+maxcovr was created to address these shortcomings, using:
 
-# Using maxcovr
+- R, a free and open source language
+- An source solver, lpSolve, that can be used on Linux, Windows, and OSX.
+- Real-world, open source example data.
+- Tidyverse principles to make it easy to use, code, and extend.
+
+As a result of this, results are easy to implement, reproduce, and extend.
+
+<!-- - Providing code and a simple tidy syntax that can be applied to datasets of similar structure -->
+<!-- - Making the package source available on GitHub and CRAN. -->
+<!-- - Providing example open source datasets that can be used and tested. -->
+
+# The problem
 
 Disclaimer: The following is a fictitious example using real world data.
 
@@ -111,196 +118,23 @@ dat_dist %>%
 
 This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes are covered, but the mean distance to the surveillance camera is 1400m.
 
-# performing cross validation on max_coverage
+# maximising coverage
 
-Thanks to the `modelr` package, it is relatively straightforward to perform cross validation.
+We can maximise the coverage
 
-```{r}
-# first we partition the data into 10 folds
-library(modelr)
-mc_cv <- modelr::crossv_kfold(york_crime, 10) %>% 
-    # we change the test and train sets from the `resample`
-    # to tibbles
-    mutate(test = map(test,as_tibble),
-           train = map(train,as_tibble))
-
-```
-
-This creates a dataframe with test and training sets
-
-```{r}
-
-mc_cv
-
-```
-
-We then fit the model on the training set using `map_df`
-
-```{r}
-
-# then we fit the model
-system.time(
-    mc_cv_fit <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 20,
-                                   distance_cutoff = 100))
-)
-
-```
-
-Then we can use the `summary_mc_cv` function to extract out the summaries from each fold.
-This summary takes the facilities placed using the training set of users, and then takes the test set of users and counts what percent of these are being covered by the training model.
-
-```{r}
-
-summarised_cv <- summary_mc_cv(mc_cv_fit, mc_cv)
-
-summarised_cv %>% knitr::kable()
-```
-
-Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
-
-```{r}
-
-summarised_cv %>%
-    ggplot(aes(x = n_fold,
-               y = pct_cov)) + 
-    geom_point() +
-    geom_line(group = 1) + 
-    theme_minimal()
-    
-        
-
-```
-
-Here we see that the pct_coverage doesn't seem to change much across the folds.
-
-Coming up next, we will explore how to perform cross validation as we increase the number of facilities added.
-
-Ideally, there should be a way to do this using purrr, so we don't have to fic 5 separate models, but perhaps this will change when we enable n_added to take a vector of values.
-
-```{r}
-
-# then we fit the model
-system.time(
-    mc_cv_fit_n20 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 20,
-                                   distance_cutoff = 100))
-)
-
-system.time(
-    mc_cv_fit_n40 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 40,
-                                   distance_cutoff = 100))
-)
-
-system.time(
-    mc_cv_fit_n60 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 60,
-                                   distance_cutoff = 100))
-)
-system.time(
-    mc_cv_fit_n80 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 80,
-                                   distance_cutoff = 100))
-)
-system.time(
-    mc_cv_fit_n100 <- map_df(mc_cv$train,
-                     ~max_coverage(existing_facility = york_selected,
-                                   proposed_facility = york_unselected,
-                                   user = ., # training set goes here
-                                   n_added = 100,
-                                   distance_cutoff = 100))
-)
-
-```
-
-```{r}
-
-summarised_cv_n20 <- summary_mc_cv(mc_cv_fit_n20, mc_cv)
-summarised_cv_n40 <- summary_mc_cv(mc_cv_fit_n40, mc_cv)
-summarised_cv_n60 <- summary_mc_cv(mc_cv_fit_n60, mc_cv)
-summarised_cv_n80 <- summary_mc_cv(mc_cv_fit_n80, mc_cv)
-summarised_cv_n100 <- summary_mc_cv(mc_cv_fit_n100, mc_cv)
-
-bound_testing_summaries <- bind_rows(summarised_cv_n20,
-                                     summarised_cv_n40,
-                                     summarised_cv_n60,
-                                     summarised_cv_n80,
-                                     summarised_cv_n100) %>%
-    mutate(type = "test")
-
-```
-
-It looks like the more facilities we add, the better the coverage...mostly.
-
-```{r}
-bound_training_summaries <- bind_rows(mc_cv_fit_n20$model_coverage,
-                                      mc_cv_fit_n40$model_coverage,
-                                      mc_cv_fit_n60$model_coverage,
-                                      mc_cv_fit_n80$model_coverage,
-                                      mc_cv_fit_n100$model_coverage) %>%
-    mutate(type = "training")
-
-bound_all_summaries <- bind_rows(bound_testing_summaries,
-                                 bound_training_summaries)
-
-```
+# using max_coverage
 
 
-```{r}
+- Putting result output in a dataframe (because like Jenny Bryan says [if you can, you probably should](https://www.youtube.com/watch?v=4MfUCX_KpdE&list=PLR7d32uh__xbrzSdfzxxCxCEFQnt7BcOj&index=2)). 
+- Adhering to [tidyverse]() principles, to make it easy to code and think about.
 
-ggplot(bound_testing_summaries,
-       aes(x = n_fold,
-               y = pct_cov,
-               colour = factor(n_added),
-               group = factor(n_added))) + 
-    geom_point() + 
-    geom_line() + 
-    theme_minimal()
+# Interpreting results
 
-```
+# Further reading
 
-Let's look at this another way, with boxplots for the number of facilities added.
+You can read the other vignettes...
 
-```{r}
-
-ggplot(bound_testing_summaries,
-       aes(x = factor(n_added),
-           y = n_cov)) +
-    geom_boxplot() + 
-    theme_minimal()
-
-```
-
-We can also compare the % coverage for the test and training datasets
-
-```{r}
-
-bound_all_summaries %>%
-    ggplot(aes(x = factor(n_added),
-               y = pct_cov,
-               fill = type)) + 
-    geom_boxplot() + 
-    theme_minimal()
-
-```
-
-
+Also recommended are the resources ...
 
 
 <!-- ## Vignette Info -->

@@ -1,0 +1,267 @@
+---
+title: "Using Cross Validation with maxcovr"
+author: "Nicholas Tierney"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette provides a guide to performing cross validation with modelr and maxcovr. In the future if this is a feature that is under demand, I will incorporate cross validation into maxcovr. In the mean time, here's a vignette.
+
+
+# performing cross validation on max_coverage
+
+We will stick with the previous example using york and york_crime
+
+```{r york-towers}
+
+library(maxcovr)
+library(tidyverse)
+
+# subset to be the places with towers built on them.
+york_selected <- york %>% filter(grade == "I")
+
+york_unselected <- york %>% filter(grade != "I")
+
+```
+
+Thanks to the `modelr` package, it is relatively straightforward to perform cross validation.
+
+```{r}
+# first we partition the data into 10 folds
+library(modelr)
+mc_cv <- modelr::crossv_kfold(york_crime, 10) %>% 
+    # we change the test and train sets from the `resample`
+    # to tibbles
+    mutate(test = map(test,as_tibble),
+           train = map(train,as_tibble))
+
+```
+
+This creates a dataframe with test and training sets
+
+```{r}
+
+mc_cv
+
+```
+
+We then fit the model on the training set using `map_df`
+
+```{r}
+
+# then we fit the model
+system.time(
+    mc_cv_fit <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 20,
+                                   distance_cutoff = 100))
+)
+
+```
+
+Then we can use the `summary_mc_cv` function to extract out the summaries from each fold.
+This summary takes the facilities placed using the training set of users, and then takes the test set of users and counts what percent of these are being covered by the training model.
+
+```{r}
+
+summarised_cv <- summary_mc_cv(mc_cv_fit, mc_cv)
+
+summarised_cv %>% knitr::kable()
+```
+
+Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
+
+```{r}
+
+summarised_cv %>%
+    ggplot(aes(x = n_fold,
+               y = pct_cov)) + 
+    geom_point() +
+    geom_line(group = 1) + 
+    theme_minimal()
+    
+        
+
+```
+
+Here we see that the pct_coverage doesn't seem to change much across the folds.
+
+Coming up next, we will explore how to perform cross validation as we increase the number of facilities added.
+
+Ideally, there should be a way to do this using purrr, so we don't have to fic 5 separate models, but perhaps this will change when we enable n_added to take a vector of values.
+
+```{r}
+
+# then we fit the model
+system.time(
+    mc_cv_fit_n20 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 20,
+                                   distance_cutoff = 100))
+)
+
+system.time(
+    mc_cv_fit_n40 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 40,
+                                   distance_cutoff = 100))
+)
+
+system.time(
+    mc_cv_fit_n60 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 60,
+                                   distance_cutoff = 100))
+)
+system.time(
+    mc_cv_fit_n80 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 80,
+                                   distance_cutoff = 100))
+)
+system.time(
+    mc_cv_fit_n100 <- map_df(mc_cv$train,
+                     ~max_coverage(existing_facility = york_selected,
+                                   proposed_facility = york_unselected,
+                                   user = ., # training set goes here
+                                   n_added = 100,
+                                   distance_cutoff = 100))
+)
+
+```
+
+```{r}
+
+summarised_cv_n20 <- summary_mc_cv(mc_cv_fit_n20, mc_cv)
+summarised_cv_n40 <- summary_mc_cv(mc_cv_fit_n40, mc_cv)
+summarised_cv_n60 <- summary_mc_cv(mc_cv_fit_n60, mc_cv)
+summarised_cv_n80 <- summary_mc_cv(mc_cv_fit_n80, mc_cv)
+summarised_cv_n100 <- summary_mc_cv(mc_cv_fit_n100, mc_cv)
+
+bound_testing_summaries <- bind_rows(summarised_cv_n20,
+                                     summarised_cv_n40,
+                                     summarised_cv_n60,
+                                     summarised_cv_n80,
+                                     summarised_cv_n100) %>%
+    mutate(type = "test")
+
+```
+
+It looks like the more facilities we add, the better the coverage...mostly.
+
+```{r}
+bound_training_summaries <- bind_rows(mc_cv_fit_n20$model_coverage,
+                                      mc_cv_fit_n40$model_coverage,
+                                      mc_cv_fit_n60$model_coverage,
+                                      mc_cv_fit_n80$model_coverage,
+                                      mc_cv_fit_n100$model_coverage) %>%
+    mutate(type = "training")
+
+bound_all_summaries <- bind_rows(bound_testing_summaries,
+                                 bound_training_summaries)
+
+```
+
+
+```{r}
+
+ggplot(bound_testing_summaries,
+       aes(x = n_fold,
+               y = pct_cov,
+               colour = factor(n_added),
+               group = factor(n_added))) + 
+    geom_point() + 
+    geom_line() + 
+    theme_minimal()
+
+```
+
+Let's look at this another way, with boxplots for the number of facilities added.
+
+```{r}
+
+ggplot(bound_testing_summaries,
+       aes(x = factor(n_added),
+           y = n_cov)) +
+    geom_boxplot() + 
+    theme_minimal()
+
+```
+
+We can also compare the % coverage for the test and training datasets
+
+```{r}
+
+bound_all_summaries %>%
+    ggplot(aes(x = factor(n_added),
+               y = pct_cov,
+               fill = type)) + 
+    geom_boxplot() + 
+    theme_minimal()
+
+```
+
+
+
+
+<!-- Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format: -->
+
+<!-- - Never uses retina figures -->
+<!-- - Has a smaller default figure size -->
+<!-- - Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style -->
+
+<!-- ## Vignette Info -->
+
+<!-- Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette. -->
+
+<!-- ## Styles -->
+
+<!-- The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows: -->
+
+<!--     output:  -->
+<!--       rmarkdown::html_vignette: -->
+<!--         css: mystyles.css -->
+
+<!-- ## Figures -->
+
+<!-- The figure sizes have been customised so that you can easily put two images side-by-side.  -->
+
+<!-- ```{r, fig.show='hold'} -->
+<!-- plot(1:10) -->
+<!-- plot(10:1) -->
+<!-- ``` -->
+
+<!-- You can enable figure captions by `fig_caption: yes` in YAML: -->
+
+<!--     output: -->
+<!--       rmarkdown::html_vignette: -->
+<!--         fig_caption: yes -->
+
+<!-- Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**. -->
+
+<!-- ## More Examples -->
+
+<!-- You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`. -->
+
+<!-- ```{r, echo=FALSE, results='asis'} -->
+<!-- knitr::kable(head(mtcars, 10)) -->
+<!-- ``` -->
+
+<!-- Also a quote using `>`: -->
+
+<!-- > "He who gives up [code] safety for [code] speed deserves neither." -->
+<!-- ([via](https://twitter.com/hadleywickham/status/504368538874703872)) -->
