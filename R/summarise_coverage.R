@@ -5,36 +5,26 @@
 #' @param df_dist distance matrix, as computed by facility_user_dist
 #' @param dist_indic the critical distance range that you would like to know,
 #'     default is 100m
-#' @param spread do you want this in a one row summary, or a two row summary?
-#'     Default is TRUE, a one row summary
 #'
 #' @return dataframe
 #' @export
 #'
 summarise_coverage <- function(df_dist,
-                               dist_indic = 100,
-                               spread = TRUE){
+                               dist_indic = 100){
 
-    if(spread == FALSE){
-
-        df_dist %>%
-            dplyr::count(is_covered = distance < dist_indic)  %>%
-            dplyr::mutate(is_covered = dplyr::if_else(is_covered == TRUE,
-                                                      true = "Covered",
-                                                      false = "Not Covered")) %>%
-            dplyr::mutate(pct = n / sum(n)) %>%
-            dplyr::rename(n_cov = n,
-                          pct_cov = pct)
-    } else if(spread == TRUE){
-
-        df_dist %>%
-            dplyr::summarise(distance_within = dist_indic,
-                             n_cov = sum(is_covered),
-                             pct_cov = (sum(is_covered) / nrow(.)),
-                             n_not_cov =  (sum(is_covered == 0)),
-                             pct_not_cov = (sum(is_covered == 0) / nrow(.)),
-                             dist_avg = mean(distance),
-                             dist_sd = sd(distance))
-    }
+    df_dist %>%
+        # allow for a programmatic way to specify a column named "distance"
+        # mutate(is_covered = distance <= dist_indic) %>%
+        dplyr::summarise(distance_within = dist_indic,
+                         n_cov = sum(is_covered),
+                         n_not_cov =  sum(is_covered == 0),
+                         # divide by the number of total events covered, not the
+                         # number of rows in the dataframe passed
+                         # this allows it to behave with group_by in a more
+                         # sensible and predictable way
+                         pct_cov = sum(is_covered) / sum(n_cov, n_not_cov),
+                         pct_not_cov = sum(is_covered == 0) / sum(n_cov,n_not_cov),
+                         dist_avg = mean(distance),
+                         dist_sd = sd(distance))
 
 }
