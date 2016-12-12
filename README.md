@@ -5,7 +5,7 @@ maxcovr
 
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI Build Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)[![Coverage Status](https://img.shields.io/codecov/c/github/njtierney/maxcovr/master.svg)](https://codecov.io/github/njtierney/maxcovr?branch=master)
 
-maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This problem has been applied to solve real world problem such as [optimimum AED placement](http://circ.ahajournals.org/content/127/17/1801.short). Implementations of this problem may use commercial software such as AMPL, Gurobi, or CPLEX, which require an expensive license. Additionally, the code that they use in the paper to implement the optimisation is not provided and has to be requested. As a result, these analyses are more difficult to implement and more difficult to reproduce.
+maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Implementations of this problem (such as [optimimum AED placement](http://circ.ahajournals.org/content/127/17/1801.short)) may use commercial software such as AMPL, Gurobi, or CPLEX, which require an expensive license. This builds a substantial barrier to implement and reproduce these analyses.
 
 maxcovr was created to make results easy to implement, reproduce, and extend by using:
 
@@ -16,6 +16,8 @@ maxcovr was created to make results easy to implement, reproduce, and extend by 
 
 How to Install
 ==============
+
+*warning: maxcovr is still undergoing development and testing*
 
 ``` r
 
@@ -143,7 +145,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   2.222   0.300   3.402
+#>   1.779   0.221   2.309
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -185,7 +187,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  14.570   1.176  16.292
+#>  13.601   1.144  15.730
 ```
 
 This returns a list of dataframes, which we can bind together like so:
