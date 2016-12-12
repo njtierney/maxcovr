@@ -227,7 +227,11 @@ return(model_result)
 
 } else if(solver == "gurobi"){
 
-    warning("Make sure that you have installed the Gurobi software and accompanying Gurobi R package")
+    # In bar.R
+        if (!requireNamespace("gurobi", quietly = TRUE)) {
+            stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
+
+    }
     # model <- list()
     # model$A          <- matrix(c(1,1,0,0,1,1), nrow=2, byrow=T)
     # model$obj        <- c(1,1,2)
