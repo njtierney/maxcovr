@@ -49,9 +49,13 @@ library(tidyverse)
 #> Loading tidyverse: readr
 #> Loading tidyverse: purrr
 #> Loading tidyverse: dplyr
+#> Find out what's changed in ggplot2 at
+#> http://github.com/tidyverse/ggplot2/releases.
 #> Conflicts with tidy packages ----------------------------------------------
-#> filter(): dplyr, stats
-#> lag():    dplyr, stats
+#> filter():  dplyr, stats
+#> is_null(): purrr, testthat
+#> lag():     dplyr, stats
+#> matches(): dplyr, testthat
 
 # subset to be the places with towers built on them.
 york_selected <- york %>% filter(grade == "I")
@@ -145,7 +149,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.779   0.221   2.309
+#>   1.853   0.239   2.148
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -187,7 +191,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  13.601   1.144  15.730
+#>  13.821   1.183  15.622
 ```
 
 This returns a list of dataframes, which we can bind together like so:
