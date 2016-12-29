@@ -221,7 +221,7 @@ x <- list(
         lp_solution = lp_solution
     )
 
-model_result <- maxcovr:::extract_mc_results(x)
+model_result <- extract_mc_results(x)
 
 return(model_result)
 

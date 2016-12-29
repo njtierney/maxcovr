@@ -83,7 +83,7 @@ extract_mc_results <- function(x){
                          n_not_cov =  (sum(is_covered == 0)),
                          pct_not_cov = (sum(is_covered == 0) / nrow(.)),
                          dist_avg = mean(distance),
-                         dist_sd = sd(distance))
+                         dist_sd = stats::sd(distance))
 
     # add the original coverage
     existing_coverage <- x$existing_facility %>%
@@ -96,7 +96,7 @@ extract_mc_results <- function(x){
                          n_not_cov =  (sum(is_covered == 0)),
                          pct_not_cov = (sum(is_covered == 0) / nrow(.)),
                          dist_avg = mean(distance),
-                         dist_sd = sd(distance))
+                         dist_sd = stats::sd(distance))
 
     # add a summary coverage
     summary_coverage = dplyr::bind_rows(existing_coverage,

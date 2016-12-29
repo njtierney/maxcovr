@@ -25,7 +25,7 @@ summarise_coverage <- function(df_dist,
                          pct_cov = sum(is_covered) / sum(n_cov, n_not_cov),
                          pct_not_cov = sum(is_covered == 0) / sum(n_cov,n_not_cov),
                          dist_avg = mean(distance),
-                         dist_sd = sd(distance))
+                         dist_sd = stats::sd(distance))
 
 }
 
@@ -93,7 +93,7 @@ summary_mc_cv <- function(model,
                                  n_not_cov =  (sum(is_covered == 0)),
                                  pct_not_cov = (sum(is_covered == 0) / nrow(.)),
                                  dist_avg = mean(distance),
-                                 dist_sd = sd(distance))
+                                 dist_sd = stats::sd(distance))
 
                    } # end internal function
 ) # close pmap
