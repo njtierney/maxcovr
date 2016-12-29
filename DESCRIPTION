@@ -32,5 +32,8 @@ Suggests: testthat,
     covr,
     gurobi,
     knitr,
-    rmarkdown
+    rmarkdown,
+    modelr,
+    leaflet,
+    tidyverse
 VignetteBuilder: knitr
