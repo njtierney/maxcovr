@@ -4,7 +4,7 @@
 \alias{spherical_distance}
 \title{Calculate the distance between two locations}
 \usage{
-spherical_distance(lat1, long1, lat2, long2, units = "deg")
+spherical_distance(lat1, long1, lat2, long2)
 }
 \arguments{
 \item{lat1}{Latitude of the first location.}
@@ -14,8 +14,6 @@ spherical_distance(lat1, long1, lat2, long2, units = "deg")
 \item{lat2}{Latitude of the second location.}
 
 \item{long2}{Longitude of the second location.}
-
-\item{units}{specify degrees or radians}
 }
 \value{
 A numeric value giving the distance in meters between the

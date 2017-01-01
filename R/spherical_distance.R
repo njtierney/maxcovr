@@ -7,7 +7,6 @@
 #' @param long1 Longitude of the first location.
 #' @param lat2 Latitude of the second location.
 #' @param long2 Longitude of the second location.
-#' @param units specify degrees or radians
 #'
 #' @return A numeric value giving the distance in meters between the
 #'    pair of locations.
@@ -28,20 +27,15 @@
 spherical_distance <- function(lat1,
                                long1,
                                lat2,
-                               long2,
-                               units = 'deg') {
+                               long2) {
 
     radius_earth <- 6371
 
     # Convert angle values into radians
-    if (units == 'deg') {
         lat1 <- deg2rad(lat1)
         long1 <- deg2rad(long1)
         lat2 <- deg2rad(lat2)
         long2 <- deg2rad(long2)
-    } else if(units != 'rad'){
-        stop("The `units` argument must be `deg` or `rad`.")
-    }
 
     # Determine distance using the haversine formula, assuming a spherical earth
     a <- sin((lat2 - lat1) / 2) ^ 2 + cos(lat1) * cos(lat2) *
