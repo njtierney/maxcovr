@@ -19,7 +19,7 @@ We will stick with the previous example using york and york_crime
 ```{r york-towers}
 
 library(maxcovr)
-library(tidyverse)
+library(dplyr)
 
 # subset to be the places with towers built on them.
 york_selected <- york %>% filter(grade == "I")
@@ -33,6 +33,8 @@ Thanks to the `modelr` package, it is relatively straightforward to perform cros
 ```{r}
 # first we partition the data into 10 folds
 library(modelr)
+library(purrr)
+library(tibble)
 mc_cv <- modelr::crossv_kfold(york_crime, 10) %>% 
     # we change the test and train sets from the `resample`
     # to tibbles
@@ -52,7 +54,7 @@ mc_cv
 We then fit the model on the training set using `map_df`
 
 ```{r}
-
+library(purrr)
 # then we fit the model
 system.time(
     mc_cv_fit <- map_df(mc_cv$train,
@@ -78,7 +80,7 @@ summarised_cv %>% knitr::kable()
 Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
 
 ```{r}
-
+library(ggplot2)
 summarised_cv %>%
     ggplot(aes(x = n_fold,
                y = pct_cov)) + 

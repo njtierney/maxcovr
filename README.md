@@ -5,7 +5,7 @@ maxcovr
 
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI Build Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)[![Coverage Status](https://img.shields.io/codecov/c/github/njtierney/maxcovr/master.svg)](https://codecov.io/github/njtierney/maxcovr?branch=master)
 
-maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Implementations of this problem (such as [optimimum AED placement](http://circ.ahajournals.org/content/127/17/1801.short)) may use commercial software such as AMPL, Gurobi, or CPLEX, which require an expensive license. This builds a substantial barrier to implement and reproduce these analyses.
+maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Implementations of this problem (such as [optimimum AED placement](http://circ.ahajournals.org/content/127/17/1801.short)) may use commercial software such as AMPL, Gurobi, or CPLEX, which require an expensive license, or use open source licenses but not provide source code to the analysis performed (e.g., [Bonnet 2014](http://www.sciencedirect.com/science/article/pii/S0360835215003927)) This builds a substantial barrier to implement and reproduce these analyses.
 
 maxcovr was created to make results easy to implement, reproduce, and extend by using:
 
@@ -42,20 +42,15 @@ In this game we already have a few towers built, which are placed on top of the 
 ``` r
 
 library(maxcovr)
-library(tidyverse)
-#> Loading tidyverse: ggplot2
-#> Loading tidyverse: tibble
-#> Loading tidyverse: tidyr
-#> Loading tidyverse: readr
-#> Loading tidyverse: purrr
-#> Loading tidyverse: dplyr
-#> Find out what's changed in ggplot2 at
-#> http://github.com/tidyverse/ggplot2/releases.
-#> Conflicts with tidy packages ----------------------------------------------
-#> filter():  dplyr, stats
-#> is_null(): purrr, testthat
-#> lag():     dplyr, stats
-#> matches(): dplyr, testthat
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 
 # subset to be the places with towers built on them.
 york_selected <- york %>% filter(grade == "I")
@@ -149,7 +144,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.853   0.239   2.148
+#>   1.802   0.212   2.142
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -179,7 +174,12 @@ Important features here of this dataframe are:
 One can also use `map` from `purrr` to fit many different configurations of `n_added`. (Future work will look into allowing `n_added` to take a vector of arguments).
 
 ``` r
-
+library(purrr)
+#> 
+#> Attaching package: 'purrr'
+#> The following objects are masked from 'package:dplyr':
+#> 
+#>     contains, order_by
 n_add_vec <- c(20, 40, 60, 80, 100)
 
 system.time(
@@ -191,7 +191,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  13.821   1.183  15.622
+#>  14.018   1.256  16.028
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -204,7 +204,7 @@ map_cov_results <- bind_rows(map_mc_model$model_coverage)
 We can then visualise the effect on coverage:
 
 ``` r
-
+library(ggplot2)
 bind_rows(map_mc_model$existing_coverage[[1]],
           map_cov_results) %>%
     ggplot(aes(x = factor(n_added),
