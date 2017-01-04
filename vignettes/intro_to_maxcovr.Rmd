@@ -52,7 +52,7 @@ In this game we already have a few towers built, which are placed on top of the 
 ```{r york-towers}
 
 library(maxcovr)
-library(tidyverse)
+library(dplyr)
 
 # subset to be the places with towers built on them.
 york_selected <- york %>% filter(grade == "I")

@@ -35,5 +35,5 @@ Suggests: testthat,
     rmarkdown,
     modelr,
     leaflet,
-    tidyverse
+    ggplot2
 VignetteBuilder: knitr
