@@ -18,4 +18,3 @@ with nrow(user) rows and nrow(facility) columns.
 \description{
 Create a matrix of distances between two areas
 }
-

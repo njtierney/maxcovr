@@ -20,4 +20,3 @@ distance in metres from that user to that facility.
 \description{
 nearest facility + distance to a user
 }
-

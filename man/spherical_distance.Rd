@@ -38,4 +38,3 @@ spherical_distance(lat1 = -27.4667,
 Alex Simmons \email{a2.simmons@qut.edu.au},
    Brooke Anderson \email{brooke.anderson@colostate.edu}
 }
-

@@ -22,4 +22,3 @@ equal to the distance_cutoff, and 0 otherwise
 \description{
 Create a binary matrix TRUE if distance satisfies a condition
 }
-

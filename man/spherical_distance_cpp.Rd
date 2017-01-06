@@ -21,4 +21,3 @@ distance in metres between two locations
 \description{
 Calculate distance using haversines formula
 }
-

@@ -7,16 +7,14 @@ Authors@R: c(
     role = c("aut", "cre"))
     )
 Maintainer: Nicholas Tierney <nicholas.tierney@gmail.com>
-Description: maxcovr provides an easier to use interface to solve the "binary optimisation problem known as the "maximum
-    location coverage problem" as described by Church, in particular the
-    implementation as initially presented by Chan et al to identify ideal
-    locations to place AEDs. maxcovr also provides functions to make it easier
-    to calculate coverage of AEDs, and other helper functions that are used in
-    this area of research / applied math and statistics.
+Description: Solving the "maximum location coverage problem" as described by 
+    Church can be difficult for users not familiar with linear programming. 
+    maxcovr provides functions to make it easy to solve this problem, as well 
+    provide tools to calculate facility coverage.
 Depends:
     R (>= 3.2.2)
 License: MIT + file LICENSE
-RoxygenNote: 5.0.1
+RoxygenNote: 5.0.1.9000
 LazyData: true
 URL: https://github.com/njtierney/maxcovr
 BugReports: https://github.com/njtierney/maxcovr/issues

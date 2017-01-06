@@ -22,4 +22,3 @@ a data frame containing the two datasets joined together with columns named faci
 \description{
 Uses haversines formula to calculate the distance between lat/long co-ordinates of every facility and every user, returning a data_frame. You can think of "facilities" as something like mobile towers, police centres, or AED locations, and "users" as something like individual houses, crime locations, or heart attack locations. The motivating example for this function was finding the distance from Automatic Electronic Defibrillators (AEDs) to each Out of Hospital Cardiac Arrest (OHCA), where the locations for AEDs and OHCAs are in separate dataframes. Currently facifacility_user_dist makes the strict assumption that the facility and user dataframes have columns named aed_id, lat, and long, and ohca_id, lat, and long. This will be updated soon.
 }
-

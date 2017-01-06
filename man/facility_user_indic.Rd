@@ -17,4 +17,3 @@ a dataframe with variables ohca_id, and aed_id_number, with the id from each aed
 \description{
 This is a data manipulation function for facility_user_dist. This function creates a spread matrix of the distances between each ohca and each aed. There is an ohca_id column, and then a column for each aed_id, with a given cell being the distance between an ohca in a row, and that column. This distance is converted into an indicator variable, based upon whether that distance is less than the provided dist_indic parameter. In the future I might change the dist_indic function to be optional, but this whole function mainly exists to make it easier to do the computation in the max_coverage function.
 }
-

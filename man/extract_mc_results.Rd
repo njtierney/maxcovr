@@ -18,4 +18,3 @@ extract_mc_results exists so that the manipulation functions for the outcomes fr
 \details{
 \code{extract_mc_results} takes a fitted max_coverage object and returns useful summary information from the model
 }
-

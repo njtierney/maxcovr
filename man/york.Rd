@@ -26,4 +26,3 @@ york
 Listed buildings provided by the City of York Council, made available here: \url{https://data.gov.uk/dataset/listed-buildings24/resource/8c32fb55-0e40-457f-98f9-6494503e283b}. This data contains public sector information licensed under the Open Government Licence v3.0: \url{https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/}.
 }
 \keyword{datasets}
-

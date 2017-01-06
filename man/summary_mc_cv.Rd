@@ -44,4 +44,3 @@ mc_cv_fit <- map_df(mc_cv$train,
 }
 
 }
-

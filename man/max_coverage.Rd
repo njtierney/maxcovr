@@ -61,4 +61,3 @@ mc_result <- max_coverage(existing_facility = york_selected,
 
 
 }
-

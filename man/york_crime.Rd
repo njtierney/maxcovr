@@ -34,4 +34,3 @@ more documentation here: \url{https://data.police.uk/docs/method/crime-street/}
 For further details, see \url{https://www.york.gov.uk/info/20215/conservation_and_listed_buildings/1346/listed_buildings} and \url{https://data.gov.uk/dataset/listed-buildings24/resource/8c32fb55-0e40-457f-98f9-6494503e283b}
 }
 \keyword{datasets}
-

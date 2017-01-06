@@ -15,4 +15,3 @@ radians
 \description{
 Convert degrees to radians
 }
-
