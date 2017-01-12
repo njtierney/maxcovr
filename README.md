@@ -65,7 +65,7 @@ This can be illustrated with the following graphic, where the red circles indica
     #> Assuming 'long' and 'lat' are longitude and latitude, respectively
     #> Assuming 'long' and 'lat' are longitude and latitude, respectively
 
-![](README-leaflet-1.png)
+![](README-figs/leaflet-1.png)
 
 Currently the coverage looks alright, but let's verify the coverage using the `nearest` function. `nearest` takes two dataframes and returns the nearest lat/long coords from the first dataframe to the second dataframe, along with the distances between them and the appropriate columns from the building dataframe.
 
@@ -144,7 +144,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.802   0.212   2.142
+#>   1.832   0.231   2.127
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -191,7 +191,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  14.018   1.256  16.028
+#>  13.873   1.109  15.411
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -214,7 +214,7 @@ bind_rows(map_mc_model$existing_coverage[[1]],
     theme_minimal()
 ```
 
-![](README-unnamed-chunk-9-1.png)
+![](README-figs/unnamed-chunk-9-1.png)
 
 You can read more about the use of `max_coverage`, covering topics like cross validation in the vignette.
 
