@@ -47,7 +47,7 @@ extract_mc_results_relocation <- function(x){
 # "mc_relocation"
 # as opposed to the other one, which might be "mc_not_relocate", or something.
 
-x <- mc_relocate
+# x <- mc_relocate
 # get the dimenions from the matrix
 J <- nrow(x$A)
 I <- ncol(x$A)
