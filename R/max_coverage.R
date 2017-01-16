@@ -9,10 +9,10 @@
 #' you are interested in. If a number is less than distance_cutoff, it will be
 #' 1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
-#' @param n_solutions is the number of possible solutions to be returned. Default value is set to 1.
-#' @param solver character default is lpSolve, but currently in development is a Gurobi solver
+#' @param n_solutions Number of possible solutions to return. Default is 1.
+#' @param solver character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}
 #'
-#' @return returns
+#' @return dataframe of results
 #'
 #' @examples
 #'
@@ -75,34 +75,38 @@ max_coverage <- function(existing_facility = NULL,
 
     # turn existing_facility into a matrix suitable for cpp
 
+    # note, put these functions inside `nearest_facility_dist`
+
+
+    # if(relocation == FALSE){
+
     existing_facility_cpp <- existing_facility %>%
-        select(lat,long) %>%
+        dplyr::select(lat,long) %>%
         as.matrix()
 
     user_cpp <- user %>%
-        select(lat,long) %>%
+        dplyr::select(lat,long) %>%
         as.matrix()
 
-    dat_nearest_dist <-
-        maxcovr::nearest_facility_dist(facility = existing_facility_cpp,
-                                       user = user_cpp)
+    dat_nearest_dist <- nearest_facility_dist(facility = existing_facility_cpp,
+                                              user = user_cpp)
 
     # make nearest dist into dataframe
     # leave only those not covered
     dat_nearest_no_cov <- dat_nearest_dist %>%
         dplyr::as_data_frame() %>%
-        rename(user_id = V1,
-               facility_id = V2,
-               distance = V3) %>%
-        filter(distance > distance_cutoff) # 100m would be distance_cutoff
+        dplyr::rename(user_id = V1,
+                      facility_id = V2,
+                      distance = V3) %>%
+        dplyr::filter(distance > distance_cutoff) # 100m is distance_cutoff
 
     # give user an index
-    user <- user %>% mutate(user_id = 1:n())
+    user <- user %>% dplyr::mutate(user_id = 1:n())
 
     # join them, to create the "not covered" set of data
     user_not_covered <- dat_nearest_no_cov %>%
-        left_join(user,
-                  by = "user_id")
+        dplyr::left_join(user,
+                         by = "user_id")
 
     # # this takes the original user list, the full set of crime, or ohcas, etc
     # existing_user <- user
@@ -113,22 +117,48 @@ max_coverage <- function(existing_facility = NULL,
 # } # end NULL
 
     proposed_facility_cpp <- proposed_facility %>%
-        select(lat, long) %>%
+        dplyr::select(lat, long) %>%
         as.matrix()
 
     user_cpp <- user_not_covered %>%
-        select(lat, long) %>%
+        dplyr::select(lat, long) %>%
         as.matrix()
 
     A <- maxcovr::binary_matrix_cpp(facility = proposed_facility_cpp,
                                     user = user_cpp,
                                     distance_cutoff = distance_cutoff)
 
-    facility_names <- sprintf("facility_id_%s",1:nrow(proposed_facility))
+
+    facility_names <- sprintf("facility_id_%s", 1:nrow(proposed_facility))
+
     colnames(A) <- facility_names
+
     # hang on to the list of OHCA ids
     # user_id_list <- A[,"user_id"]
+
     user_id_list <- 1:nrow(user_not_covered)
+
+    # the above definition of A would have an ifelse
+    # } else if (relocation == TRUE){
+
+    # A <-
+    # cbind(
+    # binary_matrix_cpp(current_locations),
+    # binary_matrix_cpp(potential_locations)
+    # )
+
+
+    # facility_names <- sprintf("facility_id_%s", 1:nrow(proposed_facility))
+    #
+    # colnames(A) <- facility_names
+    #
+    # # hang on to the list of OHCA ids
+    # # user_id_list <- A[,"user_id"]
+    #
+    # user_id_list <- 1:nrow(user_not_covered)
+
+    # } end relocation if loop.
+
 
     # drop ohca_id
     # A <- A[ ,-1]
@@ -138,6 +168,7 @@ max_coverage <- function(existing_facility = NULL,
 
 if(solver == "lpSolve"){
 
+    # quasi-code for making max_coverage accept n_added as a vector.
     # optim_result_box <- vector("list", length(n_added))
     # n_added <- c(20,40)
     # for(i in n_added){
@@ -225,65 +256,7 @@ model_result <- extract_mc_results(x)
 
 return(model_result)
 
-} else if(solver == "gurobi"){
-
-    # In bar.R
-        if (!requireNamespace("gurobi", quietly = TRUE)) {
-            stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
-
-    }
-    # model <- list()
-    # model$A          <- matrix(c(1,1,0,0,1,1), nrow=2, byrow=T)
-    # model$obj        <- c(1,1,2)
-    # model$modelsense <- "max"
-    # model$rhs        <- c(1,1)
-    # model$sense      <- c('<=', '<=')
-
-    # J <- nrow(A)
-    # I <- ncol(A)
-
-    model <- list()
-
-    # set A matrix
-    model$A <- A
-
-        Nx <- nrow(A)
-        Ny <- ncol(A)
-        N <- n_added
-
-        # d <- [ones(1,Ny) zeros(1,Nx)];
-        d <- c(rep(1, Ny), rep(0,Nx))
-    # c <- -[zeros(Ny,1); ones(Nx,1)];
-        # c <- c(rep(0, Ny), rep(1,Nx))
-    model$obj <- c(rep(0, Ny), rep(1,Nx))
-
-    model$modelsense <- "max"
-
-        Aeq <- d
-
-        beq <- N
-
-        Ain <- cbind(-A, diag(Nx))
-
-        bin <- matrix(rep(0,Nx), ncol = 1)
-
-    # matrix of numeric constraint coefficients,
-    # one row per constraint
-    # one column per variable
-        # constraint matrix??
-    # constraint_matrix <- rbind(Ain, Aeq)
-    # rhs_matrix <- rbind(bin, beq)
-        model$rhs <- rbind(bin, beq)
-
-
-    # model$sense      <- c('<=', '<=')
-    model$sense <- c(rep("<=", Nx), "==")
-
-    result <- gurobi::gurobi(model)
-
-    return(result)
-
-} # end gurobi
+}
 
 } # end of function
 #
