@@ -20,12 +20,12 @@ you are interested in. If a number is less than distance_cutoff, it will be
 
 \item{n_added}{the maximum number of facilities to add.}
 
-\item{n_solutions}{is the number of possible solutions to be returned. Default value is set to 1.}
+\item{n_solutions}{Number of possible solutions to return. Default is 1.}
 
-\item{solver}{character default is lpSolve, but currently in development is a Gurobi solver}
+\item{solver}{character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}}
 }
 \value{
-returns
+dataframe of results
 }
 \description{
 max_coverage solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.

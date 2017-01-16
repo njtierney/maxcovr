@@ -87,7 +87,7 @@ extract_mc_results <- function(x){
 
     # add the original coverage
     existing_coverage <- x$existing_facility %>%
-        maxcovr::nearest(x$existing_user) %>%
+        nearest(x$existing_user) %>%
         dplyr::mutate(is_covered = (distance <= x$distance_cutoff)) %>%
         dplyr::summarise(n_added = 0,
                          distance_within = as.numeric(x$distance_cutoff),
