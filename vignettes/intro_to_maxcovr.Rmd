@@ -11,6 +11,8 @@ vignette: >
 
 maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
 
+`maxcovr` aims to provide researchers and analysts with a fast, accurate and extendible implementation of Church's maximal covering location problem, while trying to adhere to [`tidyverse`](http://www.tidyverse.org) principles.  In the future `maxcovr` will be able to talk to commercial solvers like CPLEX and Gurobi, and will have a mechanism for extensions.
+
 This vignette aims to get users started with using maxcovr. Other vignettes are provided in the package:
 
 - "Cross Validation with maxcovr", which explains how to perform and interpret cross validation results in a maximum covering location framework

@@ -144,7 +144,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.832   0.231   2.127
+#>   1.876   0.236   2.290
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -191,7 +191,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  13.873   1.109  15.411
+#>  13.795   1.206  15.621
 ```
 
 This returns a list of dataframes, which we can bind together like so:
