@@ -7,34 +7,6 @@
 #' @param x the fitted model from max_coverage
 #'
 #' @return a list containing multiple dataframes summarising the model
-#'
-#' @examples
-
-#'
-#' library(dplyr)
-#' #'
-#' # subset to be the places with towers built on them.
-#'
-#' york_selected <- york %>% filter(grade == "I")
-#'
-#' york_unselected <- york %>% filter(grade != "I")
-#'
-#' # OK, what if I just use some really crazy small data to optimise over.
-#'
-#' #
-#'
-#' mc_relocate <-  max_coverage_relocation(existing_facility = york_selected,
-#'                                         proposed_facility = york_unselected,
-#'                                         user = york_crime,
-#'                                         distance_cutoff = 100,
-#'                                         cost_install = 5000,
-#'                                         cost_relocate = 200,
-#'                                         cost_total = 600000,
-#'                                         # cost_total = 515400,
-#'                                         # cost_total = 10^6,
-#'                                         # cost_total = 10000,
-#'                                         # n_added = nrow(existing_facility),
-#'                                         n_solutions = 1)
 
 # extract results ---------------------------------------------------------
 
@@ -206,7 +178,8 @@ res <- tibble::tibble(
     existing_coverage = list(existing_coverage),
     summary = list(summary_coverage),
     total_cost = list(x$cost_total),
-    distance_cutoff = list(x$distance_cutoff)
+    distance_cutoff = list(x$distance_cutoff),
+    model_call = list(x$model_call)
 )
     # not really sure if I need to provide the user + facility solution
     # but perhaps I could provide this in another function to extract

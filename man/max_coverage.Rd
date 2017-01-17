@@ -5,7 +5,7 @@
 \title{max_coverage}
 \usage{
 max_coverage(existing_facility = NULL, proposed_facility, user,
-  distance_cutoff, n_added, n_solutions = 1, solver = "lpSolve")
+  distance_cutoff, n_added, solver = "lpSolve")
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
@@ -19,8 +19,6 @@ you are interested in. If a number is less than distance_cutoff, it will be
 1, if it is greater than it, it will be 0.}
 
 \item{n_added}{the maximum number of facilities to add.}
-
-\item{n_solutions}{Number of possible solutions to return. Default is 1.}
 
 \item{solver}{character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}}
 }

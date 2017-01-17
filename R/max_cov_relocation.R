@@ -8,8 +8,8 @@
 #' @param distance_cutoff numeric indicating the distance cutoff (in metres)
 #' you are interested in. If a number is less than distance_cutoff, it will be
 #' 1, if it is greater than it, it will be 0.
-#' @param n_added the maximum number of facilities to add.
-#' @param n_solutions Number of possible solutions to return. Default is 1.
+#  @param n_added the maximum number of facilities to add.
+# @param n_solutions Number of possible solutions to return. Default is 1.
 #' @param solver character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}
 #' @param cost_install integer the cost of installing a new facility
 #' @param cost_relocate integer the cost of relocating a new facility
@@ -18,13 +18,35 @@
 #' @return dataframe of results
 #'
 #' @export
-
+#'
+#' @examples
+#'
+#'
+#' library(dplyr)
+#' # subset to be the places with towers built on them.
+#'
+#' york_selected <- york %>% filter(grade == "I")
+#'
+#' york_unselected <- york %>% filter(grade != "I")
+#'
+#' # OK, what if I just use some really crazy small data to optimise over.
+#'
+#' #
+#'
+#' mc_relocate <-  max_coverage_relocation(existing_facility = york_selected,
+#'                                         proposed_facility = york_unselected,
+#'                                         user = york_crime,
+#'                                         distance_cutoff = 100,
+#'                                         cost_install = 5000,
+#'                                         cost_relocate = 200,
+#'                                         cost_total = 600000)
+#'
 max_coverage_relocation <- function(existing_facility = NULL,
                                     proposed_facility,
                                     user,
                                     distance_cutoff,
-                                    n_added,
-                                    n_solutions = 1,
+                                    # n_added,
+                                    # n_solutions = 1,
                                     cost_install, # = NULL?
                                     cost_relocate, # = NULL?
                                     cost_total, # = NULL?
@@ -33,7 +55,25 @@ max_coverage_relocation <- function(existing_facility = NULL,
 # the A matrix that I feed here will be the combination of the
 # existing AED locations and the potential AED locations.
 
-
+    #' library(dplyr)
+    #' #'
+    #' # subset to be the places with towers built on them.
+    #'     york_selected <- york %>% filter(grade == "I")
+    #'     york_unselected <- york %>% filter(grade != "I")
+    #'     # OK, what if I just use some really crazy small data to optimise over.
+    #'     #
+    #'     existing_facility = york_selected
+    #' proposed_facility = york_unselected
+    #' user = york_crime
+    #' distance_cutoff = 100
+    #' cost_install = 5000
+    #' cost_relocate = 200
+    #' cost_total = 600000
+    #' # cost_total = 515400,
+    #' # cost_total = 10^6,
+    #' # cost_total = 10000,
+    #' # n_added = nrow(existing_facility),
+    #' n_solutions = 1)
 
 # test data set using fake data ....
     #     library(dplyr)
@@ -232,7 +272,7 @@ lp_solution <- lpSolve::lp(direction = "max",
                            all.bin = TRUE,
                            # scale = 196,
                            # dense.const,
-                           num.bin.solns = n_solutions,
+                           num.bin.solns = 1,
                            use.rw = TRUE)
 
 # determing the users not covered
@@ -259,6 +299,21 @@ user_not_covered <- dat_nearest_no_cov %>%
 
 # / end determining users not covered
 
+# capture the user input for printing
+model_call <- match.call()
+
+
+# model_call <- list(existing_facility = paste(deparse(existing_facility)),
+#                    proposed_facility = quote(proposed_facility),
+#                    user = quote(user),
+#                    distance_cutoff = quote(distance_cutoff),
+#                    n_added = quote(n_added),
+#                    n_solutions = quote(n_solutions),
+#                    cost_install = quote(cost_install), # = NULL?
+#                    cost_relocate = quote(cost_relocate), # = NULL?
+#                    cost_total = quote(cost_total), # = NULL?
+#                    solver = quote(solver))
+
 x <- list(
     # #add the variables that were used here to get more info
     existing_facility = existing_facility,
@@ -268,13 +323,14 @@ x <- list(
     user_not_covered = user_not_covered,
     # dist_indic = dist_indic,
     n_added = n_added,
-    n_solutions = n_solutions,
+    # n_solutions = n_solutions,
     A = A,
     user_id = user_id_list,
     lp_solution = lp_solution,
     cost_install = cost_install,
     cost_relocate = cost_relocate,
-    cost_total = cost_total
+    cost_total = cost_total,
+    model_call = model_call
 )
 
 # return(x)

@@ -9,7 +9,7 @@
 #' you are interested in. If a number is less than distance_cutoff, it will be
 #' 1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
-#' @param n_solutions Number of possible solutions to return. Default is 1.
+# @param n_solutions Number of possible solutions to return. Default is 1.
 #' @param solver character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}
 #'
 #' @return dataframe of results
@@ -51,7 +51,7 @@ max_coverage <- function(existing_facility = NULL,
                          user,
                          distance_cutoff,
                          n_added,
-                         n_solutions = 1,
+                         # n_solutions = 1,
                          solver = "lpSolve"){
 
     # testing...
@@ -223,7 +223,7 @@ if(solver == "lpSolve"){
                            all.bin = TRUE,
                            # scale = 196,
                            # dense.const,
-                           num.bin.solns = n_solutions,
+                           num.bin.solns = 1,
                            use.rw = TRUE)
 
 # # there are 148 here
@@ -237,6 +237,9 @@ if(solver == "lpSolve"){
 
 # note: add a custom class to this object so that I can make sure the next function only accepts it once it has gone through there.
 
+    # capture user input
+    model_call <- match.call()
+
 x <- list(
         # #add the variables that were used here to get more info
         existing_facility = existing_facility,
@@ -246,10 +249,11 @@ x <- list(
         user_not_covered = user_not_covered,
         # dist_indic = dist_indic,
         n_added = n_added,
-        n_solutions = n_solutions,
+        # n_solutions = 1,
         A = A,
         user_id = user_id_list,
-        lp_solution = lp_solution
+        lp_solution = lp_solution,
+        model_call = model_call
     )
 
 model_result <- extract_mc_results(x)

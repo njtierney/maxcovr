@@ -110,7 +110,8 @@ extract_mc_results <- function(x){
             existing_coverage = list(existing_coverage),
             summary = list(summary_coverage),
             n_added = list(x$n_added),
-            distance_cutoff = list(x$distance_cutoff)
+            distance_cutoff = list(x$distance_cutoff),
+            model_call = list(x$model_call)
         )
 
             # not really sure if I need to provide the user + facility solution
