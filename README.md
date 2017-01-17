@@ -14,6 +14,8 @@ maxcovr was created to make results easy to implement, reproduce, and extend by 
 -   Real-world, open source example data.
 -   Tidyverse principles to make it easy to use and reason with.
 
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
 How to Install
 ==============
 
@@ -144,19 +146,25 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.876   0.236   2.290
+#>   1.949   0.261   2.602
 ```
 
 `max_coverage` actually returns a dataframe of lists.
 
 ``` r
 mc_20
-#> # A tibble: 1 × 7
-#>   facility_selected       user_affected   model_coverage existing_coverage
-#>              <list>              <list>           <list>            <list>
-#> 1 <tibble [20 × 7]> <tibble [201 × 16]> <tibble [1 × 8]>  <tibble [1 × 8]>
-#> # ... with 3 more variables: summary <list>, n_added <list>,
-#> #   distance_cutoff <list>
+#> 
+#> ------------------------------------------- 
+#> Model Fit: maxcovr fixed location model 
+#> ------------------------------------------- 
+#> model_used:        max_coverage 
+#> existing_facility: york_selected 
+#> proposed_facility: york_unselected 
+#> user:              york_crime 
+#> distance_cutoff:   100 
+#> n_added:           20 
+#> solver:            lpSolve 
+#> -------------------------------------------
 ```
 
 This is handy because it means that later when you want to explore multiple `n_added`, say you want to explore how coverage changes for 20, 40, 60, 80, 100 `n_added`, then these are added as rows in the dataframe, which makes it easier to do summaries and manipulate.
@@ -191,7 +199,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  13.795   1.206  15.621
+#>  14.173   1.218  16.404
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -256,9 +264,9 @@ In 2017 I will be providing alternative interfaces to other solvers, potentially
 # )
 ```
 
-If you have any suggestions, please file an issue and I will get to it as soon as I can.
+If you have any suggestions, please [file an issue](http://www.github.com/njtierney/maxcovr/issues/new) and I will get to it as soon as I can.
 
-Code of Conduct
-===============
+Acknowledgements
+================
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+Thank you to Oliver Czibula for this initial help in helping me understand the Maximum Covering Location Problem. Thank you to Alessio Quaglino and Jost Reinhold for their help in implementing the first iteration of lpSolve. Thank you to Martin Weiser for his suggestion for the relocation process, and Matt Sutton for suggesting how to write it in lpSolve.

@@ -25,6 +25,9 @@ maxcovr was created to make results easy to implement, reproduce, and extend by 
 - Real-world, open source example data.
 - Tidyverse principles to make it easy to use and reason with.
 
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+
 # How to Install
 
 *warning: maxcovr is still undergoing development and testing*
@@ -236,8 +239,9 @@ In 2017 I will be providing alternative interfaces to other solvers, potentially
 ```
 
 
-If you have any suggestions, please file an issue and I will get to it as soon as I can.
+If you have any suggestions, please [file an issue](http://www.github.com/njtierney/maxcovr/issues/new) and I will get to it as soon as I can.
 
-# Code of Conduct
+# Acknowledgements
 
-Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+Thank you to Oliver Czibula for this initial help in helping me understand the Maximum Covering Location Problem. Thank you to Alessio Quaglino and Jost Reinhold for their help in implementing the first iteration of lpSolve. Thank you to Martin Weiser for his suggestion for the relocation process, and Matt Sutton for suggesting how to write it in lpSolve.
+
