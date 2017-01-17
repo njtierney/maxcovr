@@ -35,7 +35,6 @@ This function adds a relocation step
 }
 \examples{
 
-
 library(dplyr)
 # subset to be the places with towers built on them.
 

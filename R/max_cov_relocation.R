@@ -21,7 +21,6 @@
 #'
 #' @examples
 #'
-#'
 #' library(dplyr)
 #' # subset to be the places with towers built on them.
 #'
@@ -47,27 +46,27 @@ max_coverage_relocation <- function(existing_facility = NULL,
                                     distance_cutoff,
                                     # n_added,
                                     # n_solutions = 1,
-                                    cost_install, # = NULL?
-                                    cost_relocate, # = NULL?
-                                    cost_total, # = NULL?
+                                    cost_install,
+                                    cost_relocate,
+                                    cost_total,
                                     solver = "lpSolve"){
 
 # the A matrix that I feed here will be the combination of the
 # existing AED locations and the potential AED locations.
 
-    # library(dplyr)
-    # # subset to be the places with towers built on them.
-    #     york_selected <- york %>% filter(grade == "I")
-    #     york_unselected <- york %>% filter(grade != "I")
-    #     # OK, what if I just use some really crazy small data to optimise over.
-    #     #
-    #     existing_facility = york_selected
-    # proposed_facility = york_unselected
-    # user = york_crime
-    # distance_cutoff = 100
-    # cost_install = 5000
-    # cost_relocate = 200
-    # cost_total = 600000
+    ## # library(dplyr)
+    ## # # subset to be the places with towers built on them.
+    ## #     york_selected <- york %>% filter(grade == "I")
+    ## #     york_unselected <- york %>% filter(grade != "I")
+    ## #     # OK, what if I just use some really crazy small data to optimise over.
+    ## #     #
+    ## #     existing_facility = york_selected
+    ## # proposed_facility = york_unselected
+    ## # user = york_crime
+    ## # distance_cutoff = 100
+    ## # cost_install = 5000
+    ## # cost_relocate = 200
+    ## # cost_total = 600000
 
 # test data set using fake data ....
     #     library(dplyr)
@@ -175,20 +174,8 @@ Ain <- cbind(-A, diag(Nx))
 
 # create the m vector ----------------------------------------------------------
 
-# I will also have the m vector, which will have some parameters like
-# cost of installation
-# cost of removal + relocation
-# this can then be created inside the function
-
-# identify the existing cols from the proposed cols
-# which_existing <- c(
-#     rep("existing", nrow(existing_facility)),
-#     rep("proposed", nrow(proposed_facility))
-# )
-
 # this is the vector of costs, which will have the length
-# of the number of rows of y
-# plus the number of x's as 0s
+# of the number of rows of y plus the number of x's as 0s
 
 # if using the testing data
 
@@ -199,7 +186,6 @@ Ain <- cbind(-A, diag(Nx))
     #     rep(0, Nx)
     # )
 
-
 m_vec <- c(
     # these two are for the real data
     rep(cost_relocate*-1, ncol(existing_facility_cpp)),
@@ -207,7 +193,7 @@ m_vec <- c(
     rep(0, Nx)
 )
 
-m_vec
+# m_vec
 
 # ------------------------
 
@@ -218,26 +204,26 @@ constraint_matrix <- rbind(Ain,
                            m_vec,
                            Aeq)
 
-constraint_matrix
+# constraint_matrix
 
 bin <- matrix(rep(0,Nx), ncol = 1)
 
-bin
+# bin
 
 # this is sum_{i = 1}^I
 sum_c_mi <- cost_total - abs(sum(m_vec[m_vec<0]))
 
-sum_c_mi
+# sum_c_mi
 
 beq <- N
 
-beq
+# beq
 
 rhs_matrix <- rbind(bin,
                     sum_c_mi,
                     beq)
 
-rhs_matrix
+# rhs_matrix
 
 # this is another line to optimise with c++
 constraint_directions <- c(rep("<=", Nx),
@@ -247,7 +233,7 @@ constraint_directions <- c(rep("<=", Nx),
 # tail(constraint_directions)
 # }) # end profvis
 
-constraint_directions
+# constraint_directions
 
 # optim_result_box[[i]] <-
 # for the york data, it takes 0.658 seconds
