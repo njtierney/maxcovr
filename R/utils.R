@@ -73,16 +73,30 @@ print.maxcovr <- function(x, ...){
 
 }
 
+summary.maxcovr <- function(x, ...){
+
+
+
+}
+
+#' Test if the object is a maxcovr object
+#'
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `maxcovr` class.
+#'
 #' @export
-is.maxcovr <- function(x, ...) {
+is.maxcovr <- function(x) {
 
     inherits(x, "maxcovr")
 
 }
 
-
+#' Test if the object is a maxcovr_relocation object
+#'
+#' @param x An object
+#' @return `TRUE` if the object inherits from the `maxcovr_relocation` class.
 #' @export
-is.maxcovr_relocation <- function(x, ...) {
+is.maxcovr_relocation <- function(x) {
 
     inherits(x, "maxcovr_relocation")
 
