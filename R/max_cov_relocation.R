@@ -56,7 +56,6 @@ max_coverage_relocation <- function(existing_facility = NULL,
 # existing AED locations and the potential AED locations.
 
     # library(dplyr)
-    # #'
     # # subset to be the places with towers built on them.
     #     york_selected <- york %>% filter(grade == "I")
     #     york_unselected <- york %>% filter(grade != "I")
@@ -69,10 +68,6 @@ max_coverage_relocation <- function(existing_facility = NULL,
     # cost_install = 5000
     # cost_relocate = 200
     # cost_total = 600000
-    # # cost_total = 515400,
-    # # cost_total = 10^6,
-    # # cost_total = 10000,
-    # n_solutions = 1)
 
 # test data set using fake data ....
     #     library(dplyr)
