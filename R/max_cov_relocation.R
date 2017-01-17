@@ -54,6 +54,50 @@ max_coverage_relocation <- function(existing_facility = NULL,
 # the A matrix that I feed here will be the combination of the
 # existing AED locations and the potential AED locations.
 
+    # using the AED data
+#
+#     library(tidyverse)
+#     library(feather)
+#     library(maxcovr)
+#
+#     # wd <- rprojroot::find_rstudio_root_file()
+#
+#     dat_aed <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_aed.feather")
+#
+#     dat_building <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_building.feather")
+#
+#     dat_ohca <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_ohca.feather")
+
+
+    # system.time(
+    #
+    #     mc_model_fixed <- max_coverage(existing_facility = dat_aed,
+    #                                    proposed_facility = dat_building,
+    #                                    user = dat_ohca,
+    #                                    distance_cutoff = 100,
+    #                                    n_added = 20)
+    # )
+    # # mc_model_aed_20$summary
+    #
+    # mc_model_fixed
+    # summary(mc_model_fixed)
+    #
+    #
+    # system.time(
+
+        # mc_model_relocate <- max_coverage_relocation(existing_facility = dat_aed,
+        # existing_facility = dat_aed
+        # proposed_facility = dat_building
+        # user = dat_ohca
+        # distance_cutoff = 100
+        # cost_install = 2500
+        # cost_relocate = 700
+        # cost_total = 50000
+
+    # mc_model_aed_20$summary
+
+
+
     ## # library(dplyr)
     ## # # subset to be the places with towers built on them.
     ## #     york_selected <- york %>% filter(grade == "I")

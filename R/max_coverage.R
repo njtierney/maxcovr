@@ -226,14 +226,6 @@ if(solver == "lpSolve"){
                            num.bin.solns = 1,
                            use.rw = TRUE)
 
-# # there are 148 here
-# length(my_soln_2$solution[1:I]) == ncol(A)
-#
-# # how many are 1?
-# sum(my_soln_2$solution[1:I]) == num_aed
-#
-# # Which positions are 1?
-# which(my_soln_2$solution[1:I] == 1)
 
 # note: add a custom class to this object so that I can make sure the next function only accepts it once it has gone through there.
 

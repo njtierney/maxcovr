@@ -3,7 +3,7 @@
 print.maxcovr_relocation <- function(x, ...){
 
 
-    x = mc_relocate
+    # x = mc_relocate
     #
     user_input <- c(paste(x$model_call[[1]]),
                     "lpSolve")
@@ -81,7 +81,7 @@ summary.maxcovr_relocation <- function(object, ...){
 #' @export
 print.maxcovr <- function(x, ...){
 
-    x = mc_result
+    # x = mc_result
     #
     user_input <- c(paste(x$model_call[[1]]),
                     "lpSolve")
