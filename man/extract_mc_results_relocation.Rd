@@ -18,30 +18,3 @@ extract_mc_results exists so that the manipulation functions for the outcomes fr
 \details{
 \code{extract_mc_results_relocation} takes a fitted max_coverage object and returns useful summary information from the model, specifically for the relocation method.
 }
-\examples{
-
-library(dplyr)
-#'
-# subset to be the places with towers built on them.
-
-york_selected <- york \%>\% filter(grade == "I")
-
-york_unselected <- york \%>\% filter(grade != "I")
-
-# OK, what if I just use some really crazy small data to optimise over.
-
-#
-
-mc_relocate <-  max_coverage_relocation(existing_facility = york_selected,
-                                        proposed_facility = york_unselected,
-                                        user = york_crime,
-                                        distance_cutoff = 100,
-                                        cost_install = 5000,
-                                        cost_relocate = 200,
-                                        cost_total = 600000,
-                                        # cost_total = 515400,
-                                        # cost_total = 10^6,
-                                        # cost_total = 10000,
-                                        # n_added = nrow(existing_facility),
-                                        n_solutions = 1)
-}

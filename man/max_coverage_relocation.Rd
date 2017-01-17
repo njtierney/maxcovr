@@ -5,8 +5,8 @@
 \title{Maximum Coverage when considering relocation}
 \usage{
 max_coverage_relocation(existing_facility = NULL, proposed_facility, user,
-  distance_cutoff, n_added, n_solutions = 1, cost_install, cost_relocate,
-  cost_total, solver = "lpSolve")
+  distance_cutoff, cost_install, cost_relocate, cost_total,
+  solver = "lpSolve")
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
@@ -18,10 +18,6 @@ max_coverage_relocation(existing_facility = NULL, proposed_facility, user,
 \item{distance_cutoff}{numeric indicating the distance cutoff (in metres)
 you are interested in. If a number is less than distance_cutoff, it will be
 1, if it is greater than it, it will be 0.}
-
-\item{n_added}{the maximum number of facilities to add.}
-
-\item{n_solutions}{Number of possible solutions to return. Default is 1.}
 
 \item{cost_install}{integer the cost of installing a new facility}
 
@@ -36,4 +32,46 @@ dataframe of results
 }
 \description{
 This function adds a relocation step
+}
+\examples{
+
+
+library(dplyr)
+# subset to be the places with towers built on them.
+
+york_selected <- york \%>\% filter(grade == "I")
+
+york_unselected <- york \%>\% filter(grade != "I")
+
+# OK, what if I just use some really crazy small data to optimise over.
+
+#
+
+mc_relocate <-  max_coverage_relocation(existing_facility = york_selected,
+                                        proposed_facility = york_unselected,
+                                        user = york_crime,
+                                        distance_cutoff = 100,
+                                        cost_install = 5000,
+                                        cost_relocate = 200,
+                                        cost_total = 600000)
+
+library(dplyr)
+#'
+# subset to be the places with towers built on them.
+    york_selected <- york \%>\% filter(grade == "I")
+    york_unselected <- york \%>\% filter(grade != "I")
+    # OK, what if I just use some really crazy small data to optimise over.
+    #
+    existing_facility = york_selected
+proposed_facility = york_unselected
+user = york_crime
+distance_cutoff = 100
+cost_install = 5000
+cost_relocate = 200
+cost_total = 600000
+# cost_total = 515400,
+# cost_total = 10^6,
+# cost_total = 10000,
+# n_added = nrow(existing_facility),
+n_solutions = 1)
 }
