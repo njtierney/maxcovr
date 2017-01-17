@@ -198,25 +198,29 @@ existing_coverage <- x$existing_facility %>%
 summary_coverage <- dplyr::bind_rows(existing_coverage,
                                      model_coverage)
 
-
-return(
-    tibble::tibble(
-        facility_selected = list(facility_selected),
-        user_affected = list(user_affected),
-        which_existing_removed = list(which_existing_removed),
-        model_coverage = list(model_coverage),
-        existing_coverage = list(existing_coverage),
-        summary = list(summary_coverage),
-        total_cost = list(x$cost_total),
-        distance_cutoff = list(x$distance_cutoff)
-        # not really sure if I need to provide the user + facility solution
-        # but perhaps I could provide this in another function to extract
-        # the working parts of the optimisation
-        # user_solution = user_solution,
-        # facility_solution = facility_solution,
-        # facilities_users_merge = facilities_users_merge,
-        #add the variables that were used here to get more info
-    )
+res <- tibble::tibble(
+    facility_selected = list(facility_selected),
+    user_affected = list(user_affected),
+    which_existing_removed = list(which_existing_removed),
+    model_coverage = list(model_coverage),
+    existing_coverage = list(existing_coverage),
+    summary = list(summary_coverage),
+    total_cost = list(x$cost_total),
+    distance_cutoff = list(x$distance_cutoff)
 )
+    # not really sure if I need to provide the user + facility solution
+    # but perhaps I could provide this in another function to extract
+    # the working parts of the optimisation
+    # user_solution = user_solution,
+    # facility_solution = facility_solution,
+    # facilities_users_merge = facilities_users_merge,
+    #add the variables that were used here to get more info
+
+# res <- c(class(res),"maxcovr_relocation")
+class(res) <- c("maxcovr_relocation",class(res))
+# class(res) <- c("maxcovr_relocation")
+
+return(res)
+
 
 } # end the function
