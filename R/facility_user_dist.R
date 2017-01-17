@@ -60,35 +60,35 @@ facility_user_dist <- function(facility,
 
         dist_df <-
             dist_df %>%
-            arrange(distance) %>%
-            group_by(user_id) %>%
+            dplyr::arrange(distance) %>%
+            dplyr::group_by(user_id) %>%
             # find those that are closest to each other
-            mutate(rank_distance = 1:n()) %>%
-            ungroup() %>%
-            filter(rank_distance == 1) %>%
+            dplyr::mutate(rank_distance = 1:n()) %>%
+            dplyr::ungroup() %>%
+            dplyr::filter(rank_distance == 1) %>%
             # drop the rank_distance
-            select(-rank_distance) %>%
-            mutate(is_covered = (distance < coverage_distance))
+            dplyr::select(-rank_distance) %>%
+            dplyr::mutate(is_covered = (distance < coverage_distance))
 
         return(dist_df)
 
     } else if (nearest == "user"){
 
         dist_df <- dist_df %>%
-            group_by(facility_id) %>%
-            arrange(distance) %>%
-            mutate(rank_distance = 1:n()) %>%
-            ungroup() %>%
-            filter(rank_distance == 1) %>%
-            select(-rank_distance) %>%
-            mutate(is_covered = (distance < coverage_distance))
+            dplyr::group_by(facility_id) %>%
+            dplyr::arrange(distance) %>%
+            dplyr::mutate(rank_distance = 1:n()) %>%
+            dplyr::ungroup() %>%
+            dplyr::filter(rank_distance == 1) %>%
+            dplyr::select(-rank_distance) %>%
+            dplyr::mutate(is_covered = (distance < coverage_distance))
 
         return(dist_df)
 
     } else if (nearest == "both"){
 
         dist_df <- dist_df %>%
-            mutate(is_covered = (distance < coverage_distance))
+            dplyr::mutate(is_covered = (distance < coverage_distance))
         return(dist_df)
 
     }

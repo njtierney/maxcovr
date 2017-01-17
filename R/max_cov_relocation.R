@@ -55,25 +55,24 @@ max_coverage_relocation <- function(existing_facility = NULL,
 # the A matrix that I feed here will be the combination of the
 # existing AED locations and the potential AED locations.
 
-    #' library(dplyr)
-    #' #'
-    #' # subset to be the places with towers built on them.
-    #'     york_selected <- york %>% filter(grade == "I")
-    #'     york_unselected <- york %>% filter(grade != "I")
-    #'     # OK, what if I just use some really crazy small data to optimise over.
-    #'     #
-    #'     existing_facility = york_selected
-    #' proposed_facility = york_unselected
-    #' user = york_crime
-    #' distance_cutoff = 100
-    #' cost_install = 5000
-    #' cost_relocate = 200
-    #' cost_total = 600000
-    #' # cost_total = 515400,
-    #' # cost_total = 10^6,
-    #' # cost_total = 10000,
-    #' # n_added = nrow(existing_facility),
-    #' n_solutions = 1)
+    # library(dplyr)
+    # #'
+    # # subset to be the places with towers built on them.
+    #     york_selected <- york %>% filter(grade == "I")
+    #     york_unselected <- york %>% filter(grade != "I")
+    #     # OK, what if I just use some really crazy small data to optimise over.
+    #     #
+    #     existing_facility = york_selected
+    # proposed_facility = york_unselected
+    # user = york_crime
+    # distance_cutoff = 100
+    # cost_install = 5000
+    # cost_relocate = 200
+    # cost_total = 600000
+    # # cost_total = 515400,
+    # # cost_total = 10^6,
+    # # cost_total = 10000,
+    # n_solutions = 1)
 
 # test data set using fake data ....
     #     library(dplyr)
@@ -250,7 +249,7 @@ constraint_directions <- c(rep("<=", Nx),
                            "<=",
                            ">=")
 
-tail(constraint_directions)
+# tail(constraint_directions)
 # }) # end profvis
 
 constraint_directions
