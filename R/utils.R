@@ -13,7 +13,7 @@ print.maxcovr_relocation <- function(x, ...){
     #                user_input)
 
 
-    cat("-----------------------------------------" ,
+    cat("\n-----------------------------------------" ,
         "\nModel Fit: maxcovr relocation model",
         "\n-----------------------------------------",
         # I tried, I really did, to use purrr. "
@@ -37,7 +37,7 @@ print.maxcovr_relocation <- function(x, ...){
 #' @export
 summary.maxcovr_relocation <- function(object, ...){
 
-    cat("---------------------------------------",
+    cat("\n---------------------------------------",
         "\nModel Fit: maxcovr relocation model",
         "\n---------------------------------------",
         sprintf("\nDistance Threshold: %sm",
@@ -91,7 +91,7 @@ print.maxcovr <- function(x, ...){
     #                user_input)
 
 
-    cat("-------------------------------------------" ,
+    cat("\n-------------------------------------------" ,
         "\nModel Fit: maxcovr fixed location model",
         "\n-------------------------------------------",
         # I tried, I really did, to use purrr. "
@@ -114,7 +114,7 @@ print.maxcovr <- function(x, ...){
 #' @export
 summary.maxcovr <- function(object, ...){
 
-    cat("-------------------------------------------" ,
+    cat("\n-------------------------------------------" ,
         "\nModel Fit: maxcovr fixed location model",
         "\n-------------------------------------------",
         sprintf("\nDistance Cutoff: %sm",
