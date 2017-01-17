@@ -103,8 +103,7 @@ extract_mc_results <- function(x){
                                         model_coverage)
 
 
-    return(
-        tibble::tibble(
+        res <- tibble::tibble(
             facility_selected = list(facility_selected),
             user_affected = list(user_affected),
             model_coverage = list(model_coverage),
@@ -112,6 +111,8 @@ extract_mc_results <- function(x){
             summary = list(summary_coverage),
             n_added = list(x$n_added),
             distance_cutoff = list(x$distance_cutoff)
+        )
+
             # not really sure if I need to provide the user + facility solution
             # but perhaps I could provide this in another function to extract
             # the working parts of the optimisation
@@ -119,8 +120,12 @@ extract_mc_results <- function(x){
             # facility_solution = facility_solution,
             # facilities_users_merge = facilities_users_merge,
             #add the variables that were used here to get more info
-        )
-    )
+
+    # res <- c(class(res),"maxcovr_relocation")
+    class(res) <- c("maxcovr",class(res))
+    # class(res) <- c("maxcovr_relocation")
+
+    return(res)
 
 }
 

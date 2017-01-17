@@ -1,6 +1,6 @@
 
 #' @export
-print.maxcovr_relocation <- function(x){
+print.maxcovr_relocation <- function(x, ...){
 
     cat("-----------------------------------------------" ,
         "\nModel Fit: maxcovr relocation model",
@@ -30,13 +30,59 @@ print.maxcovr_relocation <- function(x){
                          x$existing_coverage[[1]]$pct_cov),
                     4)
                 ),
+        "\nAvg Distance (m) to Facility (SD):",
+        sprintf("%s (%s)",
+                round(x$model_coverage[[1]]$dist_avg,0),
+                round(x$model_coverage[[1]]$dist_sd,0)
+        ),
         "\n-----------------------------------------------"
     )
 
 }
 
 #' @export
-is.maxcovr_relocation <- function(x) {
+print.maxcovr <- function(x, ...){
+# x = mc_result
+    cat("-----------------------------------------------" ,
+        "\nModel Fit: maxcovr model",
+        "\n-----------------------------------------------",
+        "\nDistance Threshold:",
+        paste(deparse(x$model_coverage[[1]]$distance_within)),
+        "\nFacilities Added:",
+        paste(deparse(x$model_coverage[[1]]$n_added)),
+        "\nUsers Covered (Additional):",
+        sprintf("%s (%s)",
+                x$model_coverage[[1]]$n_cov,
+                x$model_coverage[[1]]$n_cov -
+                    x$existing_coverage[[1]]$n_cov),
+        "\nProportion Covered (Additional):",
+        sprintf("%s (%s)",
+                round(x$model_coverage[[1]]$pct_cov,4),
+                round(
+                    (x$model_coverage[[1]]$pct_cov -
+                         x$existing_coverage[[1]]$pct_cov),
+                    4)
+                ),
+        "\nAvg Distance (m) to Facility (SD):",
+        sprintf("%s (%s)",
+                round(x$model_coverage[[1]]$dist_avg,0),
+                round(x$model_coverage[[1]]$dist_sd,0)
+        ),
+        "\n-----------------------------------------------"
+    )
+
+}
+
+#' @export
+is.maxcovr <- function(x, ...) {
+
+    inherits(x, "maxcovr")
+
+}
+
+
+#' @export
+is.maxcovr_relocation <- function(x, ...) {
 
     inherits(x, "maxcovr_relocation")
 
