@@ -2,80 +2,147 @@
 #' @export
 print.maxcovr_relocation <- function(x, ...){
 
-    cat("-----------------------------------------------" ,
+
+    x = mc_relocate
+    #
+    user_input <- c(paste(x$model_call[[1]]),
+                    "lpSolve")
+
+    model_input <- c("model_used",names(formals(max_coverage_relocation)))
+    # tibble::tibble(model_input,
+    #                user_input)
+
+
+    cat("-----------------------------------------" ,
         "\nModel Fit: maxcovr relocation model",
-        "\n-----------------------------------------------",
-        "\nTotal Cost:       ",
-        paste(deparse(x$model_coverage[[1]]$total_cost)),
-        "\nInstallation Cost:",
-        paste(deparse(x$model_coverage[[1]]$install_cost)),
-        "\nRelocation Cost:  ",
-        paste(deparse(x$model_coverage[[1]]$cost_relocate)),
-        "\nDistance Threshold:",
-        paste(deparse(x$model_coverage[[1]]$distance_within)),
-        "\nExisting Facilities Removed:",
-        paste(deparse(x$model_coverage[[1]]$n_existing_removed)),
-        "\nProposed Facilities Selected:",
-        paste(deparse(x$model_coverage[[1]]$n_proposed_chosen)),
-        "\nUsers Covered (Additional):",
-        sprintf("%s (%s)",
-                x$model_coverage[[1]]$n_cov,
-                x$model_coverage[[1]]$n_cov -
-                    x$existing_coverage[[1]]$n_cov),
-        "\nProportion Covered (Additional):",
-        sprintf("%s (%s)",
-                round(x$model_coverage[[1]]$pct_cov,4),
+        "\n-----------------------------------------",
+        # I tried, I really did, to use purrr. "
+        # purrr::map2(model_input, user_input,
+        #             +              sprintf("%s: %s"))
+        # Error in sprintf("%s: %s") : too few arguments
+        sprintf("\n%s:        %s", model_input[[1]], user_input[[1]]),
+        sprintf("\n%s: %s", model_input[[2]], user_input[[2]]),
+        sprintf("\n%s: %s", model_input[[3]], user_input[[3]]),
+        sprintf("\n%s:              %s", model_input[[4]], user_input[[4]]),
+        sprintf("\n%s:   %s", model_input[[5]], user_input[[5]]),
+        sprintf("\n%s:      %s", model_input[[6]], user_input[[6]]),
+        sprintf("\n%s:     %s", model_input[[7]], user_input[[7]]),
+        sprintf("\n%s:        %s", model_input[[8]], user_input[[8]]),
+        sprintf("\n%s:            %s", model_input[[9]], user_input[[9]]),
+        "\n-----------------------------------------"
+    )
+
+}
+
+#' @export
+summary.maxcovr_relocation <- function(object, ...){
+
+    cat("---------------------------------------",
+        "\nModel Fit: maxcovr relocation model",
+        "\n---------------------------------------",
+        sprintf("\nDistance Threshold: %sm",
+                object$model_coverage[[1]]$distance_within),
+        "\nFacilities:",
+        "\n    Added:         ",
+        paste(deparse(object$model_coverage[[1]]$n_proposed_chosen)),
+        "\n    Removed:       ",
+        paste(deparse(object$model_coverage[[1]]$n_existing_removed)),
+        "\nCoverage (Additional):",
+        "\n    # Users:    ",
+        sprintf("   %s   (%s)",
+                object$model_coverage[[1]]$n_cov,
+                object$model_coverage[[1]]$n_cov -
+                    object$existing_coverage[[1]]$n_cov),
+        "\n    Proportion: ",
+        sprintf("   %s (%s)",
+                round(object$model_coverage[[1]]$pct_cov,4),
                 round(
-                    (x$model_coverage[[1]]$pct_cov -
-                         x$existing_coverage[[1]]$pct_cov),
+                    (object$model_coverage[[1]]$pct_cov -
+                         object$existing_coverage[[1]]$pct_cov),
                     4)
-                ),
-        "\nAvg Distance (m) to Facility (SD):",
-        sprintf("%s (%s)",
-                round(x$model_coverage[[1]]$dist_avg,0),
-                round(x$model_coverage[[1]]$dist_sd,0)
         ),
-        "\n-----------------------------------------------"
+        "\nDistance (m) to Facility:",
+        sprintf("\n       Avg:         %s",
+                round(object$model_coverage[[1]]$dist_avg,0)),
+        sprintf("\n       SD:          %s",
+                round(object$model_coverage[[1]]$dist_sd,0)),
+        "\nCosts:",
+        "\n    Total:         ",
+        paste(deparse(object$model_coverage[[1]]$total_cost)),
+        "\n    Install:       ",
+        paste(deparse(object$model_coverage[[1]]$install_cost)),
+        "\n    Relocation:    ",
+        paste(deparse(object$model_coverage[[1]]$cost_relocate)),
+        "\n---------------------------------------"
     )
 
 }
 
 #' @export
 print.maxcovr <- function(x, ...){
-# x = mc_result
-    cat("-----------------------------------------------" ,
-        "\nModel Fit: maxcovr model",
-        "\n-----------------------------------------------",
-        "\nDistance Threshold:",
-        paste(deparse(x$model_coverage[[1]]$distance_within)),
-        "\nFacilities Added:",
-        paste(deparse(x$model_coverage[[1]]$n_added)),
-        "\nUsers Covered (Additional):",
-        sprintf("%s (%s)",
-                x$model_coverage[[1]]$n_cov,
-                x$model_coverage[[1]]$n_cov -
-                    x$existing_coverage[[1]]$n_cov),
-        "\nProportion Covered (Additional):",
-        sprintf("%s (%s)",
-                round(x$model_coverage[[1]]$pct_cov,4),
-                round(
-                    (x$model_coverage[[1]]$pct_cov -
-                         x$existing_coverage[[1]]$pct_cov),
-                    4)
-                ),
-        "\nAvg Distance (m) to Facility (SD):",
-        sprintf("%s (%s)",
-                round(x$model_coverage[[1]]$dist_avg,0),
-                round(x$model_coverage[[1]]$dist_sd,0)
-        ),
-        "\n-----------------------------------------------"
+
+    x = mc_result
+    #
+    user_input <- c(paste(x$model_call[[1]]),
+                    "lpSolve")
+
+    model_input <- c("model_used",names(formals(max_coverage)))
+    # tibble::tibble(model_input,
+    #                user_input)
+
+
+    cat("-------------------------------------------" ,
+        "\nModel Fit: maxcovr fixed location model",
+        "\n-------------------------------------------",
+        # I tried, I really did, to use purrr. "
+        # purrr::map2(model_input, user_input,
+        #             +              sprintf("%s: %s"))
+        # Error in sprintf("%s: %s") : too few arguments
+        sprintf("\n%s:        %s", model_input[[1]], user_input[[1]]),
+        sprintf("\n%s: %s", model_input[[2]], user_input[[2]]),
+        sprintf("\n%s: %s", model_input[[3]], user_input[[3]]),
+        sprintf("\n%s:              %s", model_input[[4]], user_input[[4]]),
+        sprintf("\n%s:   %s", model_input[[5]], user_input[[5]]),
+        sprintf("\n%s:           %s", model_input[[6]], user_input[[6]]),
+        sprintf("\n%s:            %s", model_input[[7]], user_input[[7]]),
+        "\n-------------------------------------------"
     )
+
 
 }
 
-summary.maxcovr <- function(x, ...){
+#' @export
+summary.maxcovr <- function(object, ...){
 
-
+    cat("-------------------------------------------" ,
+        "\nModel Fit: maxcovr fixed location model",
+        "\n-------------------------------------------",
+        sprintf("\nDistance Cutoff: %sm",
+                object$model_coverage[[1]]$distance_within),
+        "\nFacilities:",
+        "\n    Added:      ",
+        paste(deparse(object$model_coverage[[1]]$n_added)),
+        "\nCoverage (Additional):",
+        "\n    # Users:    ",
+        sprintf("%s    (%s)",
+                object$model_coverage[[1]]$n_cov,
+                object$model_coverage[[1]]$n_cov -
+                    object$existing_coverage[[1]]$n_cov),
+        "\n    Proportion: ",
+        sprintf("%s (%s)",
+                round(object$model_coverage[[1]]$pct_cov,4),
+                round(
+                    (object$model_coverage[[1]]$pct_cov -
+                         object$existing_coverage[[1]]$pct_cov),
+                    4)
+        ),
+        "\nDistance (m) to Facility:",
+        sprintf("\n    Avg:         %s",
+                round(object$model_coverage[[1]]$dist_avg,0)),
+        sprintf("\n    SD:          %s",
+                round(object$model_coverage[[1]]$dist_sd,0)),
+        "\n-------------------------------------------"
+    )
 
 }
 

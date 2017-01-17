@@ -1,4 +1,4 @@
-# maxcovr 0.0.4.9200 (2017-01-17)
+# maxcovr 0.0.4.9400 (2017-01-17)
 
 # NEW FEATURES (UNDER DEVELOPMENT)
 
@@ -6,7 +6,7 @@
 
 * added a results extraction method for `max_coverage_relocation`, `extract_mc_result_relocation`. Eventually this will be be absorbed into the `extract_mc_result` function, through some kind of S3 method.
 
-* added `print` S3 method for `max_coverage` and `max_coverage_relocation`, and an `is.maxcovr_relocation` and `is.maxcovr`, which should be handy for testing.
+* added `print` and `summary` S3 method for `max_coverage` and `max_coverage_relocation`, and an `is.maxcovr_relocation` and `is.maxcovr`, which should be handy for testing.
 
 # maxcovr 0.0.3.9000 (2016-12-03)
 

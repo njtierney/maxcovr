@@ -2,6 +2,8 @@
 
 S3method(print,maxcovr)
 S3method(print,maxcovr_relocation)
+S3method(summary,maxcovr)
+S3method(summary,maxcovr_relocation)
 export(binary_matrix_cpp)
 export(deg2rad_cpp)
 export(distance_matrix_cpp)
