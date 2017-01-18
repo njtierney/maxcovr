@@ -5,7 +5,8 @@
 \title{Maximum Coverage when considering relocation}
 \usage{
 max_coverage_relocation(existing_facility = NULL, proposed_facility, user,
-  distance_cutoff, cost_install, cost_removal, cost_total, solver = "lpSolve")
+  distance_cutoff, cost_install, cost_removal, cost_total, solver = "lpSolve",
+  return_early = FALSE)
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
@@ -25,6 +26,8 @@ you are interested in. If a number is less than distance_cutoff, it will be
 \item{cost_total}{integer the total cost allocated to the project}
 
 \item{solver}{character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}}
+
+\item{return_early}{logical TRUE if I do not want to run the extraction process, FALSE if I want to just return the lpsolve model etc.}
 }
 \value{
 dataframe of results

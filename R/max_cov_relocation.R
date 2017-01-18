@@ -14,6 +14,7 @@
 #' @param cost_install integer the cost of installing a new facility
 #' @param cost_removal integer the cost of removing a facility
 #' @param cost_total integer the total cost allocated to the project
+#' @param return_early logical TRUE if I do not want to run the extraction process, FALSE if I want to just return the lpsolve model etc.
 #'
 #' @return dataframe of results
 #'
@@ -49,7 +50,8 @@ max_coverage_relocation <- function(existing_facility = NULL,
                                     cost_install,
                                     cost_removal,
                                     cost_total,
-                                    solver = "lpSolve"){
+                                    solver = "lpSolve",
+                                    return_early = FALSE){
 
 # the A matrix that I feed here will be the combination of the
 # existing AED locations and the potential AED locations.
@@ -381,8 +383,16 @@ x <- list(
 
 # return(x)
 
+# add a return early statement for debugging.
+
+if(return_early){
+    return(x)
+} else if(!return_early){
+
 model_result <- extract_mc_results_relocation(x)
 
 return(model_result)
+
+}
 
 } # end function
