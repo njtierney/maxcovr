@@ -1,4 +1,4 @@
-# maxcovr 0.0.4.9500 (2017-01-18)
+# maxcovr 0.0.5.9000 (2017-01-18)
 
 ## NEW FEATURES (UNDER DEVELOPMENT)
 
@@ -11,6 +11,8 @@
 ## BUG FIXES
 
 * Changed the specification of m_under_i and m_over_i to more clearly reflect "The gain of removing an AED from position i"
+
+* Removed the scraggly test dataset that was lurking in the shadows and making my model not work.
 
 
 # maxcovr 0.0.3.9000 (2016-12-03)
