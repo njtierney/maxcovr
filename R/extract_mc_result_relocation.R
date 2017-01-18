@@ -31,6 +31,9 @@ extract_mc_results_relocation <- function(x){
     # how many are proposed?
     n_proposed <- nrow(x$proposed_facility)
 
+    # total number of facilities?
+    n_facilities <- (nrow(x$existing_facility) + nrow(x$proposed_facility))
+
     # x$lp_solution$solution[1:n_existing]
 
     # how many were selected?
@@ -44,15 +47,13 @@ extract_mc_results_relocation <- function(x){
         x$existing_facility[which(x$lp_solution$solution[1:n_existing] == 0),]
 
     # how many additional proposed ones were selected?
-    n_bit_1 <- n_existing+1
-    n_bit_2 <- n_existing+n_proposed
+    # n_bit_1 <- n_existing+1
+    n_existing_1 <- n_existing+1
+    # n_bit_2 <- n_existing+n_proposed
 
-    n_proposed_chosen <- sum(x$lp_solution$solution[n_bit_1:n_bit_2])
+    #
+    n_proposed_chosen <- sum(x$lp_solution$solution[n_existing_1:n_facilities])
 
-    # OK, so the good news is that 103 were still moved...
-
-    # maybe I need to specify another $400 to get the other two moved/
-    # and oddly, that worked exactly...
     # maybe there is now total coverage?
 
     n_bit_3 <- n_existing+n_proposed+1
@@ -140,7 +141,7 @@ extract_mc_results_relocation <- function(x){
         dplyr::summarise(
             total_cost = as.numeric(x$cost_total),
             install_cost = as.numeric(x$cost_install),
-            cost_relocate = as.numeric(x$cost_relocate),
+            cost_removal = as.numeric(x$cost_removal),
             n_proposed_chosen = n_proposed_chosen,
             n_existing_removed = n_existing_removed,
             n_added = as.numeric(x$n_added),

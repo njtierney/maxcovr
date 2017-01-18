@@ -372,7 +372,7 @@ x <- list(
     user_id = user_id_list,
     lp_solution = lp_solution,
     cost_install = cost_install,
-    cost_relocate = cost_relocate,
+    cost_removal = cost_removal,
     cost_total = cost_total,
     model_call = model_call,
     sum_c_mi = sum_c_mi,

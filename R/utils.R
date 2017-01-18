@@ -71,8 +71,8 @@ summary.maxcovr_relocation <- function(object, ...){
         paste(deparse(object$model_coverage[[1]]$total_cost)),
         "\n    Install:    ",
         paste(deparse(object$model_coverage[[1]]$install_cost)),
-        "\n    Relocation: ",
-        paste(deparse(object$model_coverage[[1]]$cost_relocate)),
+        "\n    Removal: ",
+        paste(deparse(object$model_coverage[[1]]$cost_removal)),
         "\n---------------------------------------"
     )
 
