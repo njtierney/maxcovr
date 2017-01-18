@@ -1,6 +1,6 @@
-# maxcovr 0.0.4.9400 (2017-01-17)
+# maxcovr 0.0.4.9500 (2017-01-18)
 
-# NEW FEATURES (UNDER DEVELOPMENT)
+## NEW FEATURES (UNDER DEVELOPMENT)
 
 * new function, `max_coverage_relocation`, takes a arguments for total cost, installation cost, and relocation costs and then works out how many facilities it can place, and potentially remove and replace to obtain optimum coverage. The function is currently under development. In the future it will be absorted into `max_coverage`.
 
@@ -8,9 +8,14 @@
 
 * added `print` and `summary` S3 method for `max_coverage` and `max_coverage_relocation`, and an `is.maxcovr_relocation` and `is.maxcovr`, which should be handy for testing.
 
+## BUG FIXES
+
+* Changed the specification of m_under_i and m_over_i to more clearly reflect "The gain of removing an AED from position i"
+
+
 # maxcovr 0.0.3.9000 (2016-12-03)
 
-# UNDER DEVELOPMENT
+## UNDER DEVELOPMENT
 
 * added a vignette that describes how to perform cross validation on the maxcovr problem using modelr and purrr
 
