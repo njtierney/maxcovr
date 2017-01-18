@@ -1,0 +1,114 @@
+---
+title: "Using max_coverage_relocation"
+author: "Nicholas Tierney"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette provides a guide to using maxcovr to solve the maximum covering location problem, assuming that you can relocate facilities. 
+
+
+```{r libraries}
+library(tidyverse)
+library(maxcovr)
+```
+
+The normal method, `max_coverage` is limited in that it assumes that you cannot move existing facilities. `max_coverage_relocation` assumes that you can move already existing facilities, but that there is some cost of removal, and a cost of installation.
+
+To illustrate the benefits of relocation, we are first going to consider an example where the existing facilities provide no coverage to users. We identify facility locations that are really far away.
+
+```{r build-worst}
+
+york_selected_worst_id <- york_crime %>% 
+    nearest(york) %>%
+    arrange(-distance) %>%
+    slice(1:20) %>%
+    select(desig_id) %>%
+    distinct(desig_id)
+    
+    
+york_worst <- york_selected_worst_id %>% 
+    left_join(york,
+              by = "desig_id")
+
+```
+
+Then we identify some really ideal locations.
+
+```{r}
+
+york_not_selected_worst <- york %>%
+    anti_join(york_worst,
+              by = "desig_id")
+
+york_best <- 
+ york_crime %>%
+    nearest(york_not_selected_worst) %>%
+    arrange(distance) %>%
+    slice(1:100) %>%
+    select(desig_id) %>%
+    distinct(desig_id) %>%
+    left_join(york,
+              by = "desig_id")
+
+
+```
+
+```{r}
+
+york_best
+york_worst
+
+```
+
+So these are *worst* placements and ideally they should all get removed.
+
+Here we tell `max_coverage_relocation` that the existing facilities are `york_worst`, the proposed facilities are `york_best`, the users we want to cover are given in `york_crime`, and the distance cutoff for coverage is 100m. We then provide the cost of installing a location, the cost of removing, and the total cost available.
+
+In `max_coverage` we would instead state `n_added` = 1 - as this is effectively saying the same thing as below. There is only enough total resources to install one facility.
+
+```{r}
+
+system.time(
+mc_relocate_worst <-  max_coverage_relocation(existing_facility = york_worst,
+                                              proposed_facility = york_best,
+                                              user = york_crime,
+                                              distance_cutoff = 100,
+                                              cost_install = 10,
+                                              cost_removal = 1,
+                                              cost_total = 10)
+)
+
+mc_relocate_worst
+summary(mc_relocate_worst)
+
+
+```
+
+
+You can then start to toy with the different pricings if you like.
+
+
+```{r}
+
+system.time(
+mc_relocate_worst_eq <-  max_coverage_relocation(existing_facility = york_worst,
+                                              proposed_facility = york_best,
+                                              user = york_crime,
+                                              distance_cutoff = 100,
+                                              cost_install = 10,
+                                              cost_removal = 100,
+                                              cost_total = 10)
+)
+
+mc_relocate_worst_eq
+
+summary(mc_relocate_worst_eq)
+
+```
+
+
