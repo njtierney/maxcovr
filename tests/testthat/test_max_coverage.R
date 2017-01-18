@@ -37,21 +37,22 @@ mc_relocate <-  max_coverage_relocation(existing_facility = york_selected,
                                         proposed_facility = york_unselected,
                                         user = york_crime,
                                         distance_cutoff = 100,
-                                        cost_install = 5000,
-                                        cost_relocate = 200,
-                                        cost_total = 600000)
+                                        cost_install = 500,
+                                        cost_removal = 100,
+                                        cost_total = 1000)
 
+# mc_relocate
 
 testthat::test_that("max_coverage_relocation returns the correct names",{
     testthat::expect_named(mc_relocate, c("facility_selected",
-                                        "user_affected",
-                                        "which_existing_removed",
-                                        "model_coverage",
-                                        "existing_coverage",
-                                        "summary",
-                                        "total_cost",
-                                        "distance_cutoff",
-                                        "model_call"))
+                                          "user_affected",
+                                          "which_existing_removed",
+                                          "model_coverage",
+                                          "existing_coverage",
+                                          "summary",
+                                          "total_cost",
+                                          "distance_cutoff",
+                                          "model_call"))
 
 })
 testthat::test_that("maximum_coverage_relocation has the right class",{

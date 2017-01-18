@@ -37,7 +37,7 @@
 #'                                         user = york_crime,
 #'                                         distance_cutoff = 100,
 #'                                         cost_install = 5000,
-#'                                         cost_relocate = 200,
+#'                                         cost_removal = 200,
 #'                                         cost_total = 600000)
 #'
 max_coverage_relocation <- function(existing_facility = NULL,

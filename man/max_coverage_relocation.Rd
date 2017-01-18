@@ -50,7 +50,7 @@ mc_relocate <-  max_coverage_relocation(existing_facility = york_selected,
                                         user = york_crime,
                                         distance_cutoff = 100,
                                         cost_install = 5000,
-                                        cost_relocate = 200,
+                                        cost_removal = 200,
                                         cost_total = 600000)
 
 }
