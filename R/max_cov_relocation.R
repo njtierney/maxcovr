@@ -146,12 +146,12 @@ max_coverage_relocation <- function(existing_facility = NULL,
 
     existing_facility_cpp <-
         binary_matrix_cpp(facility = mc_mat_prep(existing_facility),
-                          user = mc_mat_prep(york_crime),
+                          user = mc_mat_prep(user),
                           distance_cutoff = 100)
 
     proposed_facility_cpp <-
         binary_matrix_cpp(facility = mc_mat_prep(proposed_facility),
-                          user = mc_mat_prep(york_crime),
+                          user = mc_mat_prep(user),
                           distance_cutoff = 100)
 
     A <- cbind(
