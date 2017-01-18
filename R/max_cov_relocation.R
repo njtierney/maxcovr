@@ -12,7 +12,7 @@
 # @param n_solutions Number of possible solutions to return. Default is 1.
 #' @param solver character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}
 #' @param cost_install integer the cost of installing a new facility
-#' @param cost_relocate integer the cost of relocating a new facility
+#' @param cost_removal integer the cost of removing a facility
 #' @param cost_total integer the total cost allocated to the project
 #'
 #' @return dataframe of results
@@ -47,7 +47,7 @@ max_coverage_relocation <- function(existing_facility = NULL,
                                     # n_added,
                                     # n_solutions = 1,
                                     cost_install,
-                                    cost_relocate,
+                                    cost_removal,
                                     cost_total,
                                     solver = "lpSolve"){
 
@@ -62,28 +62,12 @@ max_coverage_relocation <- function(existing_facility = NULL,
 #
 #     # wd <- rprojroot::find_rstudio_root_file()
 #
-#     dat_aed <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_aed.feather")
+        #     dat_aed <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_aed.feather")
 #
-#     dat_building <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_building.feather")
+        #     dat_building <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_building.feather")
 #
-#     dat_ohca <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_ohca.feather")
+        #     dat_ohca <- read_feather("/Users/tierneyn/Google Drive/ALL THE THINGS/PhD/code/R/smaed/analysis/outputs/01_tidy_output/dat_ohca.feather")
 
-
-    # system.time(
-    #
-    #     mc_model_fixed <- max_coverage(existing_facility = dat_aed,
-    #                                    proposed_facility = dat_building,
-    #                                    user = dat_ohca,
-    #                                    distance_cutoff = 100,
-    #                                    n_added = 20)
-    # )
-    # # mc_model_aed_20$summary
-    #
-    # mc_model_fixed
-    # summary(mc_model_fixed)
-    #
-    #
-    # system.time(
 
         # mc_model_relocate <- max_coverage_relocation(existing_facility = dat_aed,
         # existing_facility = dat_aed
@@ -191,9 +175,10 @@ colnames(A) <- facility_names
 user_id_list <- 1:nrow(user)
 
 # Ny
-n_added = nrow(existing_facility)
+# n_added <-
 
-N <- n_added
+# this is N0 is the second model
+N <- nrow(existing_facility)
 
 # N
 
@@ -203,18 +188,15 @@ c <- c(rep(0, Ny), rep(1,Nx))
 
 # c
 
-d <- c(rep(1, Ny), rep(0,Nx))
-
-# d
-
-Aeq <- d
-
-# Aeq
-
 # this is a line to optimise with cpp
 Ain <- cbind(-A, diag(Nx))
 
 # Ain
+
+
+
+# ------------------------
+
 
 # create the m vector ----------------------------------------------------------
 
@@ -224,22 +206,52 @@ Ain <- cbind(-A, diag(Nx))
 # if using the testing data
 
 # these are for the testing data
-    # m_vec <- c(
-    #     rep(cost_relocate*-1, ncol(existing_facility)),
-    #     rep(cost_install, ncol(proposed_facility)),
-    #     rep(0, Nx)
-    # )
+# m_vec <- c(
+#     rep(cost_relocate*-1, ncol(existing_facility)),
+#     rep(cost_install, ncol(proposed_facility)),
+#     rep(0, Nx)
+# )
 
+
+cost_relocate <- cost_install - cost_removal
+
+# so this is the gain of removing an AED from a location (as opposed to buying)
+# the existing facilities will have this cost (ncol(existing_facility_cpp)),
+# and then the proposed facilities don't have this cost (hence, 0s)
+m_under_i <- c(rep(cost_relocate * -1, ncol(existing_facility_cpp)),
+               rep(0,ncol(proposed_facility_cpp)))
+
+
+# cost of installing
+# The existing facilities don't have an installation cost (hence, 0s)
+# the proposed facilities have an installation cost, hence cost_install...
+m_over_i <- c(rep(0, ncol(existing_facility_cpp)),
+              rep(cost_install, ncol(proposed_facility_cpp)))
+
+# m_over_i <- rep(cost_install, ncol(proposed_facility_cpp))
+
+# m_vec <- c(
+#     # these two are for the real data
+#     m_under_i,
+#     m_over_i,
+#     rep(0, Nx)
+# )
+
+# trust in the algebra.
 m_vec <- c(
-    # these two are for the real data
-    rep(cost_relocate*-1, ncol(existing_facility_cpp)),
-    rep(cost_install, ncol(proposed_facility_cpp)),
+    m_over_i - m_under_i,
     rep(0, Nx)
 )
 
 # m_vec
 
-# ------------------------
+# just gets assigned to Aeq
+# d <- c(rep(1, Ny), rep(0,Nx))
+# d
+
+Aeq <- c(rep(1, Ny), rep(0,Nx))
+
+# Aeq
 
 # matrix of numeric constraint coefficients,
 # one row per constraint
@@ -254,8 +266,16 @@ bin <- matrix(rep(0,Nx), ncol = 1)
 
 # bin
 
+
+
 # this is sum_{i = 1}^I
-sum_c_mi <- cost_total - abs(sum(m_vec[m_vec<0]))
+# sum_c_mi <- cost_total - sum(abs(m_vec[m_vec<0]))
+
+# 2017/01/18 - remove the absolute, to corretly penalise reinstallation
+# sum_c_mi <- cost_total - sum(m_vec[m_vec<0])
+
+# trust the algebra.
+sum_c_mi <- cost_total - sum(m_under_i)
 
 # sum_c_mi
 
@@ -346,7 +366,7 @@ x <- list(
     existing_user = user,
     user_not_covered = user_not_covered,
     # dist_indic = dist_indic,
-    n_added = n_added,
+    n_added = N,
     # n_solutions = n_solutions,
     A = A,
     user_id = user_id_list,
@@ -354,7 +374,9 @@ x <- list(
     cost_install = cost_install,
     cost_relocate = cost_relocate,
     cost_total = cost_total,
-    model_call = model_call
+    model_call = model_call,
+    sum_c_mi = sum_c_mi,
+    m_vec = m_vec
 )
 
 # return(x)
