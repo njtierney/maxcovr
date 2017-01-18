@@ -5,8 +5,7 @@
 \title{Maximum Coverage when considering relocation}
 \usage{
 max_coverage_relocation(existing_facility = NULL, proposed_facility, user,
-  distance_cutoff, cost_install, cost_relocate, cost_total,
-  solver = "lpSolve")
+  distance_cutoff, cost_install, cost_removal, cost_total, solver = "lpSolve")
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
@@ -21,7 +20,7 @@ you are interested in. If a number is less than distance_cutoff, it will be
 
 \item{cost_install}{integer the cost of installing a new facility}
 
-\item{cost_relocate}{integer the cost of relocating a new facility}
+\item{cost_removal}{integer the cost of removing a facility}
 
 \item{cost_total}{integer the total cost allocated to the project}
 
