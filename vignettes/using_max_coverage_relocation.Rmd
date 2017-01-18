@@ -13,7 +13,7 @@ This vignette provides a guide to using maxcovr to solve the maximum covering lo
 
 
 ```{r libraries}
-library(tidyverse)
+library(dplyr)
 library(maxcovr)
 ```
 
