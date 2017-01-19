@@ -41,6 +41,10 @@
 #'                                         cost_removal = 200,
 #'                                         cost_total = 600000)
 #'
+#' mc_relocate
+#'
+#' summary(mc_relocate)
+#'
 max_coverage_relocation <- function(existing_facility = NULL,
                                     proposed_facility,
                                     user,
