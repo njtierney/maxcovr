@@ -47,25 +47,23 @@ summary.maxcovr_relocation <- function(object, ...){
         paste(deparse(object$model_coverage[[1]]$n_proposed_chosen)),
         "\n    Removed:    ",
         paste(deparse(object$model_coverage[[1]]$n_existing_removed)),
-        "\nCoverage (Additional):",
+        "\nCoverage (Previous):",
         "\n    # Users: ",
         sprintf("   %s   (%s)",
                 object$model_coverage[[1]]$n_cov,
-                object$model_coverage[[1]]$n_cov -
-                    object$existing_coverage[[1]]$n_cov),
+                object$existing_coverage[[1]]$n_cov),
         "\n    Proportion: ",
         sprintf("%s (%s)",
                 round(object$model_coverage[[1]]$pct_cov,4),
-                round(
-                    (object$model_coverage[[1]]$pct_cov -
-                         object$existing_coverage[[1]]$pct_cov),
-                    4)
-        ),
-        "\nDistance (m) to Facility:",
-        sprintf("\n       Avg:      %s",
-                round(object$model_coverage[[1]]$dist_avg,0)),
-        sprintf("\n       SD:       %s",
-                round(object$model_coverage[[1]]$dist_sd,0)),
+                round(object$existing_coverage[[1]]$pct_cov,4)
+                ),
+        "\nDistance (m) to Facility (Previous):",
+        sprintf("\n       Avg:      %s (%s)",
+                round(object$model_coverage[[1]]$dist_avg,0),
+                round(object$existing_coverage[[1]]$dist_avg,0)),
+        sprintf("\n       SD:       %s (%s)",
+                round(object$model_coverage[[1]]$dist_sd,0),
+                round(object$existing_coverage[[1]]$dist_sd,0)),
         "\nCosts:",
         "\n    Total:      ",
         paste(deparse(object$model_coverage[[1]]$total_cost)),
@@ -122,25 +120,23 @@ summary.maxcovr <- function(object, ...){
         "\nFacilities:",
         "\n    Added:      ",
         paste(deparse(object$model_coverage[[1]]$n_added)),
-        "\nCoverage (Additional):",
+        "\nCoverage (Previous):",
         "\n    # Users:    ",
         sprintf("%s    (%s)",
                 object$model_coverage[[1]]$n_cov,
-                object$model_coverage[[1]]$n_cov -
-                    object$existing_coverage[[1]]$n_cov),
+                object$existing_coverage[[1]]$n_cov),
         "\n    Proportion: ",
         sprintf("%s (%s)",
                 round(object$model_coverage[[1]]$pct_cov,4),
-                round(
-                    (object$model_coverage[[1]]$pct_cov -
-                         object$existing_coverage[[1]]$pct_cov),
-                    4)
+                round(object$existing_coverage[[1]]$pct_cov,4)
         ),
-        "\nDistance (m) to Facility:",
-        sprintf("\n    Avg:         %s",
-                round(object$model_coverage[[1]]$dist_avg,0)),
-        sprintf("\n    SD:          %s",
-                round(object$model_coverage[[1]]$dist_sd,0)),
+        "\nDistance (m) to Facility (Previous):",
+        sprintf("\n    Avg:         %s (%s)",
+                round(object$model_coverage[[1]]$dist_avg,0),
+                round(object$existing_coverage[[1]]$dist_avg,0)),
+        sprintf("\n    SD:          %s (%s)",
+                round(object$model_coverage[[1]]$dist_sd,0),
+                round(object$existing_coverage[[1]]$dist_sd,0)),
         "\n-------------------------------------------"
     )
 
