@@ -257,7 +257,7 @@ Aeq <- c(rep(1, Ny), rep(0,Nx))
 
 # matrix of numeric constraint coefficients,
 # one row per constraint
-# one column per variable
+# one column per variable - this is another line to optimise with c++
 constraint_matrix <- rbind(Ain,
                            m_vec,
                            Aeq)

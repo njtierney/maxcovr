@@ -2,6 +2,16 @@
 
 ## NEW FEATURES (UNDER DEVELOPMENT)
 
+* `max_coverage_relocation` now works for different data, thanks to a bug fix.
+
+## BUG FIXES
+
+* Removed the scraggly test dataset that was lurking in the shadows and making my model not work.
+
+# maxcovr 0.0.4.9000 (2017-01-17)
+
+## NEW FEATURES (UNDER DEVELOPMENT)
+
 * new function, `max_coverage_relocation`, takes a arguments for total cost, installation cost, and relocation costs and then works out how many facilities it can place, and potentially remove and replace to obtain optimum coverage. The function is currently under development. In the future it will be absorted into `max_coverage`.
 
 * added a results extraction method for `max_coverage_relocation`, `extract_mc_result_relocation`. Eventually this will be be absorbed into the `extract_mc_result` function, through some kind of S3 method.
