@@ -16,9 +16,7 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#' library(maxcovr)
-#' library(tidyverse)
+#' library(dplyr)
 #'
 #' # already existing locations
 #' york_selected <- york %>% filter(grade == "I")
@@ -32,6 +30,10 @@
 #'                          distance_cutoff = 100,
 #'                          n_added = 20)
 #'
+#'mc_result
+#'
+#'summary(mc_result)
+#'
 #'  # get the facilities chosen out
 #'  mc_result$facility_selected
 #'
@@ -40,8 +42,6 @@
 #'
 #'  # get the summaries out
 #'  mc_result$summary
-#'
-#' }
 #'
 #'
 #' @export

@@ -30,9 +30,7 @@ max_coverage solves the binary optimisation problem known as the "maximal coveri
 }
 \examples{
 
-\dontrun{
-library(maxcovr)
-library(tidyverse)
+library(dplyr)
 
 # already existing locations
 york_selected <- york \%>\% filter(grade == "I")
@@ -46,6 +44,10 @@ mc_result <- max_coverage(existing_facility = york_selected,
                          distance_cutoff = 100,
                          n_added = 20)
 
+mc_result
+
+summary(mc_result)
+
  # get the facilities chosen out
  mc_result$facility_selected
 
@@ -54,8 +56,6 @@ mc_result <- max_coverage(existing_facility = york_selected,
 
  # get the summaries out
  mc_result$summary
-
-}
 
 
 }
