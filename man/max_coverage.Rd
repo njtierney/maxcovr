@@ -20,7 +20,7 @@ you are interested in. If a number is less than distance_cutoff, it will be
 
 \item{n_added}{the maximum number of facilities to add.}
 
-\item{solver}{character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}}
+\item{solver}{character default is lpSolve, but currently in development is glpk and Gurobi can be used.}
 }
 \value{
 dataframe of results

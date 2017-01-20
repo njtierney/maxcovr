@@ -25,7 +25,8 @@ Imports: lpSolve,
     readr,
     Rcpp,
     purrr,
-    magrittr
+    magrittr,
+    Rglpk
 LinkingTo: Rcpp
 Suggests: testthat,
     covr,

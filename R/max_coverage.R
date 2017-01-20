@@ -10,7 +10,7 @@
 #' 1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
-#' @param solver character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}
+#' @param solver character default is lpSolve, but currently in development is glpk and Gurobi can be used.
 #'
 #' @return dataframe of results
 #'
@@ -166,8 +166,6 @@ max_coverage <- function(existing_facility = NULL,
     # A is a matrix containing 0s and 1s
     # 1 indicates that the OHCA in row I is covered by an AED in location J
 
-if(solver == "lpSolve"){
-
     # quasi-code for making max_coverage accept n_added as a vector.
     # optim_result_box <- vector("list", length(n_added))
     # n_added <- c(20,40)
@@ -207,6 +205,8 @@ if(solver == "lpSolve"){
 # }) # end profvis
 
     # optim_result_box[[i]] <-
+
+    if(solver == "lpSolve"){
 # for the york data, it takes 0.658 seconds
     lp_solution <- lpSolve::lp(direction = "max",
                            # objective.in = d, # as of 2016/08/19
@@ -252,7 +252,78 @@ model_result <- extract_mc_results(x)
 
 return(model_result)
 
-}
+    } else if(solver == "glpk"){
+
+        glpk_solution <- Rglpk::Rglpk_solve_LP(obj = c,
+                                               mat = constraint_matrix,
+                                               dir = constraint_directions,
+                                               rhs = rhs_matrix,
+                                               bounds = NULL,
+                                               types = "B",
+                                               max = TRUE)
+
+        model_call <- match.call()
+
+        x <- list(
+            # #add the variables that were used here to get more info
+            existing_facility = existing_facility,
+            proposed_facility = proposed_facility,
+            distance_cutoff = distance_cutoff,
+            existing_user = user,
+            user_not_covered = user_not_covered,
+            # dist_indic = dist_indic,
+            n_added = n_added,
+            # n_solutions = 1,
+            A = A,
+            user_id = user_id_list,
+            glpk_solution = glpk_solution,
+            model_call = model_call
+        )
+
+        return(x)
+
+    } else if(solver == "gurobi"){
+
+        if (!requireNamespace("gurobi", quietly = TRUE)) {
+            stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
+
+        }
+
+        # gurobi is a little precious and doesn't take `==`.
+        constraint_directions_gurobi <- c(rep("<=", Nx), "=")
+        model_call <- match.call()
+        model <- list()
+
+        model$A <- constraint_matrix
+        model$obj <- c
+        model$sense <- constraint_directions_gurobi
+        model$rhs <- rhs_matrix
+        model$vtype <- "B"
+        model$modelsense <- "max"
+
+        model
+
+        gurobi_solution <- gurobi::gurobi(model)
+
+        x <- list(
+            # #add the variables that were used here to get more info
+            existing_facility = existing_facility,
+            proposed_facility = proposed_facility,
+            distance_cutoff = distance_cutoff,
+            existing_user = user,
+            user_not_covered = user_not_covered,
+            # dist_indic = dist_indic,
+            n_added = n_added,
+            # n_solutions = 1,
+            A = A,
+            user_id = user_id_list,
+            gurobi_solution = gurobi_solution,
+            model_call = model_call
+        )
+
+        return(x)
+
+    }
 
 } # end of function
 #
