@@ -86,8 +86,6 @@ max_coverage_relocation <- function(existing_facility = NULL,
 
     # mc_model_aed_20$summary
 
-
-
     ## # library(dplyr)
     ## # # subset to be the places with towers built on them.
     ## #     york_selected <- york %>% filter(grade == "I")
@@ -162,7 +160,6 @@ max_coverage_relocation <- function(existing_facility = NULL,
         existing_facility_cpp,
         proposed_facility_cpp
     )
-
 
 Nx <- nrow(A)
 
@@ -307,25 +304,7 @@ constraint_directions <- c(rep("<=", Nx),
 
 # optim_result_box[[i]] <-
 # for the york data, it takes 0.658 seconds
-lp_solution <- lpSolve::lp(direction = "max",
-                           # objective.in = d, # as of 2016/08/19
-                           objective.in = c,
-                           const.mat = constraint_matrix,
-                           const.dir = constraint_directions,
-                           const.rhs = rhs_matrix,
-                           transpose.constraints = TRUE,
-                           # int.vec,
-                           # presolve = 0,
-                           # compute.sens = 0,
-                           # binary.vec,
-                           # all.int = FALSE,
-                           all.bin = TRUE,
-                           # scale = 196,
-                           # dense.const,
-                           num.bin.solns = 1,
-                           use.rw = TRUE)
 
-# determing the users not covered
 
 dat_nearest_dist <- nearest_facility_dist(facility = mc_mat_prep(existing_facility),
                                           user = mc_mat_prep(user))
@@ -353,16 +332,26 @@ user_not_covered <- dat_nearest_no_cov %>%
 model_call <- match.call()
 
 
-# model_call <- list(existing_facility = paste(deparse(existing_facility)),
-#                    proposed_facility = quote(proposed_facility),
-#                    user = quote(user),
-#                    distance_cutoff = quote(distance_cutoff),
-#                    n_added = quote(n_added),
-#                    n_solutions = quote(n_solutions),
-#                    cost_install = quote(cost_install), # = NULL?
-#                    cost_relocate = quote(cost_relocate), # = NULL?
-#                    cost_total = quote(cost_total), # = NULL?
-#                    solver = quote(solver))
+if(solver == "lpSolve"){
+lp_solution <- lpSolve::lp(direction = "max",
+                           # objective.in = d, # as of 2016/08/19
+                           objective.in = c,
+                           const.mat = constraint_matrix,
+                           const.dir = constraint_directions,
+                           const.rhs = rhs_matrix,
+                           transpose.constraints = TRUE,
+                           # int.vec,
+                           # presolve = 0,
+                           # compute.sens = 0,
+                           # binary.vec,
+                           # all.int = FALSE,
+                           all.bin = TRUE,
+                           # scale = 196,
+                           # dense.const,
+                           num.bin.solns = 1,
+                           use.rw = TRUE)
+
+# determing the users not covered
 
 x <- list(
     # #add the variables that were used here to get more info
@@ -398,5 +387,88 @@ model_result <- extract_mc_results_relocation(x)
 return(model_result)
 
 }
+
+
+} else if(solver == "glpk"){
+
+    glpk_solution <- Rglpk::Rglpk_solve_LP(obj = c,
+                                           mat = constraint_matrix,
+                                           dir = constraint_directions,
+                                           rhs = rhs_matrix,
+                                           bounds = NULL,
+                                           types = "B",
+                                           max = TRUE)
+
+    model_call <- match.call()
+
+    x <- list(
+        # #add the variables that were used here to get more info
+        existing_facility = existing_facility,
+        proposed_facility = proposed_facility,
+        distance_cutoff = distance_cutoff,
+        existing_user = user,
+        user_not_covered = user_not_covered,
+        # dist_indic = dist_indic,
+        cost_install = cost_install,
+        cost_removal = cost_removal,
+        cost_total = cost_total,
+        model_call = model_call,
+        sum_c_mi = sum_c_mi,
+        m_vec = m_vec,
+        # n_solutions = 1,
+        A = A,
+        user_id = user_id_list,
+        glpk_solution = glpk_solution
+    )
+
+    return(x)
+
+} else if(solver == "gurobi"){
+
+    if (!requireNamespace("gurobi", quietly = TRUE)) {
+        stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
+
+    }
+
+    # gurobi is a little precious and doesn't take `==`.
+    # constraint_directions_gurobi <- c(rep("<=", Nx), "=")
+    model_call <- match.call()
+    model <- list()
+
+    model$A <- constraint_matrix
+    model$obj <- c
+    model$sense <- constraint_directions
+    model$rhs <- rhs_matrix
+    model$vtype <- "B"
+    model$modelsense <- "max"
+
+    model
+
+    gurobi_solution <- gurobi::gurobi(model)
+
+    x <- list(
+        # #add the variables that were used here to get more info
+        existing_facility = existing_facility,
+        proposed_facility = proposed_facility,
+        distance_cutoff = distance_cutoff,
+        existing_user = user,
+        user_not_covered = user_not_covered,
+        # dist_indic = dist_indic,
+        cost_install = cost_install,
+        cost_removal = cost_removal,
+        cost_total = cost_total,
+        model_call = model_call,
+        sum_c_mi = sum_c_mi,
+        m_vec = m_vec,
+        # n_solutions = 1,
+        A = A,
+        user_id = user_id_list,
+        gurobi_solution = gurobi_solution
+    )
+
+    return(x)
+
+}
+
 
 } # end function
