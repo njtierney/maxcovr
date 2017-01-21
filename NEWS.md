@@ -1,8 +1,10 @@
-# maxcovr 0.0.5.9100 (2017-01-19)
+# maxcovr 0.0.5.9200 (2017-01-21)
 
 ## NEW FEATURES (UNDER DEVELOPMENT)
 
 * `max_coverage_relocation` now works for different data, thanks to a bug fix.
+* prototype solver engines added. maxcovr now works with `glpk`, and `gurobi`, in addition to `lpSolve`. Testing still to be conducted.
+
 
 ## MINOR IMPROVEMENTS
 
