@@ -99,3 +99,36 @@ summary_mc_cv <- function(model,
 ) # close pmap
 
 } # close function
+
+#' Create a summary of the coverage between two dataframes
+#'
+#' In the york building and york crime context, writing \code{nearest(york_crime,york)} reads as "find the nearest crime in york to each building in york, and returns a dataframe with every building in york, the nearest york_crime to each building, and the distance in metres between the two.
+#'
+#' @param nearest_df dataframe containing latitude and longitude
+#' @param to_df dataframe containing latitude and longitude
+#' @param distance_cutoff integer the distance threshold you are interested in assessing coverage at
+#' @param ... extra arguments to pass to nearest
+#'
+#' @return a dataframe containing information about the distance threshold uses (distance_within), the number of events covered and not covered (n_cov, n_not_cov), the percentage covered and not covered (pct_cov, pct_not_cov), and the average distance and sd distance.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' york_selected %>% coverage(york_crime)
+#' york_crime %>% coverage(york_selected)
+#'
+#'
+coverage <- function(nearest_df,
+                     to_df,
+                     distance_cutoff = 100,
+                     ...){
+
+    nearest_df %>%
+        # not sure if this is the best way to use ..., but it seems to work!
+        # basically I want people to be able to pass arguments to nearest
+        nearest(to_df, ...) %>%
+        dplyr::mutate(is_covered = distance <= distance_cutoff) %>%
+        summarise_coverage()
+
+}

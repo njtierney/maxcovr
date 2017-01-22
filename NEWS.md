@@ -1,9 +1,10 @@
-# maxcovr 0.0.5.9200 (2017-01-21)
+# maxcovr 0.0.5.9300 (2017-01-22)
 
 ## NEW FEATURES (UNDER DEVELOPMENT)
 
 * `max_coverage_relocation` now works for different data, thanks to a bug fix.
 * prototype solver engines added. maxcovr now works with `glpk`, and `gurobi`, in addition to `lpSolve`. Testing still to be conducted.
+* summary function `coverage` added as a one liner to take two dataframes and from the coverage of one dataframe on another. Documentation and tests still need work
 
 
 ## MINOR IMPROVEMENTS
