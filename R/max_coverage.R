@@ -1,6 +1,6 @@
-#' max_coverage
+#' Solve the Maximal Covering Location Problem
 #'
-#' max_coverage solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
+#' \code{max_coverage} solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
 #'
 #' @param existing_facility data.frame containing the facilities that are already in existing, with columns names lat, and long.
 #' @param proposed_facility data.frame containing the facilities that are being proposed, with column names lat, and long.
@@ -10,7 +10,7 @@
 #' 1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
-#' @param solver character default is lpSolve, but currently in development is glpk and Gurobi can be used.
+#' @param solver character default is lpSolve, but glpk and Gurobi can also be used.
 #'
 #' @return dataframe of results
 #'
@@ -34,13 +34,13 @@
 #'
 #'summary(mc_result)
 #'
-#'  # get the facilities chosen out
+#'  # get the facilities chosen
 #'  mc_result$facility_selected
 #'
-#'  # get the users affected out
+#'  # get the users affected
 #'  mc_result$user_affected
 #'
-#'  # get the summaries out
+#'  # get the summaries
 #'  mc_result$summary
 #'
 #'
@@ -63,20 +63,8 @@ max_coverage <- function(existing_facility = NULL,
         # n_solutions = 1
     # end testing ....
 
-    # testing for the new use of three dataframes ------------------------------
-    # if (is.null(existing_facility)){
-    # existing_facility <- york %>% filter(grade == "I")
-    #
-    # # add an index to the user
-    # user <- york_crime %>% mutate(user_id = 1:n())
-    #
-    # # proposed facility
-    # proposed_facility <- york %>% filter(grade != "I")
 
     # turn existing_facility into a matrix suitable for cpp
-
-    # note, put these functions inside `nearest_facility_dist`
-
 
     # if(relocation == FALSE){
 
@@ -129,9 +117,11 @@ max_coverage <- function(existing_facility = NULL,
                                     distance_cutoff = distance_cutoff)
 
 
-    facility_names <- sprintf("facility_id_%s", 1:nrow(proposed_facility))
+    # facility_names <- sprintf("facility_id_%s", 1:nrow(proposed_facility))
+    # colnames(A) <- facility_names
+    # the facility names aren't used anymore
 
-    colnames(A) <- facility_names
+    colnames(A) <- 1:nrow(proposed_facility)
 
     # hang on to the list of OHCA ids
     # user_id_list <- A[,"user_id"]
@@ -209,7 +199,6 @@ max_coverage <- function(existing_facility = NULL,
     if(solver == "lpSolve"){
 # for the york data, it takes 0.658 seconds
     lp_solution <- lpSolve::lp(direction = "max",
-                           # objective.in = d, # as of 2016/08/19
                            objective.in = c,
                            const.mat = constraint_matrix,
                            const.dir = constraint_directions,
