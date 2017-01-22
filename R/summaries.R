@@ -115,8 +115,8 @@ summary_mc_cv <- function(model,
 #'
 #' @examples
 #'
-#' york_selected %>% coverage(york_crime)
-#' york_crime %>% coverage(york_selected)
+#' coverage(york_selected, york_crime)
+#' coverage(york_crime, york_selected)
 #'
 #'
 coverage <- function(nearest_df,

@@ -23,8 +23,8 @@ In the york building and york crime context, writing \code{nearest(york_crime,yo
 }
 \examples{
 
-york_selected \%>\% coverage(york_crime)
-york_crime \%>\% coverage(york_selected)
+coverage(york_selected, york_crime)
+coverage(york_crime, york_selected)
 
 
 }
