@@ -10,7 +10,7 @@ maxcovr was created to make it easy for a non expert to correctly solve the maxi
 maxcovr was created to make results easy to implement, reproduce, and extend by using:
 
 -   R, a free and open source language
--   An open source solver, lpSolve, that can be used on Linux, Windows, and OSX.
+-   Open source solvers, glpk and lpSolve, that can be used on Linux, Windows, and OSX.
 -   Real-world, open source example data.
 -   Tidyverse principles to make it easy to use and reason with.
 
@@ -30,7 +30,7 @@ devtools::install_github("njtierney/maxcovr")
 Using maxcovr
 =============
 
-Disclaimer: The following is a fictitious example using real world data.
+*Disclaimer: The following is a fictitious example using real world data.*
 
 Consider the toy example where we are playing a tower defense game and we need to place crime surveillance towers to detect crime.
 
@@ -115,13 +115,11 @@ head(dat_dist_bldg)
 #> #   outcome_status <chr>
 ```
 
-To evaluate the coverage we can use `summarise_coverage`
+To evaluate the coverage we can use `coverage`. This reads as find the coverage of the york buildings (below) to the crimes. Coverage of the first thing on the second thing. Or, how many of the second thing are covered by the first thing.
 
 ``` r
 
-dat_dist %>% 
-    mutate(is_covered = distance <= 100) %>%
-    summarise_coverage()
+coverage(york_selected, york_crime)
 #> # A tibble: 1 × 7
 #>   distance_within n_cov n_not_cov   pct_cov pct_not_cov dist_avg  dist_sd
 #>             <dbl> <int>     <int>     <dbl>       <dbl>    <dbl>    <dbl>
@@ -129,6 +127,19 @@ dat_dist %>%
 ```
 
 This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes are covered, but the mean distance to the surveillance camera is 1400m.
+
+Alternatively, one can also use the below code:
+
+``` r
+
+dat_dist %>%
+    mutate(is_covered = distance <= 100) %>%
+    summarise_coverage()
+#> # A tibble: 1 × 7
+#>   distance_within n_cov n_not_cov   pct_cov pct_not_cov dist_avg  dist_sd
+#>             <dbl> <int>     <int>     <dbl>       <dbl>    <dbl>    <dbl>
+#> 1             100   339      1475 0.1868798   0.8131202 1400.192 1596.676
+```
 
 Maximising coverage
 -------------------
@@ -146,7 +157,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.949   0.261   2.602
+#>   7.825   0.950  21.626
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -199,7 +210,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  14.173   1.218  16.404
+#>  18.429   1.808  31.471
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -234,9 +245,7 @@ Known Issues
 Future Work
 ===========
 
-Through December 2016 I will be focussing on making `maxcovr` more usable, building in better summaries into the model fitting process, keeping the work in a dataframe, adding speed improvements using c++ where possible, and implementing an optional gurobi solver. I will also be creating standardized plots for exploration of data and results.
-
-In 2017 I will be providing alternative interfaces to other solvers, potentially using something like [`ompr`](https://github.com/dirkschumacher/ompr), to give users their own choice of solver, such as glpk or CPLEX. In this time I will also be looking into exploiting embarassingly parallel features for data preprocessing.
+I will be focussing on making `maxcovr` work well within the `tidyverse`. This includes providing sensible standard summaries using key function verbs from `broom`, adding exploratory plots, improving speed using Rcpp, and allowing users to select the solver they want to use.
 
 ``` r
 # 
@@ -269,4 +278,4 @@ If you have any suggestions, please [file an issue](http://www.github.com/njtier
 Acknowledgements
 ================
 
-Thank you to Oliver Czibula for this initial help in helping me understand the Maximum Covering Location Problem. Thank you to Alessio Quaglino and Jost Reinhold for their help in implementing the first iteration of lpSolve. Thank you to Martin Weiser for his suggestion for the relocation process, and Matt Sutton for suggesting how to write it in lpSolve.
+Oliver Czibula, for this initial help in helping me understand the Maximum Covering Location Problem. Alessio Quaglino and Jost Reinhold for their help in implementing the first implementation of this problem in lpSolve. Martin Weiser for his suggestion for the relocation process. Matt Sutton for very his very thoughtful explanations on to interact with high level solvers, which led to implementing maxcovr in lpsolve, glpk, and gurobi.
