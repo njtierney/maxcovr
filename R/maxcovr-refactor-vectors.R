@@ -14,21 +14,21 @@
 #'
 #' @return dataframe of results
 #
-library(dplyr)
-library(maxcovr)
+# library(dplyr)
+# library(maxcovr)
 #
 # already existing locations
-york_selected <- york %>% filter(grade == "I")
-
-# proposed locations
-york_unselected <- york %>% filter(grade != "I")
-
-existing_facility = york_selected
-proposed_facility = york_unselected
-user = york_crime
-distance_cutoff = 100
-n_added = c(20,40)
-n_solutions = 1
+# york_selected <- york %>% filter(grade == "I")
+#
+# # proposed locations
+# york_unselected <- york %>% filter(grade != "I")
+#
+# existing_facility = york_selected
+# proposed_facility = york_unselected
+# user = york_crime
+# distance_cutoff = 100
+# n_added = c(20,40)
+# n_solutions = 1
 
 #' @export
 #'
@@ -410,12 +410,12 @@ return(res)
 
 # return the model -------------------------------------------------------------
 
-model_result <- extract_mc_results_2(x)
+# model_result <- extract_mc_results_2(x)
 
-return(model_result)
+# return(model_result)
 
 
-} # end function
+# } # end function
 
     # lpSolve: const.rhs
 # glpk: rhs
