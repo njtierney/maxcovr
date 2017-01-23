@@ -2,11 +2,11 @@
 #' @export
 print.maxcovr_relocation <- function(x, ...){
 
-
+# x = mc_relocate
     # x = mc_relocate
     #
     user_input <- c(paste(x$model_call[[1]]),
-                    "lpSolve")
+                    solver)
 
     model_input <- c("model_used",names(formals(max_coverage_relocation)))
     # tibble::tibble(model_input,
