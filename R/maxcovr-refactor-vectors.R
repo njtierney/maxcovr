@@ -409,9 +409,13 @@ res <- tibble::tibble(
     # )
 
 # Where the model will return two rows by default,
-# the first row being the existing coverage, and the
-# will either contain 0, NULL, or the relevant data for the "initial state"
-# so here
+# the first row being the existing coverage, and will either contain 0, NULL,
+# or the relevant data for the "initial state" so here
+# facility_selected = NULL
+# ... but then what about the rest of the data?
+# I don't want to repeat the existing_summary for each row.
+# perhaps it could instead do something else, like return one mega cool tibble
+# and then return other information
 
 # not really sure if I need to provide the user + facility solution
 # but perhaps I could provide this in another function to extract
