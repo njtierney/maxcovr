@@ -298,6 +298,9 @@ x <- list(
 
 # extract the model results ----------------------------------------------------
 
+# this is a place where I'll need to generalise it into separate function for
+# relocation and fixed methods.
+
 # get the dimenions from the matrix
 J <- x$nrow_A
 I <- x$ncol_A
@@ -389,6 +392,26 @@ res <- tibble::tibble(
     distance_cutoff = list(x$distance_cutoff),
     model_call = list(x$model_call)
 )
+
+# current thoughts on a new layout:
+
+    # tibble::tibble(
+    #     n_added,
+    #     facility_selected,
+    #     users_affected,
+    #     distance_cutoff,
+    #     n_cov, # summary?
+    #     pct_cov, # summary?
+    #     dist_avg, # summary?
+    #     dist_sd, # summary?
+    #     solver_output,
+    #     model_call
+    # )
+
+# Where the model will return two rows by default,
+# the first row being the existing coverage, and the
+# will either contain 0, NULL, or the relevant data for the "initial state"
+# so here
 
 # not really sure if I need to provide the user + facility solution
 # but perhaps I could provide this in another function to extract

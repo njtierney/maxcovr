@@ -23,6 +23,13 @@ In the york building and york crime context, writing \code{nearest(york_crime,yo
 }
 \examples{
 
+library(dplyr)
+
+# already existing locations
+york_selected <- york \%>\% filter(grade == "I")
+
+# proposed locations
+york_unselected <- york \%>\% filter(grade != "I")
 coverage(york_selected, york_crime)
 coverage(york_crime, york_selected)
 
