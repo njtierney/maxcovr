@@ -175,9 +175,14 @@ rhs_matrix <- purrr::map(
     )
 )
 
+# solve the model --------------------------------------------------------------
+
+# at this point, all of the model outputs, independent of being relocation or
+# not, are ready for the analysis.
+
 if(solver == "lpSolve"){
     lp_solution <-
-        purrr::map_df(
+        purrr::map(
             .x = rhs_matrix,
             ~lpSolve::lp(direction = "max",
                     objective.in = c,
@@ -197,26 +202,76 @@ if(solver == "lpSolve"){
                     use.rw = TRUE)
         )
 
-    solution_result <- list(
-        solution = lp_solution$solution,
-        obj_val = lp_solution$objval
-    )
-
-
-
-
+    # solution_result <- vector("list",length(rhs_matrix))
+    # this solution_tbl will be different for each solver
+    solution_tbl <- tibble::tibble(
+        n_added = n_added,
+        solution = purrr::map(.x = lp_solution, .f = ~.$solution),
+        obj_val = purrr::map_dbl(.x = lp_solution, .f = ~.$objval),
+        )
+    full_solver <- lp_solution
 
 } else if(solver == "glpk"){
 
+    glpk_solution <- purrr::map(
+        .x = rhs_matrix,
+        ~Rglpk::Rglpk_solve_LP(obj = c,
+                               mat = constraint_matrix,
+                               dir = constraint_directions,
+                               rhs = .x,
+                               bounds = NULL,
+                               types = "B",
+                               max = TRUE)
+    )
 
+    solution_tbl <- tibble::tibble(
+        n_added = n_added,
+        solution = purrr::map(.x = glpk_solution, .f = ~.$solution),
+        obj_val = purrr::map_dbl(.x = lp_solution, .f = ~.$optimum)
+    )
+
+    full_solver <- glpk_solution
 
 } else if(solver == "gurobi"){
 
+    if (!requireNamespace("gurobi", quietly = TRUE)) {
+      stop("Make sure that you have installed the Gurobi software and
+        accompanying Gurobi R package, more details at
+        https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
+    }
+
+    # gurobi is a little precious and doesn't take `==`.
+    constraint_directions_gurobi <- c(rep("<=", Nx), "=")
+
+    gurobi_solution <-
+        purrr::map(
+            .x = rhs_matrix,
+            ~gurobi::gurobi(model = list(
+                A = constraint_matrix,
+                obj = c,
+                sense = constraint_directions_gurobi,
+                rhs = .x,
+                vtypes = "B",
+                modelsense = "max"
+            ))
+            )
+
+    solution_tbl <- tibble::tibble(
+        n_added = n_added,
+        solution = purrr::map(.x = gurobi_solution, .f = ~.$x),
+        obj_val = purrr::map_dbl(.x = gurobi_solution, .f = ~.$objval)
+    )
+    # ideally I would bind each of the lists to a row for each n_added.
+    # but... I can't work out how to do that.
+    full_solver <- gurobi_solution
 
 } else{
     message("unknown solver", solver,
             "specified, please enter 'lpSolve', 'glpk', or 'gurobi' ")
 }
+
+# general note about solvers,
+# I want to split the output
 
 # capture user input
 model_call <- match.call()
@@ -231,11 +286,129 @@ x <- list(
     # dist_indic = dist_indic,
     n_added = n_added,
     # n_solutions = 1,
-    A = A,
+    # A = A,
+    # instead of A, return the dimesions
+    nrow_A = Nx,
+    ncol_A = Ny,
     user_id = user_id_list,
-    lp_solution = lp_solution,
-    model_call = model_call
+    solution_tbl = solution_tbl,
+    full_solver = full_solver
+    # model_call = model_call
 )
+
+# extract the model results ----------------------------------------------------
+
+# get the dimenions from the matrix
+J <- x$nrow_A
+I <- x$ncol_A
+
+# which AEDs are to be used
+facility_solution <- x$solution_tbl$solution[[1]][1:I]
+
+# which facilities are selected?
+facility_temp <- tibble::tibble(
+    # get the facility ids
+    facility_id = facility_id_list,
+    facility_chosen = facility_solution) %>%
+    dplyr::filter(facility_chosen == 1)
+
+facility_selected <- x$proposed_facility %>%
+    dplyr::mutate(facility_id = facility_id_list) %>%
+    dplyr::filter(facility_id %in% facility_temp$facility_id) %>%
+    # drop facility_id as it is not needed anymore
+    dplyr::select(-facility_id)
+
+# which OHCAs are affected
+user_solution <- x$solution_tbl$solution[[1]][c(I+1):c(I+J)]
+
+user_temp <- tibble::tibble(
+    user_id = x$user_id,
+    user_chosen = user_solution) %>%
+    dplyr::filter(user_chosen == 1)
+
+user_affected <- dplyr::left_join(user_temp,
+                                  x$user_not_covered,
+                                  by = "user_id")
+
+# now to return some more summaries ...
+
+# NOTE: I really should use `nearest`
+facility_sum_prep <- dplyr::bind_rows(facility_selected,
+                                      x$existing_facility) %>%
+    dplyr::select(lat,long) %>%
+    as.matrix()
+
+user_sum_prep <- x$existing_user %>%
+    dplyr::select(lat,long) %>%
+    as.matrix()
+
+dist_sum_df <-
+    maxcovr::nearest_facility_dist(facility = facility_sum_prep,
+                                   user = user_sum_prep) %>%
+    dplyr::as_data_frame() %>%
+    dplyr::rename(user_id = V1,
+                  facility_id = V2,
+                  distance = V3) %>%
+    dplyr::mutate(is_covered = (distance <= x$distance_cutoff))
+
+model_coverage <- dist_sum_df %>%
+    dplyr::summarise(n_added = as.numeric(x$n_added),
+                     distance_within = as.numeric(x$distance_cutoff),
+                     n_cov = sum(is_covered),
+                     pct_cov = (sum(is_covered) / nrow(.)),
+                     n_not_cov =  (sum(is_covered == 0)),
+                     pct_not_cov = (sum(is_covered == 0) / nrow(.)),
+                     dist_avg = mean(distance),
+                     dist_sd = stats::sd(distance))
+
+# add the original coverage
+existing_coverage <- x$existing_facility %>%
+    nearest(x$existing_user) %>%
+    dplyr::mutate(is_covered = (distance <= x$distance_cutoff)) %>%
+    dplyr::summarise(n_added = 0,
+                     distance_within = as.numeric(x$distance_cutoff),
+                     n_cov = sum(is_covered),
+                     pct_cov = (sum(is_covered) / nrow(.)),
+                     n_not_cov =  (sum(is_covered == 0)),
+                     pct_not_cov = (sum(is_covered == 0) / nrow(.)),
+                     dist_avg = mean(distance),
+                     dist_sd = stats::sd(distance))
+
+# add a summary coverage
+summary_coverage = dplyr::bind_rows(existing_coverage,
+                                    model_coverage)
+
+
+res <- tibble::tibble(
+    facility_selected = list(facility_selected),
+    user_affected = list(user_affected),
+    model_coverage = list(model_coverage),
+    existing_coverage = list(existing_coverage),
+    summary = list(summary_coverage),
+    n_added = list(x$n_added),
+    distance_cutoff = list(x$distance_cutoff),
+    model_call = list(x$model_call)
+)
+
+# not really sure if I need to provide the user + facility solution
+# but perhaps I could provide this in another function to extract
+# the working parts of the optimisation
+# user_solution = user_solution,
+# facility_solution = facility_solution,
+# facilities_users_merge = facilities_users_merge,
+#add the variables that were used here to get more info
+
+# res <- c(class(res),"maxcovr_relocation")
+class(res) <- c("maxcovr",class(res))
+# class(res) <- c("maxcovr_relocation")
+
+return(res)
+
+}
+
+
+
+# return the model -------------------------------------------------------------
 
 model_result <- extract_mc_results_2(x)
 
