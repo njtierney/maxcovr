@@ -13,10 +13,10 @@
 #' @param solver character default is lpSolve, but glpk and Gurobi can also be used.
 #'
 #' @return dataframe of results
-
+#
 library(dplyr)
 library(maxcovr)
-
+#
 # already existing locations
 york_selected <- york %>% filter(grade == "I")
 
@@ -32,7 +32,7 @@ n_solutions = 1
 
 #' @export
 #'
-max_coverage_2 <- function(existing_facility = NULL,
+max_coverage_vec <- function(existing_facility = NULL,
                          proposed_facility,
                          user,
                          distance_cutoff,
@@ -40,7 +40,25 @@ max_coverage_2 <- function(existing_facility = NULL,
                          # n_solutions = 1,
                          solver = "lpSolve"){
 
+# include some sort of description here about the format we are using
+# for the code, and solver, and how we will change it to more sensible names like:
+
+# initially, the model was solved using the syntax:
+    # minimize f^t_x subject to:
+    # x are integers
+    # A . x <= b
+    # Aeq . x <= beq
+    # lb <= x <= ub
+
+# The arguments have been changed to:
+    # objective
+    # constraint_matrix
+    # constraint_dir
+    # rhs
+
 # create objective -------------------------------------------------------------
+    # this should be made into a function that would perform different
+    # functions based on whether relocation == TRUE
 
 existing_facility_cpp <- existing_facility %>%
     dplyr::select(lat,long) %>%
@@ -92,11 +110,21 @@ c <- c(rep(0, Ny), rep(1,Nx))
 # glpk: obj # glpk
 # gurobi: obj # gurobi
 
-# perform extra functions for data munging -------------------------------------
+# output from this function could be:
+    # A
+    # Nx
+    # Ny
+    # c (objective_in)
 
+# perform extra functions for data munging -------------------------------------
+facility_id_list <- 1:nrow(proposed_facility)
+colnames(A) <- facility_id_list
 user_id_list <- 1:nrow(user_not_covered)
 
 # create constraint matrix -----------------------------------------------------
+    # this should be made into a function that would perform different
+    # functions based on whether relocation == TRUE
+    # create_constraint_matrix(..., relocation){
 
 # lpSolve: const.mat
 # glpk: mat
@@ -115,7 +143,10 @@ constraint_matrix <- rbind(
 # lpSolve: const.dir
 # glpk: dir
 # gurobi: sense
-solver = "lpSolve"
+# solver = "lpSolve"
+
+
+
 if(solver == "gurobi"){
 
     # gurobi can't handle the ==.
@@ -127,10 +158,6 @@ if(solver == "gurobi"){
 constraint_directions <- c(rep("<=", Nx), "==")
 
 } # end else
-
-# fit the model for each n...
-
-# for(i in n_added){
 
 # create right hand side matrix ------------------------------------------------
 
