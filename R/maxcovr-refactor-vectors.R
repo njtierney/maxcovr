@@ -1,6 +1,6 @@
 #' (Vectorized) Solve the Maximal Covering Location Problem
 #'
-#' \code{max_coverage} solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
+#' \code{max_coverage_vec} does what \code{max_coverage} does, but it allows for input of vectors in n_added. This function is currently still under development, as I still need to work out how to understand it.
 #'
 #' @param existing_facility data.frame containing the facilities that are already in existing, with columns names lat, and long.
 #' @param proposed_facility data.frame containing the facilities that are being proposed, with column names lat, and long.
