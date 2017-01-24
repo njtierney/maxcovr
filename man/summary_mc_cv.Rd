@@ -27,11 +27,11 @@ library(tidyverse)
 york_selected <- york \%>\% filter(grade == "I")
 york_unselected <- york \%>\% filter(grade != "I")
 
-mc_cv <- modelr::crossv_kfold(york_crime, 5) \%>\%
+mc_cv_fixed <- modelr::crossv_kfold(york_crime, 5) \%>\%
                  mutate(test = map(test,as_tibble),
                  train = map(train,as_tibble))
 
-mc_cv_fit <- map_df(mc_cv$train,
+mc_cv_fit <- map_df(mc_cv_fixed$train,
                     ~max_coverage(existing_facility = york_selected,
                     proposed_facility = york_unselected,
                     user = .,
@@ -39,7 +39,7 @@ mc_cv_fit <- map_df(mc_cv$train,
                     distance_cutoff = 100))
 
  summary_mc_cv(mc_cv_fit,
-               mc_cv$test)
+               mc_cv_fixed$test)
 
 }
 
