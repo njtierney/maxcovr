@@ -223,6 +223,9 @@ max_coverage <- function(existing_facility = NULL,
     # capture user input
     model_call <- match.call()
 
+    # remove the constraints, as they are too big
+    lp_solution[["constraints"]] <- NULL
+
 x <- list(
         # #add the variables that were used here to get more info
         existing_facility = existing_facility,
@@ -236,6 +239,7 @@ x <- list(
         A = A,
         user_id = user_id_list,
         lp_solution = lp_solution,
+        # remove a constraint!
         model_call = model_call
     )
 

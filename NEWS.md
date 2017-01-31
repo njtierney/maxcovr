@@ -8,6 +8,7 @@
 * `summary_mc_cv_relocate` added for `relocation` methods. This will eventially be an S3 method, I think?
 * rewrote the extraction functions for results from `max_coverage`, replacing them with key functions. This will make things easier to debug and extend in the future. These functions start with `extract_`. There will likely be some updates to this in the future
 * started work on refactoring the `max_coverage` functions to work with vectors, this fule is called `maxcovr-refactor-vectors`. This provides some more efficient computation of preparation of matrices for optimisation, and will provide substantial speedups for larger N, and for when multiple `n_added`'s are needed.
+* `max_coverage` now returns the entire solution from `lpSolve`, except for the constraints, because they are too large (can easily be over 1Gb)
 
 ## MINOR IMPROVEMENTS
 
