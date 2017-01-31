@@ -5,7 +5,7 @@
 \title{Solve the Maximal Covering Location Problem}
 \usage{
 max_coverage(existing_facility = NULL, proposed_facility, user,
-  distance_cutoff, n_added, solver = "lpSolve")
+  distance_cutoff, n_added, solver = "lpSolve", return_early = FALSE)
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
@@ -21,6 +21,8 @@ you are interested in. If a number is less than distance_cutoff, it will be
 \item{n_added}{the maximum number of facilities to add.}
 
 \item{solver}{character default is lpSolve, but glpk and Gurobi can also be used.}
+
+\item{return_early}{logical - should I return the object early?}
 }
 \value{
 dataframe of results
