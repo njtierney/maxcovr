@@ -1,4 +1,4 @@
-# maxcovr 0.0.5.9500 (2017-01-24)
+# maxcovr 0.0.5.9600 (2017-01-31)
 
 ## NEW FEATURES (UNDER DEVELOPMENT)
 
@@ -6,7 +6,8 @@
 * prototype solver engines added. maxcovr now works with `glpk`, and `gurobi`, in addition to `lpSolve`. Testing still to be conducted.
 * summary function `coverage` added as a one liner to take two dataframes and from the coverage of one dataframe on another. Documentation and tests still need work
 * `summary_mc_cv_relocate` added for `relocation` methods. This will eventially be an S3 method, I think?
-
+* rewrote the extraction functions for results from `max_coverage`, replacing them with key functions. This will make things easier to debug and extend in the future. These functions start with `extract_`. There will likely be some updates to this in the future
+* started work on refactoring the `max_coverage` functions to work with vectors, this fule is called `maxcovr-refactor-vectors`. This provides some more efficient computation of preparation of matrices for optimisation, and will provide substantial speedups for larger N, and for when multiple `n_added`'s are needed.
 
 ## MINOR IMPROVEMENTS
 
