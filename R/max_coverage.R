@@ -11,6 +11,7 @@
 #' @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
 #' @param solver character default is lpSolve, but glpk and Gurobi can also be used.
+#' @param return_early logical - should I return the object early?
 #'
 #' @return dataframe of results
 #'
@@ -52,7 +53,8 @@ max_coverage <- function(existing_facility = NULL,
                          distance_cutoff,
                          n_added,
                          # n_solutions = 1,
-                         solver = "lpSolve"){
+                         solver = "lpSolve",
+                         return_early = FALSE){
 
     # testing...
         # existing_facility = york_selected
@@ -237,10 +239,14 @@ x <- list(
         model_call = model_call
     )
 
+if(return_early){
+    return(x)
+} else {
+
 model_result <- extract_mc_results(x)
 
 return(model_result)
-
+}
     } else if(solver == "glpk"){
 
         glpk_solution <- Rglpk::Rglpk_solve_LP(obj = c,
