@@ -1,4 +1,4 @@
-# maxcovr 0.0.5.9600 (2017-01-31)
+# maxcovr 0.0.5.9601 (2017-01-31)
 
 ## NEW FEATURES (UNDER DEVELOPMENT)
 

@@ -64,9 +64,9 @@ extract_mc_results <- function(x){
     mc_res <- tibble::tibble(
         n_added = list(x$n_added),
         distance_cutoff = list(x$distance_cutoff),
-        existing_facility = list(x$existing_facility),
-        proposed_facility = list(x$proposed_facility),
-        user = list(x$existing_user),
+        # existing_facility = list(x$existing_facility),
+        # proposed_facility = list(x$proposed_facility),
+        # user = list(x$existing_user),
         user_affected = list(mc_users_affected),
         augmented_users = list(mc_augmented_users),
         facility_selected = list(mc_facilities_selected),
