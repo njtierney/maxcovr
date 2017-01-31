@@ -67,3 +67,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// spherical_distance_cpp_vec
+NumericVector spherical_distance_cpp_vec(NumericVector lat1, NumericVector long1, NumericVector lat2, NumericVector long2);
+RcppExport SEXP maxcovr_spherical_distance_cpp_vec(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type lat1(lat1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type long1(long1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lat2(lat2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type long2(long2SEXP);
+    rcpp_result_gen = Rcpp::wrap(spherical_distance_cpp_vec(lat1, long1, lat2, long2));
+    return rcpp_result_gen;
+END_RCPP
+}

@@ -73,3 +73,17 @@ nearest_facility_dist <- function(facility, user) {
     .Call('maxcovr_nearest_facility_dist', PACKAGE = 'maxcovr', facility, user)
 }
 
+#' Calculate (vectorized) distance using haversines formula
+#'
+#' @param lat1 latitude from the first location
+#' @param long1 longitude from the first location
+#' @param lat2 latitude from the second location
+#' @param long2 longitude from the second location
+#'
+#' @return distance in metres between two locations
+#'
+#' @export
+spherical_distance_cpp_vec <- function(lat1, long1, lat2, long2) {
+    .Call('maxcovr_spherical_distance_cpp_vec', PACKAGE = 'maxcovr', lat1, long1, lat2, long2)
+}
+

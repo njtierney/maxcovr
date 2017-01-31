@@ -196,7 +196,6 @@ for(int i = 0; i < n1; i++){
 
 return results_mat;
 
-
 // # find the nearerst facility.
 // # which column contains that minimum distance found. Return that in a column
 // # so the data input are:
@@ -209,11 +208,87 @@ return results_mat;
 } // end function
 
 
+// New cpp vectorized function
+
+//' Calculate (vectorized) distance using haversines formula
+//'
+//' @param lat1 latitude from the first location
+//' @param long1 longitude from the first location
+//' @param lat2 latitude from the second location
+//' @param long2 longitude from the second location
+//'
+//' @return distance in metres between two locations
+//'
+//' @export
+// [[Rcpp::export]]
+NumericVector spherical_distance_cpp_vec(NumericVector lat1,
+                                         NumericVector long1,
+                                         NumericVector lat2,
+                                         NumericVector long2){
+
+    int radius_earth = 6371;
+
+    int n1 = lat1.size();
+
+    NumericVector lat1_vec = lat1.length();
+    NumericVector long1_vec = long1.length();
+    NumericVector lat2_vec = lat2.length();
+    NumericVector long2_vec = long2.length();
+
+    // convert angle values into radians
+    for(int i = 0; i < n1; i++){
+        lat1_vec(i) = deg2rad_cpp(lat1(i));
+        };
+
+    for(int i = 0; i < n1; i++){
+        long1_vec(i) = deg2rad_cpp(long1(i));
+    };
+
+    for(int i = 0; i < n1; i++){
+        lat2_vec(i) = deg2rad_cpp(lat2(i));
+        };
+
+    for(int i = 0; i < n1; i++){
+        long2_vec(i) = deg2rad_cpp(long2(i));
+    };
+
+    // Determine distance using the haversine formula, assuming a spherical earth
+    // NumericVector a = pow(sin((lat2 - lat1) / 2), 2) + (cos(lat1) * cos(lat2)) * pow(sin((long2 - long1) / 2), 2);
+
+    NumericVector a = lat1.length();
+
+    for(int i = 0; i < n1; i++){
+        a(i) = pow(sin((lat2_vec(i) - lat1_vec(i)) / 2), 2) +
+            (cos(lat1_vec(i)) *
+            cos(lat2_vec(i))) *
+            pow(sin((long2_vec(i) - long1_vec(i)) / 2), 2);
+    };
+
+    NumericVector d = lat1.length();
+
+    for(int i = 0; i < n1; i++){
+        d(i) = 2 * atan2(sqrt(a(i)), sqrt(1 - a(i))) * radius_earth;
+    }
+    //NumericVector d = 2 * atan2(sqrt(a), sqrt(1 - a)) * radius_earth;
+
+    // return distance in metres
+    d = d * 1000;
+
+    return d;
+
+}
+
+
 /*** R
 dist_cpp <- spherical_distance_cpp(lat1 = 46.19616,
                                    long1 = 8.731278,
                                    lat2 = 46.16850,
                                    long2 = 9.004392)
+
+spherical_distance_cpp_vec(lat1 = 46.19616,
+                           long1 = 8.731278,
+                           lat2 = 46.16850,
+                           long2 = 9.004392)
 
 dist_maxcovr <- maxcovr::spherical_distance(lat1 = 46.19616,
                                                 long1 = 8.731278,
@@ -245,6 +320,10 @@ user_test_cpp <- as.matrix(tibble::tribble(
             46.00018,  8.946929,     1,      10
     ))
 
+# spherical_distance_cpp_vec(lat1 = york$lat,
+#                            long1 = york$long,
+#                            lat2 = york_crime$lat,
+#                            long2 = york_crime$long)
 
 # spherical_distance_cpp(lat1 = 46.19616, long1 = 9.027957,
 #                        lat2 = 46.00018, long2 = 8.946929)
@@ -255,10 +334,10 @@ my_dist_cpp <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
 
 my_dist_cpp
 
-my_dist <- maxcovr::facility_user_dist(facility = ,
-                                       user = )
+# my_dist <- maxcovr::facility_user_dist(facility = ,
+#                                        user = )
 
-my_indic_cpp <- maxcovr::facility_user_indic()
+# my_indic_cpp <- maxcovr::facility_user_indic()
 
 
 facility_test_maxcovr <- dplyr::as_data_frame(facility_test_cpp)
