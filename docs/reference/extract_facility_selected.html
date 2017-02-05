@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summary for max_coverage cross validation — summary_mc_cv • maxcovr</title>
+<title>Extract Selected Facilities — extract_facility_selected • maxcovr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,52 +77,43 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summary for max_coverage cross validation</h1>
+    <h1>Extract Selected Facilities</h1>
     </div>
 
     
-    <p>Summary for max_coverage cross validation</p>
+    <p>This takes the linear programming solution, the A matrix, and the proposed
+facilities. It returns a tibble, which contains the facilities chosen from
+the proposed facilities.</p>
     
 
-    <pre><span class='fu'>summary_mc_cv</span>(<span class='no'>model</span>, <span class='no'>test_data</span>)</pre>
+    <pre><span class='fu'>extract_facility_selected</span>(<span class='no'>solution_vector</span>, <span class='no'>A_mat</span>, <span class='no'>proposed_facilities</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>model</dt>
-      <dd>the cross validated model</dd>
-      <dt>test_data</dt>
-      <dd>the cross validated test data</dd>
+      <dt>solution_vector</dt>
+      <dd>vector from lp_solution$solution</dd>
+      <dt>A_mat</dt>
+      <dd>The &quot;A&quot; matrix from the solver</dd>
+      <dt>proposed_facilities</dt>
+      <dd>Dataframe of proposed facilities</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a summary dataframe</p>
+    <p>dataframe of selected facilities</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+<span class='co'># assuming that you've run max_coverage using lpSolve, then you</span>
+<span class='co'># will save the model output before the extraction process</span>
+<span class='co'># as `x`.</span>
 <span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># library(maxcovr)</span>
-<span class='co'># library(tidyverse)</span>
-<span class='co'># </span>
-<span class='co'># york_selected &lt;- york %&gt;% filter(grade == "I")</span>
-<span class='co'># york_unselected &lt;- york %&gt;% filter(grade != "I")</span>
-<span class='co'># </span>
-<span class='co'># mc_cv_fixed &lt;- modelr::crossv_kfold(york_crime, 5) %&gt;%</span>
-<span class='co'>#                  mutate(test = map(test,as_tibble),</span>
-<span class='co'>#                  train = map(train,as_tibble))</span>
-<span class='co'># </span>
-<span class='co'># mc_cv_fit &lt;- map_df(mc_cv_fixed$train,</span>
-<span class='co'>#                     ~max_coverage(existing_facility = york_selected,</span>
-<span class='co'>#                     proposed_facility = york_unselected,</span>
-<span class='co'>#                     user = .,</span>
-<span class='co'>#                     n_added = 20,</span>
-<span class='co'>#                     distance_cutoff = 100))</span>
-<span class='co'># </span>
-<span class='co'>#  summary_mc_cv(mc_cv_fit,</span>
-<span class='co'>#                mc_cv_fixed$test)</span>
-<span class='co'># </span>
+<span class='co'># mc_facilities_selected &lt;- extract_facility_selected(</span>
+<span class='co'>#   solution_vector = x$lp_solution$solution,</span>
+<span class='co'>#   A_mat = x$A,</span>
+<span class='co'>#   proposed_facilities = x$proposed_facility)</span>
+<span class='co'>#   </span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summary for max_coverage cross validation — summary_mc_cv • maxcovr</title>
+<title>Summary for max_coverage cross validation for relocation models — summary_mc_cv_relocate • maxcovr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,14 +77,14 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summary for max_coverage cross validation</h1>
+    <h1>Summary for max_coverage cross validation for relocation models</h1>
     </div>
 
     
-    <p>Summary for max_coverage cross validation</p>
+    <p>Summary for max_coverage cross validation for relocation models</p>
     
 
-    <pre><span class='fu'>summary_mc_cv</span>(<span class='no'>model</span>, <span class='no'>test_data</span>)</pre>
+    <pre><span class='fu'>summary_mc_cv_relocate</span>(<span class='no'>model</span>, <span class='no'>test_set</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -109,19 +109,21 @@
 <span class='co'># york_selected &lt;- york %&gt;% filter(grade == "I")</span>
 <span class='co'># york_unselected &lt;- york %&gt;% filter(grade != "I")</span>
 <span class='co'># </span>
-<span class='co'># mc_cv_fixed &lt;- modelr::crossv_kfold(york_crime, 5) %&gt;%</span>
+<span class='co'># mc_cv &lt;- modelr::crossv_kfold(york_crime, 5) %&gt;%</span>
 <span class='co'>#                  mutate(test = map(test,as_tibble),</span>
 <span class='co'>#                  train = map(train,as_tibble))</span>
 <span class='co'># </span>
-<span class='co'># mc_cv_fit &lt;- map_df(mc_cv_fixed$train,</span>
-<span class='co'>#                     ~max_coverage(existing_facility = york_selected,</span>
-<span class='co'>#                     proposed_facility = york_unselected,</span>
-<span class='co'>#                     user = .,</span>
-<span class='co'>#                     n_added = 20,</span>
-<span class='co'>#                     distance_cutoff = 100))</span>
-<span class='co'># </span>
-<span class='co'>#  summary_mc_cv(mc_cv_fit,</span>
-<span class='co'>#                mc_cv_fixed$test)</span>
+<span class='co'># mc_cv_relocate &lt;- map_df(mc_cv$train,</span>
+<span class='co'>#                     ~max_coverage_relocation(existing_facility = york_selected,</span>
+<span class='co'>#                                proposed_facility = york_unselected,</span>
+<span class='co'>#                                user = .,</span>
+<span class='co'>#                                cost_install = 2500,</span>
+<span class='co'>#                                cost_removal = 700,</span>
+<span class='co'>#                                cost_total = 50000,</span>
+<span class='co'>#                                distance_cutoff = 100,</span>
+<span class='co'>#                                solver = "gurobi"))</span>
+<span class='co'># #'</span>
+<span class='co'>#  summary_mc_cv_relocate(mc_cv_relocate, mc_cv$test)</span>
 <span class='co'># </span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>

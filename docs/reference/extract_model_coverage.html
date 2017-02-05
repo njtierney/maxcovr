@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summary for max_coverage cross validation — summary_mc_cv • maxcovr</title>
+<title>Extract a one-row summary of the model coverage — extract_model_coverage • maxcovr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,52 +77,43 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summary for max_coverage cross validation</h1>
+    <h1>Extract a one-row summary of the model coverage</h1>
     </div>
 
     
-    <p>Summary for max_coverage cross validation</p>
+    <p>This function takes the users information, the distance cutoff, and the number of facilities added, and then returns a one-row dataframe containing summary information about the coverage.</p>
     
 
-    <pre><span class='fu'>summary_mc_cv</span>(<span class='no'>model</span>, <span class='no'>test_data</span>)</pre>
+    <pre><span class='fu'>extract_model_coverage</span>(<span class='no'>augmented_user</span>, <span class='no'>distance_cutoff</span>, <span class='no'>n_added</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>model</dt>
-      <dd>the cross validated model</dd>
-      <dt>test_data</dt>
-      <dd>the cross validated test data</dd>
+      <dt>augmented_user</dt>
+      <dd>dataframe obtained from augment_user()</dd>
+      <dt>distance_cutoff</dt>
+      <dd>numeric of the distance cutoff</dd>
+      <dt>n_added</dt>
+      <dd>numeric of the number of facilities added</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a summary dataframe</p>
+    <p>tibble of summary coverage info</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'>## Not run: ------------------------------------</span>
 <span class='co'># </span>
-<span class='co'># library(maxcovr)</span>
-<span class='co'># library(tidyverse)</span>
+<span class='co'># augmented_users &lt;- augment_user(</span>
+<span class='co'>#     facilities_selected = mc_facilities_selected,</span>
+<span class='co'>#     existing_facilities = x$existing_facility,</span>
+<span class='co'>#     existing_users = x$existing_user)</span>
 <span class='co'># </span>
-<span class='co'># york_selected &lt;- york %&gt;% filter(grade == "I")</span>
-<span class='co'># york_unselected &lt;- york %&gt;% filter(grade != "I")</span>
-<span class='co'># </span>
-<span class='co'># mc_cv_fixed &lt;- modelr::crossv_kfold(york_crime, 5) %&gt;%</span>
-<span class='co'>#                  mutate(test = map(test,as_tibble),</span>
-<span class='co'>#                  train = map(train,as_tibble))</span>
-<span class='co'># </span>
-<span class='co'># mc_cv_fit &lt;- map_df(mc_cv_fixed$train,</span>
-<span class='co'>#                     ~max_coverage(existing_facility = york_selected,</span>
-<span class='co'>#                     proposed_facility = york_unselected,</span>
-<span class='co'>#                     user = .,</span>
-<span class='co'>#                     n_added = 20,</span>
-<span class='co'>#                     distance_cutoff = 100))</span>
-<span class='co'># </span>
-<span class='co'>#  summary_mc_cv(mc_cv_fit,</span>
-<span class='co'>#                mc_cv_fixed$test)</span>
-<span class='co'># </span>
+<span class='co'># extract_model_coverage(</span>
+<span class='co'>#     augmented_user = augmented_users,</span>
+<span class='co'>#     distance_cutoff = x$distance_cutoff,</span>
+<span class='co'>#     n_added = x$n_added)</span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -50,6 +50,9 @@ library(dplyr)
 #> The following objects are masked from 'package:stats':
 #> 
 #>     filter, lag
+#> The following object is masked from 'package:testthat':
+#> 
+#>     matches
 #> The following objects are masked from 'package:base':
 #> 
 #>     intersect, setdiff, setequal, union
@@ -157,7 +160,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   7.825   0.950  21.626
+#>   1.780   0.287   2.186
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -199,6 +202,9 @@ library(purrr)
 #> The following objects are masked from 'package:dplyr':
 #> 
 #>     contains, order_by
+#> The following object is masked from 'package:testthat':
+#> 
+#>     is_null
 n_add_vec <- c(20, 40, 60, 80, 100)
 
 system.time(
@@ -210,7 +216,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  18.429   1.808  31.471
+#>  14.638   1.304  17.527
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -224,6 +230,11 @@ We can then visualise the effect on coverage:
 
 ``` r
 library(ggplot2)
+#> 
+#> Attaching package: 'ggplot2'
+#> The following object is masked _by_ '.GlobalEnv':
+#> 
+#>     diamonds
 bind_rows(map_mc_model$existing_coverage[[1]],
           map_cov_results) %>%
     ggplot(aes(x = factor(n_added),

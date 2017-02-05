@@ -1,7 +1,7 @@
 Package: maxcovr
 Type: Package
 Title: A Set of Tools For Solving Maximal Coverage Problem
-Version: 0.0.5.9602
+Version: 0.0.5.9603
 Authors@R: c(
     person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
     role = c("aut", "cre"))
@@ -14,7 +14,7 @@ Description: Solving the "maximum location coverage problem" as described by
 Depends:
     R (>= 3.2.2)
 License: MIT + file LICENSE
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 6.0.0
 LazyData: true
 URL: https://github.com/njtierney/maxcovr
 BugReports: https://github.com/njtierney/maxcovr/issues

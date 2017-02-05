@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summary for max_coverage cross validation — summary_mc_cv • maxcovr</title>
+<title>Create a summary of the coverage between two dataframes — coverage • maxcovr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,53 +77,50 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summary for max_coverage cross validation</h1>
+    <h1>Create a summary of the coverage between two dataframes</h1>
     </div>
 
     
-    <p>Summary for max_coverage cross validation</p>
+    <p>In the york building and york crime context, writing <code>nearest(york_crime,york)</code> reads as &quot;find the nearest crime in york to each building in york, and returns a dataframe with every building in york, the nearest york_crime to each building, and the distance in metres between the two.</p>
     
 
-    <pre><span class='fu'>summary_mc_cv</span>(<span class='no'>model</span>, <span class='no'>test_data</span>)</pre>
+    <pre><span class='fu'>coverage</span>(<span class='no'>nearest_df</span>, <span class='no'>to_df</span>, <span class='kw'>distance_cutoff</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>model</dt>
-      <dd>the cross validated model</dd>
-      <dt>test_data</dt>
-      <dd>the cross validated test data</dd>
+      <dt>nearest_df</dt>
+      <dd>dataframe containing latitude and longitude</dd>
+      <dt>to_df</dt>
+      <dd>dataframe containing latitude and longitude</dd>
+      <dt>distance_cutoff</dt>
+      <dd>integer the distance threshold you are interested in assessing coverage at</dd>
+      <dt>...</dt>
+      <dd>extra arguments to pass to nearest</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a summary dataframe</p>
+    <p>a dataframe containing information about the distance threshold uses (distance_within), the number of events covered and not covered (n_cov, n_not_cov), the percentage covered and not covered (pct_cov, pct_not_cov), and the average distance and sd distance.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># </span>
-<span class='co'># library(maxcovr)</span>
-<span class='co'># library(tidyverse)</span>
-<span class='co'># </span>
-<span class='co'># york_selected &lt;- york %&gt;% filter(grade == "I")</span>
-<span class='co'># york_unselected &lt;- york %&gt;% filter(grade != "I")</span>
-<span class='co'># </span>
-<span class='co'># mc_cv_fixed &lt;- modelr::crossv_kfold(york_crime, 5) %&gt;%</span>
-<span class='co'>#                  mutate(test = map(test,as_tibble),</span>
-<span class='co'>#                  train = map(train,as_tibble))</span>
-<span class='co'># </span>
-<span class='co'># mc_cv_fit &lt;- map_df(mc_cv_fixed$train,</span>
-<span class='co'>#                     ~max_coverage(existing_facility = york_selected,</span>
-<span class='co'>#                     proposed_facility = york_unselected,</span>
-<span class='co'>#                     user = .,</span>
-<span class='co'>#                     n_added = 20,</span>
-<span class='co'>#                     distance_cutoff = 100))</span>
-<span class='co'># </span>
-<span class='co'>#  summary_mc_cv(mc_cv_fit,</span>
-<span class='co'>#                mc_cv_fixed$test)</span>
-<span class='co'># </span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+<span class='fu'>library</span>(<span class='no'>dplyr</span>)
+
+<span class='co'># already existing locations</span>
+<span class='no'>york_selected</span> <span class='kw'>&lt;-</span> <span class='no'>york</span> <span class='kw'>%&gt;%</span> <span class='fu'>filter</span>(<span class='no'>grade</span> <span class='kw'>==</span> <span class='st'>"I"</span>)
+
+<span class='co'># proposed locations</span>
+<span class='no'>york_unselected</span> <span class='kw'>&lt;-</span> <span class='no'>york</span> <span class='kw'>%&gt;%</span> <span class='fu'>filter</span>(<span class='no'>grade</span> <span class='kw'>!=</span> <span class='st'>"I"</span>)
+<span class='fu'>coverage</span>(<span class='no'>york_selected</span>, <span class='no'>york_crime</span>)</div><div class='output co'>#&gt; # A tibble: 1 × 7
+#&gt;   distance_within n_cov n_not_cov   pct_cov pct_not_cov dist_avg  dist_sd
+#&gt;             &lt;dbl&gt; &lt;int&gt;     &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1             100   339      1475 0.1868798   0.8131202 1400.192 1596.676</div><div class='input'><span class='fu'>coverage</span>(<span class='no'>york_crime</span>, <span class='no'>york_selected</span>)</div><div class='output co'>#&gt; # A tibble: 1 × 7
+#&gt;   distance_within n_cov n_not_cov   pct_cov pct_not_cov dist_avg  dist_sd
+#&gt;             &lt;dbl&gt; &lt;int&gt;     &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1             100    54        17 0.7605634   0.2394366 119.9247 247.2918</div><div class='input'>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

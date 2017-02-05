@@ -1,0 +1,37 @@
+home:
+    links:
+    - text: Learn more
+      href: https://github.com/njtierney/maxcovr
+reference:
+    - title: "Data"
+      desc: >
+        Data provided with `maxcovr`
+      contents:
+        - york
+        - york_crime
+    - title: "Optimisers"
+      desc: >
+        Solve the maximum covering location problem and other extension to this problem
+      contents:
+        - max_coverage
+        - max_coverage_relocation
+    - title: "Distance Tools"
+      desc: >
+        Tools to help with the calculation of distances
+      contents:
+        - nearest
+        - nearest_facility_dist
+        - facility_user_dist
+        - facility_user_indic
+        - spherical_distance
+        - spherical_distance_cpp
+        - distance_matrix_cpp
+        - binary_matrix_cpp
+    - title: "Summary functions"
+      desc: >
+        Summarise content from maxcovr
+      contents:
+        - summarise_coverage
+        - summary_mc_cv
+        - extract_mc_results
+        - extract_mc_results_relocation

@@ -82,9 +82,94 @@
     </div>
 
     <div class="contents">
+    <div id="maxcovr-0-0-5-9601-2017-01-31" class="section level1">
+<h1 class="hasAnchor">
+<a href="#maxcovr-0-0-5-9601-2017-01-31" class="anchor"> </a>maxcovr 0.0.5.9601 (2017-01-31)</h1>
+<div id="new-features-under-development" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features-under-development" class="anchor"> </a>NEW FEATURES (UNDER DEVELOPMENT)</h2>
+<ul>
+<li>
+<code>max_coverage_relocation</code> now works for different data, thanks to a bug fix.</li>
+<li>prototype solver engines added. maxcovr now works with <code>glpk</code>, and <code>gurobi</code>, in addition to <code>lpSolve</code>. Testing still to be conducted.</li>
+<li>summary function <code>coverage</code> added as a one liner to take two dataframes and from the coverage of one dataframe on another. Documentation and tests still need work</li>
+<li>
+<code>summary_mc_cv_relocate</code> added for <code>relocation</code> methods. This will eventially be an S3 method, I think?</li>
+<li>rewrote the extraction functions for results from <code>max_coverage</code>, replacing them with key functions. This will make things easier to debug and extend in the future. These functions start with <code>extract_</code>. There will likely be some updates to this in the future</li>
+<li>started work on refactoring the <code>max_coverage</code> functions to work with vectors, this fule is called <code>maxcovr-refactor-vectors</code>. This provides some more efficient computation of preparation of matrices for optimisation, and will provide substantial speedups for larger N, and for when multiple <code>n_added</code>’s are needed.</li>
+<li>
+<code>max_coverage</code> now returns the entire solution from <code>lpSolve</code>, except for the constraints, because they are too large (can easily be over 1Gb)</li>
+</ul>
+</div>
+<div id="minor-improvements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-improvements" class="anchor"> </a>MINOR IMPROVEMENTS</h2>
+<ul>
+<li>
+<code>summary.maxcovr</code> and <code>summary.maxcovr_relocation</code> method now return information about the previous distances.</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"> </a>BUG FIXES</h2>
+<ul>
+<li>Removed the scraggly test dataset that was lurking in the shadows and making my model not work.</li>
+</ul>
+</div>
+</div>
+    <div id="maxcovr-0-0-4-9000-2017-01-17" class="section level1">
+<h1 class="hasAnchor">
+<a href="#maxcovr-0-0-4-9000-2017-01-17" class="anchor"> </a>maxcovr 0.0.4.9000 (2017-01-17)</h1>
+<div id="new-features-under-development-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features-under-development-1" class="anchor"> </a>NEW FEATURES (UNDER DEVELOPMENT)</h2>
+<ul>
+<li><p>new function, <code>max_coverage_relocation</code>, takes a arguments for total cost, installation cost, and relocation costs and then works out how many facilities it can place, and potentially remove and replace to obtain optimum coverage. The function is currently under development. In the future it will be absorted into <code>max_coverage</code>.</p></li>
+<li><p>added a results extraction method for <code>max_coverage_relocation</code>, <code>extract_mc_result_relocation</code>. Eventually this will be be absorbed into the <code>extract_mc_result</code> function, through some kind of S3 method.</p></li>
+<li><p>added <code>print</code> and <code>summary</code> S3 method for <code>max_coverage</code> and <code>max_coverage_relocation</code>, and an <code>is.maxcovr_relocation</code> and <code>is.maxcovr</code>, which should be handy for testing.</p></li>
+</ul>
+</div>
+<div id="bug-fixes-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"> </a>BUG FIXES</h2>
+<ul>
+<li><p>Changed the specification of m_under_i and m_over_i to more clearly reflect “The gain of removing an AED from position i”</p></li>
+<li><p>Removed the scraggly test dataset that was lurking in the shadows and making my model not work.</p></li>
+</ul>
+</div>
+</div>
     <div id="maxcovr-0-0-3-9000-2016-12-03" class="section level1">
 <h1 class="hasAnchor">
 <a href="#maxcovr-0-0-3-9000-2016-12-03" class="anchor"> </a>maxcovr 0.0.3.9000 (2016-12-03)</h1>
+<div id="under-development" class="section level2">
+<h2 class="hasAnchor">
+<a href="#under-development" class="anchor"> </a>UNDER DEVELOPMENT</h2>
+<ul>
+<li><p>added a vignette that describes how to perform cross validation on the maxcovr problem using modelr and purrr</p></li>
+<li><p>maxcovr now returns a tibble of lists. This makes it easier to perform other tasks, and more consistent and easier to work with.</p></li>
+</ul>
+</div>
+</div>
+    <div id="maxcovr-0-0-2-9991-2016-11-30" class="section level1">
+<h1 class="hasAnchor">
+<a href="#maxcovr-0-0-2-9991-2016-11-30" class="anchor"> </a>maxcovr 0.0.2.9991 (2016-11-30)</h1>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"> </a>NEW FEATURES</h2>
+<ul>
+<li>added c++ functions to calculate the distance matrices and binary matrices</li>
+<li>added wrapper function <code>nearest</code> to find the nearest lat/long points from one dataframe to another and then calculate the distance between the two. This is at least 10 times faster than the previous method using joins and dplyr.</li>
+<li>changed API for max_coverage, it now takes 3 dataframes, but it does more of the behind the scenes work, at the cost of taking slightly longer as it calculates the A matrix. Speedups are definitely still available though, as the c++ functions are yet to be parallelised.</li>
+<li>max_coverage now also calculates a summary, which can be retrieved as <code>mc_model$summary</code>.</li>
+</ul>
+</div>
+<div id="bug-fixes-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-2" class="anchor"> </a>BUG FIXES</h2>
+<ul>
+<li>fixed c++ code for distance_matrix</li>
+</ul>
+</div>
 </div>
     <div id="maxcovr-0-0-0-9800-2016-11-27" class="section level1">
 <h1 class="hasAnchor">
@@ -92,30 +177,35 @@
 <div id="new-features-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features-1" class="anchor"> </a>NEW FEATURES</h2>
-<ul><li>added <code><a href="../reference/summarise_coverage.html">summarise_coverage()</a></code> function, which calculates coverage based upon a distance dataframe created from <code><a href="../reference/facility_user_dist.html">facility_user_dist()</a></code>.</li>
+<ul>
+<li>added <code><a href="../reference/summarise_coverage.html">summarise_coverage()</a></code> function, which calculates coverage based upon a distance dataframe created from <code><a href="../reference/facility_user_dist.html">facility_user_dist()</a></code>.</li>
 <li>added <code>york_crime</code> data containing crime locations around the city of york.</li>
-</ul></div>
-<div id="minor-improvements" class="section level2">
+</ul>
+</div>
+<div id="minor-improvements-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-improvements" class="anchor"> </a>MINOR IMPROVEMENTS</h2>
-<ul><li>improved README to include examples of usage (again)</li>
+<a href="#minor-improvements-1" class="anchor"> </a>MINOR IMPROVEMENTS</h2>
+<ul>
+<li>improved README to include examples of usage (again)</li>
 <li>removed artifacts relating to previous work; maxcovr now works for other kinds of data</li>
-</ul></div>
+</ul>
+</div>
 </div>
     <div id="maxcovr-0-0-0-9700-2016-11-14" class="section level1">
 <h1 class="hasAnchor">
 <a href="#maxcovr-0-0-0-9700-2016-11-14" class="anchor"> </a>maxcovr 0.0.0.9700 (2016-11-14)</h1>
 </div>
-    <div id="maxcovr-0-0-0-9600-2016-11-07" class="section level1">
+    <div id="maxcovr-0-0-2-9500" class="section level1">
 <h1 class="hasAnchor">
-<a href="#maxcovr-0-0-0-9600-2016-11-07" class="anchor"> </a>maxcovr 0.0.0.9600 (2016-11-07)</h1>
-<div id="new-features-3" class="section level2">
+<a href="#maxcovr-0-0-2-9500" class="anchor"> </a>maxcovr 0.0.2.9500</h1>
+<div id="new-features-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features-3" class="anchor"> </a>NEW FEATURES</h2>
-<ul><li>added draft cpp code for <code>spherical_distance</code> and <code>distance_matrix</code>
-</li>
-<li>updated <code>max_coverage</code> to include the <code>extract_mc_result</code> inside the function, rather than needing a separate function call. This was to save space, as the A matrix and friends can be rather large, especially if you are running the coverage multiple times under different conditions.</li>
-</ul></div>
+<a href="#new-features-4" class="anchor"> </a>NEW FEATURES</h2>
+<ul>
+<li>fixed bug in spherical_distance to return metres. Before this is was assuming there were 100m in a kilometer!</li>
+<li>added parameters to <code>facility_user_distance</code> - <code>coverage_distance</code>, which allows you to specify the coverage you are interested in, and <code>nearest</code>, where you specify <code>nearest</code> to be “facility” if you want the nearest facility to each user, “user” if you want the nearest user to each facility, and NULL if you just want the complete pairwise distances.</li>
+</ul>
+</div>
 </div>
     <div id="maxcovr-0-0-2-90000" class="section level1">
 <h1 class="hasAnchor">
@@ -123,12 +213,14 @@
 <div id="new-features-5" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features-5" class="anchor"> </a>NEW FEATURES</h2>
-<ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
+<ul>
+<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
 <li>Added a helper function to assist with extracting the results from the model</li>
 <li>This will eventually be broken up into smaller functions, so that you can be really specific about what function you want to run to get what result. Ideally, each function, except for the one that runs the model, should return one, or maybe two arguments.</li>
-</ul><!--NEW FEATURES, MINOR IMPROVEMENTS, BUG FIXES, DEPRECATED AND DEFUNCT -- --></div>
+</ul>
+<!--NEW FEATURES, MINOR IMPROVEMENTS, BUG FIXES, DEPRECATED AND DEFUNCT -- -->
 </div>
-    NA
+</div>
     NA
     </div>
   </div>
@@ -137,12 +229,14 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#maxcovr-0-0-5-9601-2017-01-31">0.0.5.9601</a></li>
+        <li><a href="#maxcovr-0-0-4-9000-2017-01-17">0.0.4.9000</a></li>
         <li><a href="#maxcovr-0-0-3-9000-2016-12-03">0.0.3.9000</a></li>
+        <li><a href="#maxcovr-0-0-2-9991-2016-11-30">0.0.2.9991</a></li>
         <li><a href="#maxcovr-0-0-0-9800-2016-11-27">0.0.0.9800</a></li>
         <li><a href="#maxcovr-0-0-0-9700-2016-11-14">0.0.0.9700</a></li>
-        <li><a href="#maxcovr-0-0-0-9600-2016-11-07">0.0.0.9600</a></li>
+        <li><a href="#maxcovr-0-0-2-9500">0.0.2.9500</a></li>
         <li><a href="#maxcovr-0-0-2-90000">0.0.2.90000</a></li>
-        <li><a href="#NA">NA</a></li>
         <li><a href="#NA">NA</a></li>
       </ul>
     </div>

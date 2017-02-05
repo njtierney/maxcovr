@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>max_coverage — max_coverage • maxcovr</title>
+<title>Solve the Maximal Covering Location Problem — max_coverage • maxcovr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,15 +77,15 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>max_coverage</h1>
+    <h1>Solve the Maximal Covering Location Problem</h1>
     </div>
 
     
-    <p>max_coverage solves the binary optimisation problem known as the &quot;maximal covering location problem&quot; as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.</p>
+    <p><code>max_coverage</code> solves the binary optimisation problem known as the &quot;maximal covering location problem&quot; as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.</p>
     
 
     <pre><span class='fu'>max_coverage</span>(<span class='kw'>existing_facility</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>proposed_facility</span>, <span class='no'>user</span>,
-  <span class='no'>distance_cutoff</span>, <span class='no'>n_added</span>, <span class='kw'>n_solutions</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>solver</span> <span class='kw'>=</span> <span class='st'>"lpSolve"</span>)</pre>
+  <span class='no'>distance_cutoff</span>, <span class='no'>n_added</span>, <span class='kw'>solver</span> <span class='kw'>=</span> <span class='st'>"lpSolve"</span>, <span class='kw'>return_early</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -101,45 +101,117 @@ you are interested in. If a number is less than distance_cutoff, it will be
 1, if it is greater than it, it will be 0.</dd>
       <dt>n_added</dt>
       <dd>the maximum number of facilities to add.</dd>
-      <dt>n_solutions</dt>
-      <dd>is the number of possible solutions to be returned. Default value is set to 1.</dd>
       <dt>solver</dt>
-      <dd>character default is lpSolve, but currently in development is a Gurobi solver</dd>
+      <dd>character default is lpSolve, but glpk and Gurobi can also be used.</dd>
+      <dt>return_early</dt>
+      <dd>logical - should I return the object early?</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>returns</p>
+    <p>dataframe of results</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(maxcovr)</span>
-<span class='co'># library(tidyverse)</span>
-<span class='co'># </span>
-<span class='co'># # already existing locations</span>
-<span class='co'># york_selected &lt;- york %&gt;% filter(grade == "I")</span>
-<span class='co'># </span>
-<span class='co'># # proposed locations</span>
-<span class='co'># york_unselected &lt;- york %&gt;% filter(grade != "I")</span>
-<span class='co'># </span>
-<span class='co'># mc_result &lt;- max_coverage(existing_facility = york_selected,</span>
-<span class='co'>#                          proposed_facility = york_unselected,</span>
-<span class='co'>#                          user = york_crime,</span>
-<span class='co'>#                          distance_cutoff = 100,</span>
-<span class='co'>#                          n_added = 20)</span>
-<span class='co'># </span>
-<span class='co'>#  # get the facilities chosen out</span>
-<span class='co'>#  mc_result$facility_selected</span>
-<span class='co'># </span>
-<span class='co'>#  # get the users affected out</span>
-<span class='co'>#  mc_result$user_affected</span>
-<span class='co'># </span>
-<span class='co'>#  # get the summaries out</span>
-<span class='co'>#  mc_result$summary</span>
-<span class='co'># </span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+<span class='fu'>library</span>(<span class='no'>dplyr</span>)
+
+<span class='co'># already existing locations</span>
+<span class='no'>york_selected</span> <span class='kw'>&lt;-</span> <span class='no'>york</span> <span class='kw'>%&gt;%</span> <span class='fu'>filter</span>(<span class='no'>grade</span> <span class='kw'>==</span> <span class='st'>"I"</span>)
+
+<span class='co'># proposed locations</span>
+<span class='no'>york_unselected</span> <span class='kw'>&lt;-</span> <span class='no'>york</span> <span class='kw'>%&gt;%</span> <span class='fu'>filter</span>(<span class='no'>grade</span> <span class='kw'>!=</span> <span class='st'>"I"</span>)
+
+<span class='no'>mc_result</span> <span class='kw'>&lt;-</span> <span class='fu'>max_coverage</span>(<span class='kw'>existing_facility</span> <span class='kw'>=</span> <span class='no'>york_selected</span>,
+                         <span class='kw'>proposed_facility</span> <span class='kw'>=</span> <span class='no'>york_unselected</span>,
+                         <span class='kw'>user</span> <span class='kw'>=</span> <span class='no'>york_crime</span>,
+                         <span class='kw'>distance_cutoff</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+                         <span class='kw'>n_added</span> <span class='kw'>=</span> <span class='fl'>20</span>)
+
+<span class='no'>mc_result</span></div><div class='output co'>#&gt; 
+#&gt; ------------------------------------------- 
+#&gt; Model Fit: maxcovr fixed location model 
+#&gt; ------------------------------------------- 
+#&gt; model_used:        max_coverage 
+#&gt; existing_facility: york_selected 
+#&gt; proposed_facility: york_unselected 
+#&gt; user:              york_crime 
+#&gt; distance_cutoff:   100 
+#&gt; n_added:           20 
+#&gt; solver:            lpSolve 
+#&gt; -------------------------------------------</div><div class='input'>
+<span class='fu'>summary</span>(<span class='no'>mc_result</span>)</div><div class='output co'>#&gt; 
+#&gt; ------------------------------------------- 
+#&gt; Model Fit: maxcovr fixed location model 
+#&gt; ------------------------------------------- 
+#&gt; Distance Cutoff: 100m 
+#&gt; Facilities: 
+#&gt;     Added:       20 
+#&gt; Coverage (Previous): 
+#&gt;     # Users:     540    (339) 
+#&gt;     Proportion:  0.2977 (0.1869) 
+#&gt; Distance (m) to Facility (Previous): 
+#&gt;     Avg:         986 (1400) 
+#&gt;     SD:          1188 (1597) 
+#&gt; -------------------------------------------</div><div class='input'>
+ <span class='co'># get the facilities chosen</span>
+ <span class='no'>mc_result</span>$<span class='no'>facility_selected</span></div><div class='output co'>#&gt; [[1]]
+#&gt; # A tibble: 20 × 7
+#&gt;         long      lat object_id desig_id pref_ref
+#&gt;        &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;chr&gt;    &lt;int&gt;
+#&gt; 1  -1.089571 53.96492      5978  DYO1383   462917
+#&gt; 2  -1.082308 53.96665      5909  DYO1297   463072
+#&gt; 3  -1.079160 53.95938      5872  DYO1244   463186
+#&gt; 4  -1.084051 53.95943      5847  DYO1216   463242
+#&gt; 5  -1.124819 53.95513      5759  DYO1108   463434
+#&gt; 6  -1.083679 53.96460      5748  DYO1096   463469
+#&gt; 7  -1.084106 53.96387      5745  DYO1093   463465
+#&gt; 8  -1.075168 53.95522      5739  DYO1086   463457
+#&gt; 9  -1.094967 53.95436      5638   DYO957   463691
+#&gt; 10 -1.092769 53.94116      5606   DYO920   463771
+#&gt; 11 -1.064879 53.95465      5592   DYO903   463788
+#&gt; 12 -1.079478 53.96778      5529   DYO829   463938
+#&gt; 13 -1.075726 53.96442      5454   DYO705   464133
+#&gt; 14 -1.115550 53.96251      5349   DYO572   464451
+#&gt; 15 -1.084055 53.95650      3991   DYO544   464508
+#&gt; 16 -1.092161 53.95868      3863   DYO406   464772
+#&gt; 17 -1.098576 53.95097      3250   DYO310   464928
+#&gt; 18 -1.001037 53.99492      3215  DYO1581   491367
+#&gt; 19 -1.079710 53.96573      3213  DYO1580   490659
+#&gt; 20 -1.083844 53.95258      4803  DYO1734       NA
+#&gt; # ... with 2 more variables: name &lt;chr&gt;, grade &lt;chr&gt;
+#&gt; </div><div class='input'>
+ <span class='co'># get the users affected</span>
+ <span class='no'>mc_result</span>$<span class='no'>user_affected</span></div><div class='output co'>#&gt; [[1]]
+#&gt; # A tibble: 201 × 16
+#&gt;    user_id user_chosen facility_id   distance              category
+#&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;                 &lt;chr&gt;
+#&gt; 1        1           1          66   165.8575 anti-social-behaviour
+#&gt; 2        5           1          25   535.7871 anti-social-behaviour
+#&gt; 3       13           1           6  2334.3248 anti-social-behaviour
+#&gt; 4       14           1           2 12686.9300 anti-social-behaviour
+#&gt; 5       15           1          24   620.2091 anti-social-behaviour
+#&gt; 6       23           1          NA         NA                  &lt;NA&gt;
+#&gt; 7       27           1          NA         NA                  &lt;NA&gt;
+#&gt; 8       29           1           2   374.9738 anti-social-behaviour
+#&gt; 9       33           1          NA         NA                  &lt;NA&gt;
+#&gt; 10      48           1           6  7274.0229 anti-social-behaviour
+#&gt; # ... with 191 more rows, and 11 more variables: persistent_id &lt;chr&gt;,
+#&gt; #   date &lt;chr&gt;, lat &lt;dbl&gt;, long &lt;dbl&gt;, street_id &lt;chr&gt;, street_name &lt;chr&gt;,
+#&gt; #   context &lt;chr&gt;, id &lt;chr&gt;, location_type &lt;chr&gt;, location_subtype &lt;chr&gt;,
+#&gt; #   outcome_status &lt;chr&gt;
+#&gt; </div><div class='input'>
+ <span class='co'># get the summaries</span>
+ <span class='no'>mc_result</span>$<span class='no'>summary</span></div><div class='output co'>#&gt; [[1]]
+#&gt; # A tibble: 2 × 8
+#&gt;   n_added distance_within n_cov   pct_cov n_not_cov pct_not_cov  dist_avg
+#&gt;     &lt;dbl&gt;           &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt;     &lt;int&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+#&gt; 1       0             100   339 0.1868798      1475   0.8131202 1400.1918
+#&gt; 2      20             100   540 0.2976847      1274   0.7023153  985.8907
+#&gt; # ... with 1 more variables: dist_sd &lt;dbl&gt;
+#&gt; </div><div class='input'>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
