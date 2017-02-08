@@ -39,6 +39,7 @@ extract_mc_results_relocation <- function(x){
     # how many were selected?
     n_existing_selected <- sum(x$lp_solution$solution[1:n_existing])
 
+
     # how many from the existing locations were moved?
     n_existing_removed <- n_existing - n_existing_selected
 
@@ -54,6 +55,16 @@ extract_mc_results_relocation <- function(x){
     #
     n_proposed_chosen <- sum(x$lp_solution$solution[n_existing_1:n_facilities])
 
+
+    # which proposed facilities had a facility installed?
+    is_installed <- x$lp_solution$solution[n_existing_1:n_facilities]
+
+    # which existing facilities were relocated?
+    is_relocated <- !x$lp_solution$solution[1:n_existing]
+
+    # which users were affected?
+    is_covered <- x$lp_solution$solution[n_bit_3:n_bit_4]
+
     # maybe there is now total coverage?
 
     n_bit_3 <- n_existing+n_proposed+1
@@ -62,6 +73,8 @@ extract_mc_results_relocation <- function(x){
 
     # number of users affected
     n_users_affected <- sum(x$lp_solution$solution[n_bit_3:n_bit_4])
+    is_covered <- x$lp_solution$solution[n_bit_3:n_bit_4]
+
 
     # 693 things are covered.
     # which ones?
@@ -180,7 +193,11 @@ extract_mc_results_relocation <- function(x){
         summary = list(summary_coverage),
         total_cost = list(x$cost_total),
         distance_cutoff = list(x$distance_cutoff),
-        model_call = list(x$model_call)
+        model_call = list(x$model_call),
+        solution_vector = as.logical(x$lp_solution$solution),
+        is_covered = as.logical(is_covered),
+        is_installed = as.logical(is_installed),
+        is_relocated = as.logical(is_relocated)
     )
     # not really sure if I need to provide the user + facility solution
     # but perhaps I could provide this in another function to extract
