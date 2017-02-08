@@ -398,7 +398,7 @@ return(model_result)
 }
 
 
-} else if(solver == "glpk"){
+} else if (solver == "glpk") {
 
     glpk_solution <- Rglpk::Rglpk_solve_LP(obj = c,
                                            mat = constraint_matrix,
@@ -432,7 +432,7 @@ return(model_result)
 
     return(x)
 
-} else if(solver == "gurobi"){
+} else if (solver == "gurobi") {
 
     if (!requireNamespace("gurobi", quietly = TRUE)) {
         stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
@@ -443,13 +443,6 @@ return(model_result)
     # constraint_directions_gurobi <- c(rep("<=", Nx), "=")
     model_call <- match.call()
     # model <- list()
-    #
-    # model$A <- constraint_matrix
-    # model$obj <- c
-    # model$sense <- constraint_directions
-    # model$rhs <- rhs_matrix
-    # model$vtype <- "B"
-    # model$modelsense <- "max"
 
     gurobi_solution <- gurobi::gurobi(model = list(
         A = constraint_matrix,
@@ -483,7 +476,6 @@ return(model_result)
     J <- nrow(x$A)
     I <- ncol(x$A)
 
-
     # how many are in existence?
     n_existing <- nrow(x$existing_facility)
 
@@ -493,11 +485,11 @@ return(model_result)
     # total number of facilities?
     n_facilities <- (nrow(x$existing_facility) + nrow(x$proposed_facility))
 
-    # how many additional proposed ones were selected?
-    n_existing_1 <- n_existing+1
-
     # how many of the existing ones were removed?
     n_existing_removed <- sum(x$solution$x[1:n_existing] == 0)
+
+    # how many additional proposed ones were selected?
+    n_existing_1 <- n_existing + 1
 
     # how many of the proposed were chosen?
     n_proposed_chosen <- sum(x$solution$x[n_existing_1:n_facilities])
@@ -509,10 +501,10 @@ return(model_result)
     which_existing_removed <-
         x$existing_facility[which(x$solution$x[1:n_existing] == 0),]
 
-
     # maybe there is now total coverage?
 
-    n_bit_3 <- n_existing+n_proposed+1
+    # create bits to get the right vector size out for the users affected
+    n_bit_3 <- n_existing + n_proposed + 1
 
     n_bit_4 <- length(x$solution$x)
 
@@ -550,7 +542,7 @@ return(model_result)
         dplyr::select(-facility_id)
 
     # which OHCAs are affected
-    user_solution <- x$solution$x[c(I+1):c(I+J)]
+    user_solution <- x$solution$x[c(I + 1):c(I + J)]
 
     user_temp <- tibble::tibble(
         user_id = x$user_id,
@@ -561,13 +553,6 @@ return(model_result)
                                       # x$user_not_covered,
                                       x$existing_user,
                                       by = "user_id")
-
-    # x$user %>%
-    # mutate(user_id = user_id) %>%
-    # dplyr::filter(user_id %in% user_temp$user_id) %>%
-    # # drop user_id, as it not needed anymore
-    # select(-user_id)
-    # dplyr::filter(event_id %in% user_temp$user_id)
 
     # now to return some more summaries ...
 
@@ -624,17 +609,64 @@ return(model_result)
     summary_coverage <- dplyr::bind_rows(existing_coverage,
                                          model_coverage)
 
+    # which proposed facilities had a facility installed?
+    is_installed_prep <- x$solution$x[n_existing_1:n_facilities]
+
+    # update proposed facilities with this info
+    x$proposed_facility <- x$proposed_facility %>%
+        dplyr::mutate(is_installed = is_installed_prep)
+
+    # which existing facilities were relocated?
+    is_relocated <- !x$solution$x[1:n_existing]
+
+    # update existing facilities with information about relocation
+    x$existing_facility <- x$existing_facility %>%
+        dplyr::mutate(is_relocated = is_relocated)
+
+    # which users were affected?
+    is_covered <- x$solution$x[n_bit_3:n_bit_4]
+
+    # update users with information about relocation
+    x$existing_user <- x$existing_user %>%
+        dplyr::mutate(is_covered = is_covered)
+
     res <- tibble::tibble(
-        facility_selected = list(facility_selected),
-        user_affected = list(user_affected),
-        which_existing_removed = list(which_existing_removed),
+
+        # augmented information about each incoming dataframe
+        user = list(x$existing_user),
+        existing_facility = list(x$existing_facility),
+        proposed_facility = list(x$proposed_facility),
+
+        # basically existing_facility and proposed facility
+        facilities_selected = list(facility_selected),
+
+        # simple summary info
         model_coverage = list(model_coverage),
         existing_coverage = list(existing_coverage),
         summary = list(summary_coverage),
+
+        # model_call stuff
+        solution_vector = list(x$solution$x),
         total_cost = list(x$cost_total),
         distance_cutoff = list(x$distance_cutoff),
-        model_call = list(x$model_call),
-        solver = list(solver)
+        solver_used = list(solver),
+        model_call = list(x$model_call)
+
+        # # things to recover full data - no longer needed
+        # is_covered = list(is_covered),
+        # is_installed = list(is_installed),
+        # is_relocated = list(is_relocated),
+
+        # # data input
+        # user = list(user),
+        # proposed_facility = list(proposed_facility),
+        # existing_facility = list(existing_facility)
+
+        # #unlikely to need again
+        # Pretty sure this can be retrieved from the above information.
+        # user_affected = list(user_affected),
+        # which_existing_removed = list(which_existing_removed),
+
     )
     # not really sure if I need to provide the user + facility solution
     # but perhaps I could provide this in another function to extract
