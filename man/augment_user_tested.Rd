@@ -18,7 +18,7 @@ dataframe containing distances between each test data observation and the neares
 }
 \description{
 This function provides a little wrapper function for \code{nearest}.
-Although, adding \code(is_covered) to the model. In the future this might
+Although, adding \code{is_covered} to the model. In the future this might
 get added to nearest, and this function will become sorta obsolete.
 For the moment, this function exists because (to me, as least) it is
 explicit about the input. It is used so that in a cross validation context
