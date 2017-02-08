@@ -1,4 +1,4 @@
-# maxcovr 0.0.5.9601 (2017-01-31)
+# maxcovr 0.0.5.9700 (2017-02-08)
 
 ## NEW FEATURES (UNDER DEVELOPMENT)
 
@@ -13,6 +13,7 @@
 ## MINOR IMPROVEMENTS
 
 * `summary.maxcovr` and `summary.maxcovr_relocation` method now return information about the previous distances.
+* Improvements have been made to the overall returning API of `max_coverage_relocation` so that it plays better with extracting summary information.
 
 ## BUG FIXES
 
