@@ -81,3 +81,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"maxcovr_deg2rad_cpp", (DL_FUNC) &maxcovr_deg2rad_cpp, 1},
+    {"maxcovr_spherical_distance_cpp", (DL_FUNC) &maxcovr_spherical_distance_cpp, 4},
+    {"maxcovr_distance_matrix_cpp", (DL_FUNC) &maxcovr_distance_matrix_cpp, 2},
+    {"maxcovr_binary_matrix_cpp", (DL_FUNC) &maxcovr_binary_matrix_cpp, 3},
+    {"maxcovr_nearest_facility_dist", (DL_FUNC) &maxcovr_nearest_facility_dist, 2},
+    {"maxcovr_spherical_distance_cpp_vec", (DL_FUNC) &maxcovr_spherical_distance_cpp_vec, 4},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_maxcovr(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
