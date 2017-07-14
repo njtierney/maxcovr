@@ -1,0 +1,285 @@
+---
+title: "Advanced Cross Validation with Fixed Location"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+
+add_all_facilities <- function(mc_cv_fit_all){
+
+  mc_cv_fit_all %>%
+mutate(n_added = as.numeric(n_added),
+       distance_cutoff = as.numeric(distance_cutoff)) %>%
+  # This adds the original facilities and then binds all of the facilities to it
+  # This will need to be re-written along with the code to perform
+  mutate(original_facilities = rep(list(dat_aed),
+                                   n())) %>%
+  mutate(all_facilities = map2(
+    .x = original_facilities,
+    .y = facility_selected,
+    .f = function(.x,.y){
+      bind_rows({
+        .x %>%
+          select(lat, long) %>%
+          mutate(type = "original")
+      },{
+        .y %>%
+          select(lat,long) %>%
+          mutate(type = "selected")
+      })
+    }
+  ))
+
+}
+
+# mc_cv_fit_all <- add_all_facilities(mc_cv_fit_all)
+
+# create cv training data ------------------------------------------------------
+
+create_mc_cv_train_dat <- function(dat_ohca_cv,
+                                   mc_cv_fit_all){
+  
+  mc_cv_stack <- bind_rows(
+    rep(
+      list(dat_ohca_cv),
+      5)
+  )
+  
+  # this gives us the test and training coverage coverage
+  
+  # mc_cv_test_train_dat <- 
+    mc_cv_fit_all %>% 
+    bind_cols(mc_cv_stack) %>%
+    # training coverage
+    mutate(train_dat = map2(
+      # but this actually needs to be facility_selected + existing_facilities
+      # it used to be existing_facilities
+      .x = all_facilities,
+      .y = train,
+      .f = nearest)
+    ) %>%
+    select(.id,
+           n_added,
+           train_dat) %>%
+    mutate(n_added = as.numeric(n_added)) %>%
+    unnest() %>%
+    select(.id,
+           n_added,
+           distance,
+           urban_rural_ohca) %>%
+    mutate(is_covered = (distance <= 100))
+  
+}
+
+# mc_cv_train_dat_02 <- create_mc_cv_train_dat(dat_ohca_cv, mc_cv_fit_all)
+
+# create cv_test_data ----------------------------------------------------------
+
+create_mc_cv_test_dat <- function(dat_ohca_cv,
+                                  mc_cv_fit_all){
+  
+  mc_cv_stack <- bind_rows(
+    rep(
+      list(dat_ohca_cv),
+      5)
+  )
+  
+  # this gives us the test and training coverage coverage
+  
+  mc_cv_fit_all %>% 
+    bind_cols(mc_cv_stack) %>%
+    # test coverage
+    mutate(test_dat = map2(
+      # but this actually needs to be facility_selected + existing_facilities
+      # it used to be existing_facilities
+      .x = all_facilities,
+      .y = test,
+      .f = nearest)
+    ) %>%
+    select(.id,
+           n_added,
+           test_dat) %>%
+    mutate(n_added = as.numeric(n_added)) %>%
+    unnest() %>%
+    select(.id,
+           n_added,
+           distance,
+           urban_rural_ohca) %>%
+    mutate(is_covered = (distance <= 100))
+  
+}
+
+# mc_cv_test_dat_02 <- create_mc_cv_test_dat(dat_ohca_cv,
+                                           # mc_cv_fit_all)
+
+# summary of the mc_cv_results - also for urban and rural areas
+
+mc_cv_results <- function(data,test_train_label){
+  data %>%
+    group_by(n_added) %>%
+    summarise(pct_cov = mean(is_covered),
+              n_cov = sum(is_covered),
+              n_ohca = n(),
+              dist_avg = mean(distance),
+              dist_sd = sd(distance)) %>%
+    mutate(Area = "overall") %>%
+    bind_rows({
+      data %>%
+        group_by(n_added,
+                 urban_rural_ohca) %>%
+        summarise(pct_cov = mean(is_covered),
+                  n_cov = sum(is_covered),
+                  n_ohca = n(),
+                  dist_avg = mean(distance),
+                  dist_sd = sd(distance)) %>%
+        rename(Area = urban_rural_ohca)
+    }) %>%
+    arrange(n_added) %>%
+    mutate(type = test_train_label)
+  
+} # end function
+
+```
+
+```{r}
+
+library(modelr)
+set.seed(1209)
+dat_ohca_cv <- crossv_kfold(dat_ohca, 5) %>% 
+    # we change the test and train sets from the `resample`
+    # to tibbles
+    mutate(test = map(test,as_tibble),
+           train = map(train,as_tibble))
+
+```
+
+
+```{r}
+system.time(
+    mc_cv_fit_n20 <- map_df(dat_ohca_cv$train,
+                     ~max_coverage(existing_facility = dat_aed,
+                                   proposed_facility = dat_building,
+                                   user = ., # training set goes here
+                                   n_added = 20,
+                                   distance_cutoff = 100))
+)
+
+system.time(
+    mc_cv_fit_n40 <- map_df(dat_ohca_cv$train,
+                     ~max_coverage(existing_facility = dat_aed,
+                                   proposed_facility = dat_building,
+                                   user = ., # training set goes here
+                                   n_added = 40,
+                                   distance_cutoff = 100))
+)
+
+```
+
+
+```{r modelr-mc-cv}
+
+# load the cv data
+mc_cv_fixed_all <- read_rds(
+    sprintf("%s/analysis/outputs/02_fit_output/mc_cv_fit_all.rds",wd)
+    ) %>%
+  # add all of the facilities initially input, into the data
+  add_all_facilities()
+
+# create-mc-cv-summary --------------------------------------------------------
+
+# this takes the cross validated OHCa data, and then takes the test or
+# training data into the model and creates a large dataframe that contains
+# information regarding the CV fold (.id), the # AEDs added (n_added)
+# the distance from those OHCA events to an AED, whether the OHCA
+# was rural or urban, and whether that particular event is covered 
+# (is_covered)
+mc_cv_fixed_train_dat <- create_mc_cv_train_dat(dat_ohca_cv, mc_cv_fixed_all)
+mc_cv_fixed_test_dat <- create_mc_cv_test_dat(dat_ohca_cv, mc_cv_fixed_all)
+
+# produce a one-row-summary for the 
+mc_cv_fixed_summary <- bind_rows(mc_cv_results(mc_cv_fixed_train_dat, "train"),
+                                 mc_cv_results(mc_cv_fixed_test_dat, "test"))
+
+# mc_cv_summary
+
+### --- for PUBLIC AEDs
+
+# load the cv data
+mc_cv_fixed_all_pub <- read_rds(
+  sprintf("%s/analysis/outputs/02_fit_output/mc_cv_fixed_pub.rds",wd)
+  ) %>%
+  # add all of the facilities initially input, into the data
+  add_all_facilities()
+
+
+mc_cv_fixed_train_dat_pub <- create_mc_cv_train_dat(dat_ohca_cv,
+                                                    mc_cv_fixed_all_pub)
+
+mc_cv_fixed_test_dat_pub <- create_mc_cv_test_dat(dat_ohca_cv,
+                                                  mc_cv_fixed_all_pub)
+
+# produce a one-row-summary for the 
+mc_cv_fixed_summary_pub <- bind_rows(
+  mc_cv_results(mc_cv_fixed_train_dat_pub, "train"),
+  mc_cv_results(mc_cv_fixed_test_dat_pub, "test")
+  )
+
+```
+
+**Evaluating and comparing optimisation and population methods**
+
+```{r fig-2A}
+
+# , fig.cap = "Percentage of OHCA events covered in the test and training data for overall area, and in Rural and Urban areas."
+figure_2A <- 
+mc_cv_fixed_summary %>%
+  mutate(pct_cov = pct_cov * 100) %>%
+  ggplot(aes(x = n_added,
+             y = pct_cov,
+             colour = type)) + 
+  geom_point() + 
+  geom_line() + 
+  # reorder to rural, overall, and urban
+  facet_wrap(~forcats::fct_relevel(Area, "overall", "rural", "urban")) +
+  theme_bw() + 
+  theme(aspect.ratio = 1) +
+  guides(colour = guide_legend(title = "",
+                               reverse = TRUE)) +
+  labs(x = "# AEDs Added",
+       y = "% OHCAs Covered") +
+  ylim(0,100)
+  # ylim(0.1,0.7)
+
+
+```
+
+```{r fig-2A-pub}
+
+# , fig.cap = "Percentage of OHCA events covered in the test and training data for overall area, and in Rural and Urban areas."
+figure_2A_pub <- 
+mc_cv_fixed_summary_pub %>%
+  mutate(pct_cov = pct_cov * 100) %>%
+  ggplot(aes(x = n_added,
+             y = pct_cov,
+             colour = type)) + 
+  geom_point() + 
+  geom_line() + 
+  # reorder to rural, overall, and urban
+  facet_wrap(~forcats::fct_relevel(Area, "overall", "rural", "urban")) +
+  theme_bw() + 
+  theme(aspect.ratio = 1) +
+  guides(colour = guide_legend(title = "",
+                               reverse = TRUE)) +
+  labs(x = "# AEDs Added",
+       y = "% OHCAs Covered") +
+  ylim(0,100)
+  # ylim(0.1,0.7)
+
+
+```

@@ -17,7 +17,7 @@ library(dplyr)
 library(maxcovr)
 ```
 
-The normal method, `max_coverage` is limited in that it assumes that you cannot move existing facilities. `max_coverage_relocation` assumes that you can move already existing facilities, but that there is some cost of removal, and a cost of installation.
+The "fixed location" method provided in `max_coverage` is limited in that it assumes that you cannot move existing facilities. `max_coverage_relocation` assumes that you can move already existing facilities, but that there is some cost of removal, and a cost of installation.
 
 To illustrate the benefits of relocation, we are first going to consider an example where the existing facilities provide no coverage to users. We identify facility locations that are really far away.
 
@@ -31,7 +31,8 @@ york_selected_worst_id <- york_crime %>%
     distinct(desig_id)
     
     
-york_worst <- york_selected_worst_id %>% 
+# york_worst <- york_selected_worst_id %>% 
+york_existing_worst <- york_selected_worst_id %>% 
     left_join(york,
               by = "desig_id")
 
@@ -42,10 +43,10 @@ Then we identify some really ideal locations.
 ```{r}
 
 york_not_selected_worst <- york %>%
-    anti_join(york_worst,
+    anti_join(york_existing_worst,
               by = "desig_id")
 
-york_best <- 
+york_proposed_best <- 
  york_crime %>%
     nearest(york_not_selected_worst) %>%
     arrange(distance) %>%
@@ -60,27 +61,51 @@ york_best <-
 
 ```{r}
 
-york_best
-york_worst
+york_proposed_best
+york_existing_worst
 
 ```
 
-So these are *worst* placements and ideally they should all get removed.
-
-Here we tell `max_coverage_relocation` that the existing facilities are `york_worst`, the proposed facilities are `york_best`, the users we want to cover are given in `york_crime`, and the distance cutoff for coverage is 100m. We then provide the cost of installing a location, the cost of removing, and the total cost available.
-
-In `max_coverage` we would instead state `n_added` = 1 - as this is effectively saying the same thing as below. There is only enough total resources to install one facility.
+Let's look at the coverage of these places, 
 
 ```{r}
+nearest(york_existing_worst,
+        york_crime) %>%
+    mutate(is_covered = distance < 100) %>%
+    summarise_coverage()
+```
 
+So these are *worst* placements - we should choose some better facilities. However, if we consider the possibility that we could move these existing facilities to better locations, then we might be able to save a lot of money! We can do this with `max_coverage_relocation`.
+
+Here we use `max_coverage_relocation`, which is similar in form to `max_coverage`.
+
+Here, we specify:
+
+- `existing_facility` with `york_existing_worst`
+- `proposed_facility` with `york_proposed_best`
+- `user` is `york_crime`,
+- `distance_cutoff` is 100 - for 100m
+
+instead of specifying `n_added`, as in `max_coverage`, we specify three `cost_` parameters:
+
+- `cost_install` is the cost of buying a new facility and installing it
+- `cost_removal` is the cost of removing a facility and installing it in a new location
+- `cost_total` is the total available money to spend.
+
+Here we state that the installation cost is 10, the remocal cost is 1, and the total available cost is 10. There is only enough total resources to install one facility.
+
+```{r}
+library(gurobi)
 system.time(
-mc_relocate_worst <-  max_coverage_relocation(existing_facility = york_worst,
-                                              proposed_facility = york_best,
-                                              user = york_crime,
-                                              distance_cutoff = 100,
-                                              cost_install = 10,
-                                              cost_removal = 1,
-                                              cost_total = 10)
+mc_relocate_worst <-  max_coverage_relocation(
+    existing_facility = york_existing_worst,
+    proposed_facility = york_proposed_best,
+    user = york_crime,
+    distance_cutoff = 100,
+    cost_install = 10,
+    cost_removal = 1,
+    cost_total = 10,
+    solver = "gurobi")
 )
 
 mc_relocate_worst
@@ -96,13 +121,14 @@ You can then start to toy with the different pricings if you like.
 ```{r}
 
 system.time(
-mc_relocate_worst_eq <-  max_coverage_relocation(existing_facility = york_worst,
-                                              proposed_facility = york_best,
-                                              user = york_crime,
-                                              distance_cutoff = 100,
-                                              cost_install = 10,
-                                              cost_removal = 100,
-                                              cost_total = 10)
+mc_relocate_worst_eq <-  max_coverage_relocation(
+    existing_facility = york_existing_worst,
+    proposed_facility = york_proposed_best,
+    user = york_crime,
+    distance_cutoff = 100,
+    cost_install = 10,
+    cost_removal = 100,
+    cost_total = 10)
 )
 
 mc_relocate_worst_eq

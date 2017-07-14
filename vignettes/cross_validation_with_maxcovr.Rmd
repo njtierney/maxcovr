@@ -31,11 +31,11 @@ york_unselected <- york %>% filter(grade != "I")
 Thanks to the `modelr` package, it is relatively straightforward to perform cross validation.
 
 ```{r}
-# first we partition the data into 10 folds
+# first we partition the data into 5 folds
 library(modelr)
 library(purrr)
 library(tibble)
-mc_cv <- modelr::crossv_kfold(york_crime, 10) %>% 
+mc_cv <- modelr::crossv_kfold(york_crime, 5) %>% 
     # we change the test and train sets from the `resample`
     # to tibbles
     mutate(test = map(test,as_tibble),
@@ -51,7 +51,7 @@ mc_cv
 
 ```
 
-We then fit the model on the training set using `map_df`
+We then fit the model on the training set using `map_df`, from the `purrr` package.
 
 ```{r}
 library(purrr)

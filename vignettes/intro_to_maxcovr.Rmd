@@ -4,52 +4,59 @@ author: "Nicholas Tierney"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Using maxcovr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(fig.width = 7,
+                      fig.height = 5)
+
+```
+
+
 maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
 
-`maxcovr` aims to provide researchers and analysts with a fast, accurate and extendible implementation of Church's maximal covering location problem, while trying to adhere to [`tidyverse`](http://www.tidyverse.org) principles.  In the future `maxcovr` will be able to talk to commercial solvers like CPLEX and Gurobi, and will have a mechanism for extensions.
+`maxcovr` aims to provide researchers and analysts with a fast, accurate and extendible implementation of Church's maximal covering location problem, while adhering as best as it can to [`tidyverse`](http://www.tidyverse.org) principles.  In the future `maxcovr` will be able to talk to commercial solvers like CPLEX and Gurobi, and will have a mechanism for extensions.
 
-This vignette aims to get users started with using maxcovr. Other vignettes are provided in the package:
+This vignette aims to get users started with using maxcovr. In this vignette you
+will learn about:
+
+- The motivation behind `maxcovr`
+- How to assess current coverage of facilities 
+- How to maximise coverage using some new proposed facilities
+- Explore results of the new locations
+- How to explore the new locations proposed
+
+Other vignettes are (or will be!) provided in the package:
 
 - "Cross Validation with maxcovr", which explains how to perform and interpret cross validation results in a maximum covering location framework
 - "Understanding the maximum covering location problem"
-- other (perhaps soon to be released vignettes).
-
-This vignette first explains the motivation behind maxcovr, briefly introduces the maximum covering location problem with some real data, and explains how to explore current coverage, and improve it using maxcovr, and interpret the results.
+- "Performing the maximal coverage relocation problem"
 
 # Why maxcovr
 
-maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem. This problem is beginning to be applied in problems in AED placement around the world. However, many of the implementations in papers commercial software such as AMPL, Gurobi, or CPLEX. Additionally, the code that they use in the paper to implement the optimisation is not provided and has to be requested. As a result, these analyses are more difficult to implement and more difficult to reproduce.
+maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem. This problem is beginning to be applied in problems in AED placement, but has been applied in [many different areas](). However, many of the implementations in papers commercial software such as AMPL, Gurobi, or CPLEX. Additionally, the code that they use in the paper to implement the optimisation is not provided and has to be requested. As a result, these analyses are more difficult to implement and more difficult to reproduce.
 
 maxcovr was created to address these shortcomings, using:
 
 - R, a free and open source language
-- An source solver, lpSolve, that can be used on Linux, Windows, and OSX.
+- Open source solvers, lpSolve, and glpk, that can be used on Linux, Windows, and OSX.
 - Real-world, open source example data.
 - Tidyverse principles to make it easy to use, code, and extend.
 
 As a result of this, results are easy to implement, reproduce, and extend.
 
-<!-- - Providing code and a simple tidy syntax that can be applied to datasets of similar structure -->
-<!-- - Making the package source available on GitHub and CRAN. -->
-<!-- - Providing example open source datasets that can be used and tested. -->
-
 # The problem
 
-Disclaimer: The following is a fictitious example using real world data.
-
-Consider the toy example where we are playing a tower defense game and we need to place crime surveillance towers to detect crime. 
-
-We have two datasets, `york`, and `york_crime`:
+Consider the toy example where we want to place crime surveillance towers to detect crime. We have two datasets, `york`, and `york_crime`:
 
 - `york` contains listed building GPS locations in the city of York, provided by the city of york 
 - `york_crime` contains a set of crime data from the [`ukpolice`  package](https://www.github.com/njtierney/ukpolice), containing crime data from September 2016.
 
-In this game we already have a few towers built, which are placed on top of the listed buildings with a grade of I. We will call this dataset `york_selected`, and the remaining building locations `york_unselected`
+We already have a few surveillance towers built, which are placed on top of the listed buildings with a grade of I. We will call this dataset `york_existing`, and the remaining building locations `york_proposed`. Here, `york_existing` is the currently locations of facilities, and `york_proposed` is the potential facility locations.
 
 ```{r york-towers}
 
@@ -57,13 +64,13 @@ library(maxcovr)
 library(dplyr)
 
 # subset to be the places with towers built on them.
-york_selected <- york %>% filter(grade == "I")
+york_existing <- york %>% filter(grade == "I")
 
-york_unselected <- york %>% filter(grade != "I")
+york_proposed <- york %>% filter(grade != "I")
 
 ```
 
-The purpose of the game is to build towers in places so that they are within 100m of crime. We are going to use the crime data that we have to help us choose ideal locations to place towers.
+We are interested in placing surveillance towers so that they are within 100m of the largest number of crimes. We are going to use the crime data that we have to help us choose ideal locations to place towers.
 
 This can be illustrated with the following graphic, where the red circles indicate the current coverage of the building locations, so those blue crimes within the circles are within the coverage.
 
@@ -75,12 +82,12 @@ leaflet() %>%
     addCircleMarkers(data = york, 
                      radius = 1,
                      color = "steelblue") %>%
-    addCircles(data = york_selected, 
+    addCircles(data = york_existing, 
                radius = 100,
                stroke = TRUE,
                fill = NULL,
                opacity = 0.8,
-               weight = 2,
+               weight = 3,
                color = "coral") %>%
     # addTiles() %>%
     addProviderTiles("CartoDB.Positron") %>%
@@ -90,87 +97,347 @@ leaflet() %>%
 
 ```
 
-Currently the coverage looks alright, but let's verify the coverage using the `nearest` function. `nearest` takes two dataframes and returns the nearest lat/long coords from the first dataframe to the second dataframe, along with the distances between them and the appropriate columns from the building dataframe.
+Visually, the coverage looks OK, but to get a better estimate, we can verify the coverage using the `nearest()` function.
+
+`nearest()` takes two dataframes and returns the nearest lat/long coords from the first dataframe to the second dataframe, along with the distances between them and the appropriate columns from the building dataframe. You can think of reading this as "What is the nearest (nearest_df) to (to_df)".
 
 ```{r}
 
-dat_dist <- york_selected %>% nearest(york_crime)
+dat_dist <- nearest(nearest_df = york_proposed, 
+                    to_df = york_crime)
 
 head(dat_dist)
 
 ```
 
+> Note that `maxcovr` records the positions of locations must be named "lat" and "long" for latitude and longitude, respectively.
+
+The dataframe `dat_dist` contains the nearest proposed facility to each crime. This means that we have a dataframe that contains "to_id" - the ID number (labelled from 1 to the number of rows in the to dataset), "nearest_id" describes the row numer of "nearest_df" that corresponds to the row location of that data.frame. We also have the rest of the columns of `york_crime`. These are returned to make it easy to do other data manipulation / exploration tasks, if you wish.
+
 You can instead return a dataframe which has every building in the rows, and the nearest crime to the building, by simply changing the order.
 
 ```{r}
 
-dat_dist_bldg <- york_crime %>% nearest(york_selected)
+dat_dist_bldg <- nearest(york_crime,york_existing)
+
 head(dat_dist_bldg)
 ```
 
-To evaluate the coverage we can use `summarise_coverage`
+To evaluate the coverage we can use `summarise_coverage`. Here, we need to create a column called "is_covered", which is TRUE if the distance measure from `nearest` is less than some set distance, and FALSE otherwise.
 
 ```{r}
 
 dat_dist %>% 
     mutate(is_covered = distance <= 100) %>%
     summarise_coverage()
-
+    
 ```
 
-This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes are covered, but the mean distance to the surveillance camera is 1400m.
+This contains useful summary information:
 
-# maximising coverage
+- distance_within - this is the distance used to determine coverae
+- n_cov - this is the number of events that are covered
+- n_not_cov - the number of events not covered
+- pct_cov - the proportion of events covered
+- pct_not_cov - the proportion of events not covered
+- dist_avg - the average distance from the rows to the nearest facility or user
+- dist_avg - the standard deviation of the distance from the rows to the nearest facility or user.
 
-We can maximise the coverage
+This tells us that out of all the crime, 37.76% of it is within 100m, 339 crimes are covered, but the mean distance to the surveillance camera is 1400m.
 
 # using max_coverage
 
+Knowing this information, you might be interested in improving this coverage. To do so we can use the `max_coverage` function.
 
-- Putting result output in a dataframe (because like Jenny Bryan says [if you can, you probably should](https://www.youtube.com/watch?v=4MfUCX_KpdE&list=PLR7d32uh__xbrzSdfzxxCxCEFQnt7BcOj&index=2)). 
-- Adhering to [tidyverse]() principles, to make it easy to code and think about.
+This function takes 5 arguments:
+
+- existing_facility = the facilities currently installed
+- proposed_facility = the facilities proposed to install
+- user = the users that you want to maximise coverage over
+- n_added = the number of new facilities that you can install
+- distance_cutoff = the distance that we consider coverage to be within.
+
+Similar to using `nearest` - the data frames for existing_facility, proposed_facility, and user need to contain columns of latitude and longitude, and they must be named "lat", and "long", respectively. These are used to calculate the distance.
+
+```{r}
+
+# mc_20 <- max_coverage(A = dat_dist_indic,
+mc_20 <- max_coverage(existing_facility = york_existing,
+                      proposed_facility = york_proposed,
+                      user = york_crime,
+                      n_added = 20,
+                      distance_cutoff = 100)
+
+```
+
+We can look at a quick summary of the model with summary
+
+```{r}
+summary(mc_20)
+```
+
+
+Here this tells us useful information about the distance cutoff, the number of facilities added, and the number of users covered, and previousl, and the proportion of events covered.
+
+To get this information out we can use the information in each of the columns below. The information each of these is a list, which might seem strange, but it becomes very useful when you are assessing different levels of `n_added`. We will go into more detail for this soon.
+
+Firstly, we have the data input into `n_added` and `distance_cutoff` - the same information that we entered.
+
+```{r}
+
+mc_20$n_added[[1]]
+mc_20$distance_cutoff[[1]]
+
+```
+
+We can then get summary information about the model coverage. We can first get the existing, or previous coverage with `existing_coverage`
+
+```{r}
+mc_20$existing_coverage[[1]]
+
+```
+
+This provides us with the information that we saw previously with `summarise_coverage`.
+
+We can then get the information of the coverage from the model with the added additional AEDs with `model_coverage`.
+
+
+```{r}
+mc_20$model_coverage[[1]]
+```
+
+We can then get both pieces of information from `summary`
+
+```{r}
+mc_20$summary[[1]]
+```
+
+You can drill deeper, and get more information about the facilities using `facility_selected`, which returns facilities selected from the `proposed_facility` data.
+
+```{r}
+mc_20$facility_selected[[1]]
+```
+
+We can then get information about the users with `augmented_users`
+
+```{r}
+
+mc_20$augmented_users[[1]]
+
+```
+
+This returns the dataframe of users, with the distance to their nearest AED, and at the end, provides information about the `type` of AED that is used. 
+
+Now try and run the code for n_added = 40, and call it "mc_40"
 
 # Interpreting results
 
-# Further reading
+We can assess what happens if we add 100 facilities.
 
-You can read the other vignettes...
+```{r}
 
-Also recommended are the resources ...
+mc_100 <- max_coverage(existing_facility = york_existing,
+                      proposed_facility = york_proposed,
+                      user = york_crime,
+                      n_added = 100,
+                      distance_cutoff = 100)
 
 
-<!-- ## Vignette Info -->
+```
 
-<!-- Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette. -->
+```{r}
+summary(mc_100)
+```
 
-<!-- ## Styles -->
+So then, if we want to add information to discover the differences between 20 and 100, we can bind these two pieces together using `bind_rows`.
 
-<!-- The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows: -->
+```{r}
 
-<!--     output:  -->
-<!--       rmarkdown::html_vignette: -->
-<!--         css: mystyles.css -->
+mc_20_100 <- bind_rows(mc_20, mc_100)
 
-<!-- ## Figures -->
+```
 
-<!-- The figure sizes have been customised so that you can easily put two images side-by-side.  -->
-<!-- You can enable figure captions by `fig_caption: yes` in YAML: -->
+We can then look at the summary row, and expand the information out here using `tidyr::unnest()`
 
-<!--     output: -->
-<!--       rmarkdown::html_vignette: -->
-<!--         fig_caption: yes -->
+```{r}
 
-<!-- Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**. -->
+mc_20_100_sum <- mc_20_100 %>% select(summary) %>% tidyr::unnest()
+mc_20_100_sum
+```
 
-<!-- ## More Examples -->
+This information can then be plotted, for example, like so:
 
-<!-- You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`. -->
+```{r}
 
-<!-- ```{r, echo=FALSE, results='asis'} -->
-<!-- knitr::kable(head(mtcars, 10)) -->
-<!-- ``` -->
+library(ggplot2)
+ggplot(mc_20_100_sum,
+       aes(x = n_added,
+           y = pct_cov)) + 
+    geom_point() + 
+    geom_line()
 
-<!-- Also a quote using `>`: -->
+```
 
-<!-- > "He who gives up [code] safety for [code] speed deserves neither." -->
-<!-- ([via](https://twitter.com/hadleywickham/status/504368538874703872)) -->
+You can then produce a plot of the average distances.
+
+```{r}
+
+library(ggplot2)
+ggplot(mc_20_100_sum,
+       aes(x = n_added,
+           y = dist_avg)) + 
+    geom_point() + 
+    geom_line()
+
+```
+
+If you would like to calculate your own summaries on the distances, I would recommend something like:
+
+```{r}
+
+mc_20$augmented_users[[1]] %>%
+    summarise(mean_dist = mean(distance),
+              sd_dist = sd(distance),
+              median_dist = median(distance),
+              lower_975_dist = quantile(distance, probs = 0.025),
+              upper_975_dist = quantile(distance, probs = 0.975))
+
+```
+
+You can then package this up in a function and apply it to all rows
+
+```{r}
+
+my_dist_summary <-  function(data){
+    data %>%
+    summarise(mean_dist = mean(distance),
+              sd_dist = sd(distance),
+              median_dist = median(distance),
+              lower_975_dist = quantile(distance, probs = 0.025),
+              upper_975_dist = quantile(distance, probs = 0.975))
+}
+
+```
+
+This can then be used to create a new column with `purrr::map()`.
+
+```{r}
+
+mc_20_100 %>%
+    mutate(new_summary = purrr::map(augmented_users,
+                                    my_dist_summary)) %>%
+    select(new_summary) %>%
+    tidyr::unnest()
+
+```
+
+# Other graphics options
+
+You might be interested in plotting the existing users, the proposed facilities, and the coverage.
+
+You can plot the existing facilities with leaflet. 
+
+```{r}
+
+york_existing %>%
+    leaflet() %>%
+    addTiles() %>%
+    addCircles(color = "steelblue") %>% 
+    setView(lng = median(york_existing$long),
+            lat = median(york_existing$lat),
+            zoom = 12)
+
+
+```
+
+You might want to then add the user information to this plot. You can add
+new circles based on new datasets, and then change the colour, so that they
+are visible.
+
+```{r}
+
+leaflet() %>%
+    addCircles(data = york_crime, 
+               color = "steelblue") %>%
+    addCircles(data = york_existing, 
+               color = "coral") %>%
+    addTiles() %>%
+    setView(lng = median(york$long),
+            lat = median(york$lat),
+            zoom = 15)
+
+```
+
+With leaflet you can also specify the radius in metres of the circles. 
+This means that we can set the radius of the circles to be 100, and this is
+100m.
+
+```{r}
+
+leaflet() %>%
+    addCircles(data = york_crime, 
+               color = "steelblue") %>%
+    addCircles(data = york_existing, 
+               radius = 100,
+               color = "coral") %>%
+    addTiles() %>%
+    setView(lng = median(york$long),
+            lat = median(york$lat),
+            zoom = 15)
+
+```
+
+to make this a bit clearer we can remove the fill (`fill = FALSE`), and also change the map that is used with `addProviderTiles("CartoDB.Positron")`.
+
+```{r}
+
+leaflet() %>%
+    addCircles(data = york_crime, 
+               color = "steelblue") %>%
+    addCircles(data = york_existing, 
+               radius = 100,
+               fill = FALSE,
+               color = "coral",
+               weight = 3,
+               dashArray = "1,5") %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    setView(lng = median(york$long),
+            lat = median(york$lat),
+            zoom = 15)
+
+```
+
+## Applying this to the coverage data
+
+So using this knowledge, we can visualise:
+
+- crime (`york_crime`)
+- existing facilities (`york_existing`)
+- newly placed facilities (`mc_20$facility_selected[[1]]`)
+
+```{r}
+
+leaflet() %>%
+    addCircles(data = york_crime, 
+               color = "steelblue") %>%
+    addCircles(data = york_existing, 
+               radius = 100,
+               fill = FALSE,
+               weight = 3,
+               color = "coral",
+               dashArray = "1,5") %>%
+    addCircles(data = mc_20$facility_selected[[1]], 
+               radius = 100,
+               fill = FALSE,
+               weight = 3,
+               color = "green",
+               dashArray = "1,5") %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    setView(lng = median(york$long),
+            lat = median(york$lat),
+            zoom = 15)
+
+
+```
+
+To include leaflet in a 
