@@ -5,3 +5,4 @@
 .rdx
 inst/doc
 *.DS_Store
+*.log
