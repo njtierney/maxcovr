@@ -1,16 +1,26 @@
 #' Solve the Maximal Covering Location Problem
 #'
-#' \code{max_coverage} solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
+#' `max_coverage` solves the binary optimisation problem known as the
+#'   "maximal covering location problem" as described by Church
+#'   (http://www.geo .ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf).
+#'   This package was implemented to make it easier to solve this problem in the
+#'   context of the research initially presented by Chan et al
+#'   (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal
+#'   locations to place AEDs.
 #'
-#' @param existing_facility data.frame containing the facilities that are already in existing, with columns names lat, and long.
-#' @param proposed_facility data.frame containing the facilities that are being proposed, with column names lat, and long.
-#' @param user data.frame containing the users of the facilities, along with column names lat, and long.
+#' @param existing_facility data.frame containing the facilities that are
+#'   already in existing, with columns names lat, and long.
+#' @param proposed_facility data.frame containing the facilities that are
+#'   being proposed, with column names lat, and long.
+#' @param user data.frame containing the users of the facilities, along with
+#'   column names lat, and long.
 #' @param distance_cutoff numeric indicating the distance cutoff (in metres)
-#' you are interested in. If a number is less than distance_cutoff, it will be
-#' 1, if it is greater than it, it will be 0.
+#'   you are interested in. If a number is less than distance_cutoff, it will be
+#'   1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
-#' @param solver character default is lpSolve, but glpk and Gurobi can also be used.
+#' @param solver character default is lpSolve, but glpk and Gurobi can also
+#'   be used.
 #' @param return_early logical - should I return the object early?
 #'
 #' @return dataframe of results
@@ -65,10 +75,7 @@ max_coverage <- function(existing_facility = NULL,
         # n_solutions = 1
     # end testing ....
 
-
     # turn existing_facility into a matrix suitable for cpp
-
-    # if(relocation == FALSE){
 
     existing_facility_cpp <- existing_facility %>%
         dplyr::select(lat,long) %>%
@@ -93,18 +100,15 @@ max_coverage <- function(existing_facility = NULL,
     # give user an index
     user <- user %>% dplyr::mutate(user_id = 1:n())
 
-    # join them, to create the "not covered" set of data
+    # create the "not covered" set of data with a join
     user_not_covered <- dat_nearest_no_cov %>%
         dplyr::left_join(user,
                          by = "user_id")
 
-    # # this takes the original user list, the full set of crime, or ohcas, etc
+    # Take original user list, the full set of crime, or ohcas, etc
     # existing_user <- user
-    #
     # # update user to be the new users, those who are not covered
     # user <- user_not_covered
-
-# } # end NULL
 
     proposed_facility_cpp <- proposed_facility %>%
         dplyr::select(lat, long) %>%
@@ -130,16 +134,6 @@ max_coverage <- function(existing_facility = NULL,
 
     user_id_list <- 1:nrow(user_not_covered)
 
-    # the above definition of A would have an ifelse
-    # } else if (relocation == TRUE){
-
-    # A <-
-    # cbind(
-    # binary_matrix_cpp(current_locations),
-    # binary_matrix_cpp(potential_locations)
-    # )
-
-
     # facility_names <- sprintf("facility_id_%s", 1:nrow(proposed_facility))
     #
     # colnames(A) <- facility_names
@@ -148,9 +142,6 @@ max_coverage <- function(existing_facility = NULL,
     # # user_id_list <- A[,"user_id"]
     #
     # user_id_list <- 1:nrow(user_not_covered)
-
-    # } end relocation if loop.
-
 
     # drop ohca_id
     # A <- A[ ,-1]

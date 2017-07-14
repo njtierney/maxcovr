@@ -59,7 +59,11 @@ max_coverage_relocation <- function(existing_facility = NULL,
 
 # the A matrix that I feed here will be the combination of the
 # existing AED locations and the potential AED locations.
-#
+# # #
+    # library(tidyverse)
+    # york_selected <- york %>% filter(grade == "I")
+    #
+    # york_unselected <- york %>% filter(grade != "I")
     # existing_facility = york_selected
     # proposed_facility = york_unselected
     # user = york_crime
@@ -68,7 +72,6 @@ max_coverage_relocation <- function(existing_facility = NULL,
     # cost_removal = 700
     # cost_total = 25000
     # solver = "gurobi"
-
     # using the AED data
 #
 #     library(tidyverse)
@@ -223,7 +226,6 @@ Ain <- cbind(-A, diag(Nx))
 #     rep(cost_install, ncol(proposed_facility)),
 #     rep(0, Nx)
 # )
-
 
 cost_relocate <- cost_install - cost_removal
 
@@ -443,7 +445,6 @@ return(model_result)
     # constraint_directions_gurobi <- c(rep("<=", Nx), "=")
     model_call <- match.call()
     # model <- list()
-
     gurobi_solution <- gurobi::gurobi(model = list(
         A = constraint_matrix,
         obj = c,
@@ -502,7 +503,6 @@ return(model_result)
         x$existing_facility[which(x$solution$x[1:n_existing] == 0),]
 
     # maybe there is now total coverage?
-
     # create bits to get the right vector size out for the users affected
     n_bit_3 <- n_existing + n_proposed + 1
 

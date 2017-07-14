@@ -1,16 +1,21 @@
 #' (Vectorized) Solve the Maximal Covering Location Problem
 #'
-#' \code{max_coverage_vec} does what \code{max_coverage} does, but it allows for input of vectors in n_added. This function is currently still under development, as I still need to work out how to understand it.
+#' `max_coverage_vec` does what `max_coverage` does, but it allows for input
+#'   of vectors in n_added. This function is currently still under development.
 #'
-#' @param existing_facility data.frame containing the facilities that are already in existing, with columns names lat, and long.
-#' @param proposed_facility data.frame containing the facilities that are being proposed, with column names lat, and long.
-#' @param user data.frame containing the users of the facilities, along with column names lat, and long.
+#' @param existing_facility data.frame containing the facilities that are
+#'   already in existing, with columns names lat, and long.
+#' @param proposed_facility data.frame containing the facilities that are
+#'   being proposed, with column names lat, and long.
+#' @param user data.frame containing the users of the facilities, along with
+#'   column names lat, and long.
 #' @param distance_cutoff numeric indicating the distance cutoff (in metres)
-#' you are interested in. If a number is less than distance_cutoff, it will be
-#' 1, if it is greater than it, it will be 0.
+#'   you are interested in. If a number is less than distance_cutoff, it will be
+#'   1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
-#' @param solver character default is lpSolve, but glpk and Gurobi can also be used.
+#' @param solver character default is lpSolve, but glpk and Gurobi can also be
+#'   used.
 #'
 #' @return dataframe of results
 #

@@ -2,11 +2,11 @@
 #'
 #' This function finds the nearest lat/long pairs to another lat/long pair.
 #' So in the york building and york crime context, writing
-#' \code{nearest(york_crime,york)} reads as "find the nearest crime in york to
+#' `nearest(york_crime,york)` reads as "find the nearest crime in york to
 #' each building in york, and returns a dataframe with every building in york,
 #' the nearest york_crime to each building, and the distance in metres between
-#' the two. Likewise, you could write \code{nearest(york, york_crime)}, and this
-#' would return the nearest building to every crime. \code{nearest} assumes that
+#' the two. Likewise, you could write `nearest(york, york_crime)`, and this
+#' would return the nearest building to every crime. `nearest` assumes that
 #' the names of the latitude and longitude are "lat" and "long", but you can
 #' provide these names.
 #'

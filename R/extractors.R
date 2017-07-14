@@ -5,8 +5,8 @@
 #' Extract Selected Facilities
 #'
 #' This takes the linear programming solution, the A matrix, and the proposed
-#' facilities. It returns a tibble, which contains the facilities chosen from
-#' the proposed facilities.
+#'   facilities. It returns a tibble, which contains the facilities chosen from
+#'   the proposed facilities.
 #'
 #' @param solution_vector vector from lp_solution$solution
 #' @param A_mat The "A" matrix from the solver
@@ -105,10 +105,11 @@ extract_users_affected <- function(A_mat,
 #' Augment the users data; add useful information
 #'
 #' This returns the `user` dataframe, with added columns containing distance
-#' between that user and a given facility - IDs are generated for IDs and
-#' facilities that correspond to their row number.
+#'   between that user and a given facility - IDs are generated for IDs and
+#'   facilities that correspond to their row number.
 #'
-#' @param facilities_selected dataframe of facilities selected, obtained from \code{extract_facility_selected}
+#' @param facilities_selected dataframe of facilities selected, obtained from
+#'   `extract_facility_selected`
 #' @param existing_facilities existing facilities
 #' @param existing_users existing users
 #'
@@ -155,7 +156,9 @@ augment_user <- function(facilities_selected,
 
 #' Extract a one-row summary of the model coverage
 #'
-#' This function takes the users information, the distance cutoff, and the number of facilities added, and then returns a one-row dataframe containing summary information about the coverage.
+#' This function takes the users information, the distance cutoff, and the
+#'   number of facilities added, and then returns a one-row dataframe containing
+#'   summary information about the coverage.
 #'
 #' @param augmented_user dataframe obtained from augment_user()
 #' @param distance_cutoff numeric of the distance cutoff

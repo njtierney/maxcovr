@@ -2,8 +2,8 @@
 #'
 #' Crime locations obtained via the ukpolice R package: \url{https://github.com/njtierney/ukpolice}, which uses the data made available through the uk crime API:\url{data.police.uk/docs/}. This data contains public sector information licensed under the Open Government Licence v3.0: \url{https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/}.
 #'
-#' @format A data frame with variables: \code{category}, \code{persistent_id},
-#'   \code{date}, \code{lat}, \code{long}, \code{street_id}, \code{street_name}, \code{context}, \code{id}, \code{location_type}, \code{location_subtype}, and \code{outcome_status}.
+#' @format A data frame with variables: `category`, `persistent_id`,
+#'   `date`, `lat`, `long`, `street_id`, `street_name`, `context`, `id`, `location_type`, `location_subtype`, and `outcome_status`.
 #''
 #' \itemize{
 #'   \item category: Category of the crime (\url{https://data.police.uk/docs/method/crime-street/})

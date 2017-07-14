@@ -5,19 +5,20 @@
 
 #' Nearest wrapper
 #'
-#' This function provides a little wrapper function for \code{nearest}.
-#' Although, adding \code{is_covered} to the model. In the future this might
-#' get added to nearest, and this function will become sorta obsolete.
-#' For the moment, this function exists because (to me, as least) it is
-#' explicit about the input. It is used so that in a cross validation context
-#' we can evaluate how well the test data performs against the facilities
-#' suggested in the training set.
+#' This function provides a little wrapper function for `nearest`.
+#'   Although, adding `is_covered` to the model. In the future this might
+#'   get added to nearest, and this function will become sorta obsolete.
+#'   For the moment, this function exists because (to me, as least) it is
+#'   explicit about the input. It is used so that in a cross validation context
+#'   we can evaluate how well the test data performs against the facilities
+#'   suggested in the training set.
 #'
 #' @param all_facilities data.frame All facilities selected in maxcovr model
 #' @param test_data data.frame test data (but it could be any `user`-type data)
 #' @param distance_threshold numeric
 #'
-#' @return dataframe containing distances between each test data observation and the nearest facility.
+#' @return dataframe containing distances between each test data observation
+#'   and the nearest facility.
 #' @export
 #'
 #' @examples
@@ -45,12 +46,12 @@ augment_user_tested <- function(all_facilities,
 
 #' Summarise the coverage for users
 #'
-#' This uses a \code{user} dataframe obtained from something like
-#' \code{augment_user_tested}.
+#' This uses a `user` dataframe obtained from something like
+#' `augment_user_tested`.
 #'
 #' @param user dataframe of users with distances between each user and the
-#'   nearest facility (\code{distance}), and whether this is within the distance
-#'   threshold (\code{is_covered}).
+#'   nearest facility (`distance`), and whether this is within the distance
+#'   threshold (`is_covered`).
 #'
 #' @return dataframe containing information on the number of users, the number
 #'   of events covered, the proportion of events covered, and the distance from
@@ -84,15 +85,15 @@ summarise_user_cov <- function(user){
 #' Find distance from relocated and proposed new sites
 #'
 #' This takes the proposed sites and the existing sites, with additional
-#' information from the model, and then returns a dataframe of all of the
-#' existing facilities that were relocated, and provides the distance to the
-#' nearest facility, which is presumably the location to which it was relocated
-#' to.
+#'   information from the model, and then returns a dataframe of all of the
+#'   existing facilities that were relocated, and provides the distance to the
+#'   nearest facility, which is presumably the location to which it was
+#'   relocated to.
 #'
 #' @param proposed_facility facilities proposed for the model - but this data
-#'   has extra information (\code{is_installed}) in it.
+#'   has extra information (`is_installed`) in it.
 #' @param existing_facility facilities existing for the model - but this data
-#'   has extra information (\code{is_relocated}) in it.
+#'   has extra information (`is_relocated`) in it.
 #'
 #' @return dataframe
 #' @export
@@ -154,12 +155,12 @@ n_relocated <- function(existing_facility){
 
 #' Extract the number of facilities installed
 #'
-#' Using the model-modified dataframe of \code{proposed_facility}, count the
-#' number of events installed.
+#' Using the model-modified dataframe of `proposed_facility`, count the
+#'   number of events installed.
 #'
 #' @param proposed_facility dataframe from the mc_model, of facilities proposed
 #'   with the additional information about whether the facility was installed
-#'   or not - \code{is_installed}
+#'   or not - `is_installed`
 #'
 #' @return datafrmae
 #'
@@ -189,12 +190,12 @@ n_installed <- function(proposed_facility){
 
 #' Find the average distance from facilities relocated to their final place
 #'
-#' This takes data from the function \code{augment_facility_relocated}
-#' function of the same name and then summarises it to find the average and sd
-#' of the distance between the two.
+#' This takes data from the function `augment_facility_relocated`
+#'   function of the same name and then summarises it to find the average and sd
+#'   of the distance between the two.
 #'
 #' @param augment_facility_relocated dataframe from function:
-#'   \code{augment_facility_relocated}
+#'   `augment_facility_relocated`
 #'
 #' @return dataframe
 #'
