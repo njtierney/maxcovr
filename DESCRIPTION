@@ -13,7 +13,7 @@ Description: Solving the "maximum location coverage problem" as described by
     provide tools to calculate facility coverage.
 Depends:
     R (>= 3.2.2)
-License: MIT + file LICENSE
+License: GPL-3
 RoxygenNote: 6.0.1.9000
 LazyData: true
 URL: https://github.com/njtierney/maxcovr
