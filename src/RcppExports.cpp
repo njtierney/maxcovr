@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // deg2rad_cpp
 double deg2rad_cpp(double deg);
-RcppExport SEXP maxcovr_deg2rad_cpp(SEXP degSEXP) {
+RcppExport SEXP _maxcovr_deg2rad_cpp(SEXP degSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // spherical_distance_cpp
 double spherical_distance_cpp(double lat1, double long1, double lat2, double long2);
-RcppExport SEXP maxcovr_spherical_distance_cpp(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
+RcppExport SEXP _maxcovr_spherical_distance_cpp(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -32,7 +32,7 @@ END_RCPP
 }
 // distance_matrix_cpp
 NumericMatrix distance_matrix_cpp(NumericMatrix facility, NumericMatrix user);
-RcppExport SEXP maxcovr_distance_matrix_cpp(SEXP facilitySEXP, SEXP userSEXP) {
+RcppExport SEXP _maxcovr_distance_matrix_cpp(SEXP facilitySEXP, SEXP userSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,7 +44,7 @@ END_RCPP
 }
 // binary_matrix_cpp
 IntegerMatrix binary_matrix_cpp(NumericMatrix facility, NumericMatrix user, double distance_cutoff);
-RcppExport SEXP maxcovr_binary_matrix_cpp(SEXP facilitySEXP, SEXP userSEXP, SEXP distance_cutoffSEXP) {
+RcppExport SEXP _maxcovr_binary_matrix_cpp(SEXP facilitySEXP, SEXP userSEXP, SEXP distance_cutoffSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -57,7 +57,7 @@ END_RCPP
 }
 // nearest_facility_dist
 NumericMatrix nearest_facility_dist(NumericMatrix facility, NumericMatrix user);
-RcppExport SEXP maxcovr_nearest_facility_dist(SEXP facilitySEXP, SEXP userSEXP) {
+RcppExport SEXP _maxcovr_nearest_facility_dist(SEXP facilitySEXP, SEXP userSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -69,7 +69,7 @@ END_RCPP
 }
 // spherical_distance_cpp_vec
 NumericVector spherical_distance_cpp_vec(NumericVector lat1, NumericVector long1, NumericVector lat2, NumericVector long2);
-RcppExport SEXP maxcovr_spherical_distance_cpp_vec(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
+RcppExport SEXP _maxcovr_spherical_distance_cpp_vec(SEXP lat1SEXP, SEXP long1SEXP, SEXP lat2SEXP, SEXP long2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -83,12 +83,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"maxcovr_deg2rad_cpp", (DL_FUNC) &maxcovr_deg2rad_cpp, 1},
-    {"maxcovr_spherical_distance_cpp", (DL_FUNC) &maxcovr_spherical_distance_cpp, 4},
-    {"maxcovr_distance_matrix_cpp", (DL_FUNC) &maxcovr_distance_matrix_cpp, 2},
-    {"maxcovr_binary_matrix_cpp", (DL_FUNC) &maxcovr_binary_matrix_cpp, 3},
-    {"maxcovr_nearest_facility_dist", (DL_FUNC) &maxcovr_nearest_facility_dist, 2},
-    {"maxcovr_spherical_distance_cpp_vec", (DL_FUNC) &maxcovr_spherical_distance_cpp_vec, 4},
+    {"_maxcovr_deg2rad_cpp", (DL_FUNC) &_maxcovr_deg2rad_cpp, 1},
+    {"_maxcovr_spherical_distance_cpp", (DL_FUNC) &_maxcovr_spherical_distance_cpp, 4},
+    {"_maxcovr_distance_matrix_cpp", (DL_FUNC) &_maxcovr_distance_matrix_cpp, 2},
+    {"_maxcovr_binary_matrix_cpp", (DL_FUNC) &_maxcovr_binary_matrix_cpp, 3},
+    {"_maxcovr_nearest_facility_dist", (DL_FUNC) &_maxcovr_nearest_facility_dist, 2},
+    {"_maxcovr_spherical_distance_cpp_vec", (DL_FUNC) &_maxcovr_spherical_distance_cpp_vec, 4},
     {NULL, NULL, 0}
 };
 

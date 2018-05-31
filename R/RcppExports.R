@@ -9,7 +9,7 @@
 #'
 #' @export
 deg2rad_cpp <- function(deg) {
-    .Call('maxcovr_deg2rad_cpp', PACKAGE = 'maxcovr', deg)
+    .Call('_maxcovr_deg2rad_cpp', PACKAGE = 'maxcovr', deg)
 }
 
 #' Calculate distance using haversines formula
@@ -23,7 +23,7 @@ deg2rad_cpp <- function(deg) {
 #'
 #' @export
 spherical_distance_cpp <- function(lat1, long1, lat2, long2) {
-    .Call('maxcovr_spherical_distance_cpp', PACKAGE = 'maxcovr', lat1, long1, lat2, long2)
+    .Call('_maxcovr_spherical_distance_cpp', PACKAGE = 'maxcovr', lat1, long1, lat2, long2)
 }
 
 #' Create a matrix of distances between two areas
@@ -37,7 +37,7 @@ spherical_distance_cpp <- function(lat1, long1, lat2, long2) {
 #' @export
 #'
 distance_matrix_cpp <- function(facility, user) {
-    .Call('maxcovr_distance_matrix_cpp', PACKAGE = 'maxcovr', facility, user)
+    .Call('_maxcovr_distance_matrix_cpp', PACKAGE = 'maxcovr', facility, user)
 }
 
 #' Create a binary matrix TRUE if distance satisfies a condition
@@ -54,7 +54,7 @@ distance_matrix_cpp <- function(facility, user) {
 #' @export
 #'
 binary_matrix_cpp <- function(facility, user, distance_cutoff) {
-    .Call('maxcovr_binary_matrix_cpp', PACKAGE = 'maxcovr', facility, user, distance_cutoff)
+    .Call('_maxcovr_binary_matrix_cpp', PACKAGE = 'maxcovr', facility, user, distance_cutoff)
 }
 
 #' nearest facility + distance to a user
@@ -70,7 +70,7 @@ binary_matrix_cpp <- function(facility, user, distance_cutoff) {
 #' @export
 #'
 nearest_facility_dist <- function(facility, user) {
-    .Call('maxcovr_nearest_facility_dist', PACKAGE = 'maxcovr', facility, user)
+    .Call('_maxcovr_nearest_facility_dist', PACKAGE = 'maxcovr', facility, user)
 }
 
 #' Calculate (vectorized) distance using haversines formula
@@ -84,6 +84,6 @@ nearest_facility_dist <- function(facility, user) {
 #'
 #' @export
 spherical_distance_cpp_vec <- function(lat1, long1, lat2, long2) {
-    .Call('maxcovr_spherical_distance_cpp_vec', PACKAGE = 'maxcovr', lat1, long1, lat2, long2)
+    .Call('_maxcovr_spherical_distance_cpp_vec', PACKAGE = 'maxcovr', lat1, long1, lat2, long2)
 }
 

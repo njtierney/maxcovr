@@ -228,7 +228,8 @@ NumericVector spherical_distance_cpp_vec(NumericVector lat1,
 
     int radius_earth = 6371;
 
-    int n1 = lat1.size();
+    // int n1 = lat1.size();
+    int n1 = lat1.length();
 
     NumericVector lat1_vec = lat1.length();
     NumericVector long1_vec = long1.length();
