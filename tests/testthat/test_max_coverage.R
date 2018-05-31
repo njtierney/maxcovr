@@ -16,13 +16,13 @@ mc_result <- max_coverage(existing_facility = york_selected,
 
 # lapply(mc_result, class)
 
+
 testthat::test_that("maximum coverage returns the correct names",{
-    testthat::expect_named(mc_result, c(
+    testthat::expect_named(
+        object = mc_result,
+        expected = c(
         "n_added",
         "distance_cutoff",
-        "existing_facility",
-        "proposed_facility",
-        "user",
         "user_affected",
         "augmented_users",
         "facility_selected",
@@ -30,13 +30,15 @@ testthat::test_that("maximum coverage returns the correct names",{
         "existing_coverage",
         "summary",
         "model_call",
-        "solution"))
+        "solution"
+        )
+        )
+    })
 
-})
 testthat::test_that("max_coverage returns has the right class",{
     testthat::expect_is(mc_result, "maxcovr")
     testthat::expect_true(is.maxcovr(mc_result))
-})
+    })
 
 
 mc_relocate <-  max_coverage_relocation(existing_facility = york_selected,

@@ -10,7 +10,7 @@
 #' 1, if it is greater than it, it will be 0.
 #  @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
-#' @param solver character default is lpSolve, but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}
+#' @param solver character default is glpk, but you can also use lpSolve but currently in development is a Gurobi solver, see issue #25 : \url{https://github.com/njtierney/maxcovr/issues/25}
 #' @param cost_install integer the cost of installing a new facility
 #' @param cost_removal integer the cost of removing a facility
 #' @param cost_total integer the total cost allocated to the project
@@ -54,7 +54,7 @@ max_coverage_relocation <- function(existing_facility = NULL,
                                     cost_install,
                                     cost_removal,
                                     cost_total,
-                                    solver = "lpSolve",
+                                    solver = "glpk",
                                     return_early = FALSE){
 
 # the A matrix that I feed here will be the combination of the
@@ -432,7 +432,13 @@ return(model_result)
         glpk_solution = glpk_solution
     )
 
-    return(x)
+# return(x)
+
+# THIS IS WHERE THE BUG IS - I NEED TO FIX THE EXTRACTION PART OF THE CODE
+    # FOR GLPK
+model_result <- extract_mc_results_relocation(x)
+
+return(model_result)
 
 } else if (solver == "gurobi") {
 
