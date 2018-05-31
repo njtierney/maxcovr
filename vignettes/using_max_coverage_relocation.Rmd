@@ -95,7 +95,7 @@ instead of specifying `n_added`, as in `max_coverage`, we specify three `cost_` 
 Here we state that the installation cost is 10, the remocal cost is 1, and the total available cost is 10. There is only enough total resources to install one facility.
 
 ```{r}
-library(gurobi)
+# library(gurobi)
 system.time(
 mc_relocate_worst <-  max_coverage_relocation(
     existing_facility = york_existing_worst,
@@ -104,12 +104,19 @@ mc_relocate_worst <-  max_coverage_relocation(
     distance_cutoff = 100,
     cost_install = 10,
     cost_removal = 1,
-    cost_total = 10,
-    solver = "gurobi")
+    cost_total = 100)
+    # solver = "gurobi")
 )
 
 mc_relocate_worst
 summary(mc_relocate_worst)
+
+dim(york_existing_worst)
+dim(york_proposed_best)
+
+mc_relocate_worst$existing_facility[[1]]
+mc_relocate_worst$proposed_facility[[1]]
+mc_relocate_worst$facilities_selected[[1]]
 
 
 ```
