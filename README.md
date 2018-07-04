@@ -13,10 +13,10 @@ maxcovr was created to make it easy for a non expert to correctly solve
 the maximum covering location problem described by
 [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf).
 Implementations of this problem (such as [optimimum AED
-placement](http://circ.ahajournals.org/content/127/17/1801.short)) may
-use commercial software such as AMPL, Gurobi, or CPLEX, which require an
-expensive license, or use open source licenses but not provide source
-code to the analysis performed (e.g.,
+placement](https://www.resuscitationjournal.com/article/S0300-9572\(18\)30065-0/fulltext))
+may use commercial software such as AMPL, Gurobi, or CPLEX, which
+require an expensive license, or use open source licenses but not
+provide source code to the analysis performed (e.g.,
 [Bonnet 2014](http://www.sciencedirect.com/science/article/pii/S0360835215003927))
 This builds a substantial barrier to implement and reproduce these
 analyses.
@@ -195,7 +195,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.542   0.202   1.842
+#>   1.582   0.223   1.832
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -249,7 +249,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  11.970   0.913  12.980
+#>  11.629   0.933  12.615
 ```
 
 This returns a list of dataframes, which we can bind together like so:
