@@ -67,7 +67,7 @@ summarise_coverage <- function(df_dist,
 #'
 #'
 summary_mc_cv <- function(model,
-                             test_data){
+                          test_data){
 
     purrr::pmap_df(.l = list(
         facility_selected = model$facility_selected,
@@ -179,17 +179,17 @@ coverage <- function(nearest_df,
 #'
 #'
 summary_mc_cv_relocate <- function(model,
-                                   test_set){
+                                   test_data){
 
         # model = mc_cv_relocate
         # test_data = mc_cv$test
         cost = model$total_cost[[1]]
         purrr::pmap_df(.l = list(
             facility_selected = model$facility_selected,
-            test_data = test_set$test,
+            test_data = test_data$test,
             dist_cutoff = model$distance_cutoff,
             # cost = model$total_cost,
-            n_fold = test_set$.id
+            n_fold = test_data$.id
         ),
 
         .f = function(facility_selected, # the facility selected by max_coverage

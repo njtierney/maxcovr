@@ -1,3 +1,11 @@
+# maxcovr 0.0.9.9000 (2018-07-05)
+
+## Bug fixes 
+
+## Note
+
+* That was a LONG time between development on this package.
+
 # maxcovr 0.0.5.9700 (2017-02-08)
 
 ## NEW FEATURES (UNDER DEVELOPMENT)
