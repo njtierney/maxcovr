@@ -7,7 +7,7 @@
 extract_model_coverage(augmented_user, distance_cutoff, n_added)
 }
 \arguments{
-\item{augmented_user}{dataframe obtained from augment_user()}
+\item{augmented_user}{dataframe obtained from \code{augment_user()}}
 
 \item{distance_cutoff}{numeric of the distance cutoff}
 
@@ -17,7 +17,9 @@ extract_model_coverage(augmented_user, distance_cutoff, n_added)
 tibble of summary coverage info
 }
 \description{
-This function takes the users information, the distance cutoff, and the number of facilities added, and then returns a one-row dataframe containing summary information about the coverage.
+This function takes the users information, the distance cutoff, and the
+number of facilities added, and then returns a one-row dataframe containing
+summary information about the coverage.
 }
 \examples{
 

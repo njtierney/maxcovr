@@ -4,7 +4,8 @@
 \alias{extract_existing_coverage}
 \title{Extract the existing coverage}
 \usage{
-extract_existing_coverage(existing_facilities, existing_users, distance_cutoff)
+extract_existing_coverage(existing_facilities, existing_users,
+  distance_cutoff)
 }
 \arguments{
 \item{existing_facilities}{the existing facilities}

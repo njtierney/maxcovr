@@ -9,12 +9,13 @@ augment_user_tested(all_facilities, test_data, distance_threshold = 100)
 \arguments{
 \item{all_facilities}{data.frame All facilities selected in maxcovr model}
 
-\item{test_data}{data.frame test data (but it could be any `user`-type data)}
+\item{test_data}{data.frame test data (but it could be any \code{user}-type data)}
 
 \item{distance_threshold}{numeric}
 }
 \value{
-dataframe containing distances between each test data observation and the nearest facility.
+dataframe containing distances between each test data observation
+and the nearest facility.
 }
 \description{
 This function provides a little wrapper function for \code{nearest}.

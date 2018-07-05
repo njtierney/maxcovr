@@ -20,8 +20,8 @@ dataframe
 This takes the proposed sites and the existing sites, with additional
 information from the model, and then returns a dataframe of all of the
 existing facilities that were relocated, and provides the distance to the
-nearest facility, which is presumably the location to which it was relocated
-to.
+nearest facility, which is presumably the location to which it was
+relocated to.
 }
 \examples{
 

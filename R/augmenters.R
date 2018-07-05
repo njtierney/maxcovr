@@ -19,7 +19,6 @@
 #'
 #' @return dataframe containing distances between each test data observation
 #'   and the nearest facility.
-#' @export
 #'
 #' @examples
 #'
@@ -33,6 +32,8 @@
 #'     ))
 #'
 #' }
+#'
+#' @export
 #'
 augment_user_tested <- function(all_facilities,
                                 test_data,
@@ -56,7 +57,6 @@ augment_user_tested <- function(all_facilities,
 #' @return dataframe containing information on the number of users, the number
 #'   of events covered, the proportion of events covered, and the distance from
 #'   each
-#' @export
 #'
 #' @examples
 #'
@@ -70,6 +70,7 @@ augment_user_tested <- function(all_facilities,
 #'
 #' }
 #'
+#' @export
 #'
 summarise_user_cov <- function(user){
 
@@ -96,7 +97,6 @@ summarise_user_cov <- function(user){
 #'   has extra information (`is_relocated`) in it.
 #'
 #' @return dataframe
-#' @export
 #'
 #' @examples
 #'
@@ -112,6 +112,8 @@ summarise_user_cov <- function(user){
 #'
 #' }
 #'
+#' @export
+#'
 augment_facility_relocated <- function(proposed_facility,
                                        existing_facility){
 
@@ -125,14 +127,12 @@ augment_facility_relocated <- function(proposed_facility,
 
 # the little tiny cute summaries of proposed facilities
 
-
 #' Extract the number of facilities relocated.
 #'
 #' @param existing_facility the facilities originally existing - this will have
 #'   to be output from the model, however.
 #'
 #' @return dataframe containing a single column of
-#' @export
 #'
 #' @examples
 #'
@@ -146,6 +146,8 @@ augment_facility_relocated <- function(proposed_facility,
 #'   .[[1]]
 #'
 #' }
+#'
+#' @export
 #'
 n_relocated <- function(existing_facility){
 
@@ -164,8 +166,6 @@ n_relocated <- function(existing_facility){
 #'
 #' @return datafrmae
 #'
-#' @export
-#'
 #' @examples
 #'
 #' \dontrun{
@@ -179,6 +179,8 @@ n_relocated <- function(existing_facility){
 #'     .[[1]]
 #'
 #' }
+#'
+#' @export
 #'
 n_installed <- function(proposed_facility){
 
@@ -198,8 +200,6 @@ n_installed <- function(proposed_facility){
 #'   `augment_facility_relocated`
 #'
 #' @return dataframe
-#'
-#' @export
 #'
 #' @examples
 #'
@@ -222,6 +222,8 @@ n_installed <- function(proposed_facility){
 #'     .[[1]]
 #'
 #' }
+#'
+#' @export
 #'
 summarise_relocated_dist <- function(augment_facility_relocated){
 

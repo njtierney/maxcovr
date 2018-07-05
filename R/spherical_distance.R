@@ -1,7 +1,12 @@
 #' Calculate the distance between two locations
 #'
 #' This function uses the haversine formula to calculate the great circle
-#' distance between two locations, identified by their latitudes and longitudes. It is borrowed from rnoaa (https://github.com/ropenscilabs/rnoaa/blob/master/R/meteo_distance.R) and included here as rnoaa is a large package that is rather unrelated to maxcovr. I have renamed it from meteo_spherical_distance to spherical_distance
+#' distance between two locations, identified by their latitudes and longitudes.
+#' It is borrowed from rnoaa
+#' (https://github.com/ropenscilabs/rnoaa/blob/master/R/meteo_distance.R) and
+#' included here as rnoaa is a large package that is rather unrelated to
+#' maxcovr. I have renamed it from meteo_spherical_distance to
+#' spherical_distance
 #'
 #' @param lat1 Latitude of the first location.
 #' @param long1 Longitude of the first location.

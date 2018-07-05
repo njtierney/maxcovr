@@ -22,8 +22,8 @@ nearest(nearest_df, to_df, nearest_lat = "lat", nearest_long = "long",
 }
 \value{
 dataframe of "to_df" along with the nearest "nearest_df" to each row,
-along with the distance between the two, and the nearest_id, the row position
-of the nearest_df closest to that row.
+along with the distance between the two, and the nearest_id, the row
+position of the nearest_df closest to that row.
 }
 \description{
 This function finds the nearest lat/long pairs to another lat/long pair.

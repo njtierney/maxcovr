@@ -11,15 +11,23 @@ coverage(nearest_df, to_df, distance_cutoff = 100, ...)
 
 \item{to_df}{dataframe containing latitude and longitude}
 
-\item{distance_cutoff}{integer the distance threshold you are interested in assessing coverage at}
+\item{distance_cutoff}{integer the distance threshold you are interested
+in assessing coverage at}
 
 \item{...}{extra arguments to pass to nearest}
 }
 \value{
-a dataframe containing information about the distance threshold uses (distance_within), the number of events covered and not covered (n_cov, n_not_cov), the percentage covered and not covered (pct_cov, pct_not_cov), and the average distance and sd distance.
+a dataframe containing information about the distance threshold
+uses (distance_within), the number of events covered and not covered
+(n_cov, n_not_cov), the percentage covered and not covered
+(pct_cov, pct_not_cov), and the average distance and sd distance.
 }
 \description{
-In the york building and york crime context, writing \code{nearest(york_crime,york)} reads as "find the nearest crime in york to each building in york, and returns a dataframe with every building in york, the nearest york_crime to each building, and the distance in metres between the two.
+In the york building and york crime context, writing
+\code{nearest(york_crime,york)} reads as "find the nearest crime in york to
+each building in york, and returns a dataframe with every building in
+york, the nearest york_crime to each building, and the distance in
+metres between the two.
 }
 \examples{
 

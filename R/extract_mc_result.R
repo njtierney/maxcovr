@@ -1,8 +1,13 @@
 #' extract_mc_results
 #'
-#' `extract_mc_results` takes a fitted max_coverage object and returns useful summary information from the model
+#' `extract_mc_results` takes a fitted max_coverage object and returns
+#'  useful summary information from the model
 #'
-#' @description extract_mc_results exists so that the manipulation functions for the outcomes from the lp solver have another home - this makes it easier to maintain this package, and heeds to this idea of having functions that are specialised. The name of this function is likely to change in the near future.
+#' @description extract_mc_results exists so that the manipulation functions for
+#'   the outcomes from the lp solver have another home - this makes it easier to
+#'   maintain this package, and heeds to this idea of having functions that are
+#'   specialised. The name of this function is likely to change in the near
+#'   future.
 #'
 #' @param x the fitted model from max_coverage
 #'
@@ -26,7 +31,8 @@ extract_mc_results <- function(x){
         users_not_covered = x$user_not_covered)
 
     # return the users entered into the
-    # augmented_users - a dataframe with the original users, but with distance + a few extras added
+    # augmented_users - a dataframe with the original users, but with
+    # distance + a few extras added
 
     mc_augmented_users <- augment_user(
         facilities_selected = mc_facilities_selected,
@@ -76,6 +82,13 @@ extract_mc_results <- function(x){
         model_call = list(x$model_call),
         solution = list(x$lp_solution)
     )
+
+    class(mc_res) <- c("maxcovr",class(mc_res))
+
+    return(mc_res)
+
+}
+
 #
 #     # extract results ---------------------------------------------------------
 #
@@ -189,11 +202,5 @@ extract_mc_results <- function(x){
 #             # facilities_users_merge = facilities_users_merge,
 #             #add the variables that were used here to get more info
 
-    # res <- c(class(res),"maxcovr_relocation")
-    class(mc_res) <- c("maxcovr",class(mc_res))
-    # class(res) <- c("maxcovr_relocation")
-
-    return(mc_res)
-
-}
-
+# res <- c(class(res),"maxcovr_relocation")
+# class(res) <- c("maxcovr_relocation")

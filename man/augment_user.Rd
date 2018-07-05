@@ -7,7 +7,8 @@
 augment_user(facilities_selected, existing_facilities, existing_users)
 }
 \arguments{
-\item{facilities_selected}{dataframe of facilities selected, obtained from \code{extract_facility_selected}}
+\item{facilities_selected}{dataframe of facilities selected, obtained from
+\code{extract_facility_selected}}
 
 \item{existing_facilities}{existing facilities}
 
@@ -17,7 +18,7 @@ augment_user(facilities_selected, existing_facilities, existing_users)
 tibble of users, with distances between each user and facility
 }
 \description{
-This returns the `user` dataframe, with added columns containing distance
+This returns the \code{user} dataframe, with added columns containing distance
 between that user and a given facility - IDs are generated for IDs and
 facilities that correspond to their row number.
 }

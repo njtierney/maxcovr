@@ -1,10 +1,9 @@
-#' maxcovr.
+#' maxcovr
 #'
 #' @name maxcovr
 #' @useDynLib maxcovr
 #' @importFrom Rcpp sourceCpp
 #' @importFrom magrittr %>%
-#' @importFrom stats sd
 NULL
 
 if (getRversion() >= "2.15.1")  utils::globalVariables(c("."))
@@ -36,5 +35,4 @@ globalVariables(c("is_installed",
                   "bind_rows",
                   "facility_chosen",
                   "facility_id",
-                  "key"
-))
+                  "key"))

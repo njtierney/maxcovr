@@ -8,11 +8,14 @@ max_coverage_vec(existing_facility = NULL, proposed_facility, user,
   distance_cutoff, n_added, solver = "lpSolve")
 }
 \arguments{
-\item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
+\item{existing_facility}{data.frame containing the facilities that are
+already in existing, with columns names lat, and long.}
 
-\item{proposed_facility}{data.frame containing the facilities that are being proposed, with column names lat, and long.}
+\item{proposed_facility}{data.frame containing the facilities that are
+being proposed, with column names lat, and long.}
 
-\item{user}{data.frame containing the users of the facilities, along with column names lat, and long.}
+\item{user}{data.frame containing the users of the facilities, along with
+column names lat, and long.}
 
 \item{distance_cutoff}{numeric indicating the distance cutoff (in metres)
 you are interested in. If a number is less than distance_cutoff, it will be
@@ -20,11 +23,13 @@ you are interested in. If a number is less than distance_cutoff, it will be
 
 \item{n_added}{the maximum number of facilities to add.}
 
-\item{solver}{character default is lpSolve, but glpk and Gurobi can also be used.}
+\item{solver}{character default is lpSolve, but glpk and Gurobi can also be
+used.}
 }
 \value{
 dataframe of results
 }
 \description{
-\code{max_coverage_vec} does what \code{max_coverage} does, but it allows for input of vectors in n_added. This function is currently still under development, as I still need to work out how to understand it.
+\code{max_coverage_vec} does what \code{max_coverage} does, but it allows for input
+of vectors in n_added. This function is currently still under development.
 }

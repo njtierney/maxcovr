@@ -11,7 +11,7 @@
 #  @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
 #' @param solver character "glpk" (default) or "lpSolve". "gurobi" is currently
-#'   in development, see \url{https://github.com/njtierney/maxcovr/issues/25}
+#'   in development, see <https://github.com/njtierney/maxcovr/issues/25>
 #' @param cost_install integer the cost of installing a new facility
 #' @param cost_removal integer the cost of removing a facility
 #' @param cost_total integer the total cost allocated to the project
@@ -19,9 +19,9 @@
 #'
 #' @return dataframe of results
 #'
-#' @export
-#'
 #' @examples
+#'
+#' \dontrun{
 #'
 #' library(dplyr)
 #' # subset to be the places with towers built on them.
@@ -45,6 +45,10 @@
 #' mc_relocate
 #'
 #' summary(mc_relocate)
+#'
+#' }
+#'
+#' @export
 #'
 max_coverage_relocation <- function(existing_facility = NULL,
                                     proposed_facility,

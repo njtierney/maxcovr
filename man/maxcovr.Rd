@@ -2,7 +2,7 @@
 % Please edit documentation in R/maxcovr-package.R
 \name{maxcovr}
 \alias{maxcovr}
-\title{maxcovr.}
+\title{maxcovr}
 \description{
-maxcovr.
+maxcovr
 }

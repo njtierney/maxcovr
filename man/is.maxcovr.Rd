@@ -10,7 +10,7 @@ is.maxcovr(x)
 \item{x}{An object}
 }
 \value{
-`TRUE` if the object inherits from the `maxcovr` class.
+\code{TRUE} if the object inherits from the \code{maxcovr} class.
 }
 \description{
 Test if the object is a maxcovr object

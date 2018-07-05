@@ -17,11 +17,16 @@ spherical_distance(lat1, long1, lat2, long2)
 }
 \value{
 A numeric value giving the distance in meters between the
-   pair of locations.
+pair of locations.
 }
 \description{
 This function uses the haversine formula to calculate the great circle
-distance between two locations, identified by their latitudes and longitudes. It is borrowed from rnoaa (https://github.com/ropenscilabs/rnoaa/blob/master/R/meteo_distance.R) and included here as rnoaa is a large package that is rather unrelated to maxcovr. I have renamed it from meteo_spherical_distance to spherical_distance
+distance between two locations, identified by their latitudes and longitudes.
+It is borrowed from rnoaa
+(https://github.com/ropenscilabs/rnoaa/blob/master/R/meteo_distance.R) and
+included here as rnoaa is a large package that is rather unrelated to
+maxcovr. I have renamed it from meteo_spherical_distance to
+spherical_distance
 }
 \note{
 This function assumes an earth radius of 6,371 km.
@@ -36,5 +41,5 @@ spherical_distance(lat1 = -27.4667,
 }
 \author{
 Alex Simmons \email{a2.simmons@qut.edu.au},
-   Brooke Anderson \email{brooke.anderson@colostate.edu}
+Brooke Anderson \email{brooke.anderson@colostate.edu}
 }

@@ -1,5 +1,5 @@
 
-# @export
+#' @export
 print.maxcovr_relocation <- function(x, ...){
 
 # x = mc_relocate
@@ -77,7 +77,7 @@ summary.maxcovr_relocation <- function(object, ...){
 
 }
 
-# @export
+#' @export
 print.maxcovr <- function(x, ...){
 
     # x = mc_result

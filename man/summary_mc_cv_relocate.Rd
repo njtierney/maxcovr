@@ -4,7 +4,7 @@
 \alias{summary_mc_cv_relocate}
 \title{Summary for max_coverage cross validation for relocation models}
 \usage{
-summary_mc_cv_relocate(model, test_set)
+summary_mc_cv_relocate(model, test_data)
 }
 \arguments{
 \item{model}{the cross validated model}
@@ -40,7 +40,7 @@ mc_cv_relocate <- map_df(mc_cv$train,
                                cost_total = 50000,
                                distance_cutoff = 100,
                                solver = "gurobi"))
-#'
+
  summary_mc_cv_relocate(mc_cv_relocate, mc_cv$test)
 
 }

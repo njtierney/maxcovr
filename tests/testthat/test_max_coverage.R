@@ -1,9 +1,10 @@
+context("max_coverage")
+
 library(maxcovr)
 library(dplyr)
 library(tibble)
 library(tidyr)
 
-context("max_coverage")
 
 york_selected <- york %>% dplyr::filter(grade == "I")
 york_unselected <- york %>% dplyr::filter(grade != "I")

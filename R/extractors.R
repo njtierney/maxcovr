@@ -1,7 +1,6 @@
 # These are functions that extract results from the lp_solve in maxcovr
 # fixed locations
 
-
 #' Extract Selected Facilities
 #'
 #' This takes the linear programming solution, the A matrix, and the proposed
@@ -160,7 +159,7 @@ augment_user <- function(facilities_selected,
 #'   number of facilities added, and then returns a one-row dataframe containing
 #'   summary information about the coverage.
 #'
-#' @param augmented_user dataframe obtained from augment_user()
+#' @param augmented_user dataframe obtained from `augment_user()`
 #' @param distance_cutoff numeric of the distance cutoff
 #' @param n_added numeric of the number of facilities added
 #'

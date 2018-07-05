@@ -14,14 +14,7 @@
 #'
 #' @return a list containing multiple dataframes summarising the model
 
-# extract results ---------------------------------------------------------
-
 extract_mc_results_relocation <- function(x){
-
-        # needs to be some operator here to extract the right part of the solution
-        # out. For the most part, the solution is "solution", but for lp_solve
-        # and fof glpk and gurobi these change.
-        # something like
 
     if (x$solver == "glpk") {
 

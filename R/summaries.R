@@ -1,6 +1,7 @@
 #' summarise_coverage
 #'
-#' Provides summary information of the coverage, using the distance dataframe created by maxcovr::facility_user_dist().
+#' Provides summary information of the coverage, using the distance dataframe
+#'   created by `maxcovr::facility_user_dist`().
 #'
 #' @param df_dist distance matrix, as computed by facility_user_dist
 #' @param dist_indic the critical distance range that you would like to know,
@@ -36,7 +37,6 @@ summarise_coverage <- function(df_dist,
 #'
 #' @return a summary dataframe
 #'
-#'
 #' @examples
 #'
 #' \dontrun{
@@ -64,7 +64,6 @@ summarise_coverage <- function(df_dist,
 #' }
 #'
 #' @export
-#'
 #'
 summary_mc_cv <- function(model,
                           test_data){
@@ -102,14 +101,22 @@ summary_mc_cv <- function(model,
 
 #' Create a summary of the coverage between two dataframes
 #'
-#' In the york building and york crime context, writing `nearest(york_crime,york)` reads as "find the nearest crime in york to each building in york, and returns a dataframe with every building in york, the nearest york_crime to each building, and the distance in metres between the two.
+#' In the york building and york crime context, writing
+#'   `nearest(york_crime,york)` reads as "find the nearest crime in york to
+#'   each building in york, and returns a dataframe with every building in
+#'   york, the nearest york_crime to each building, and the distance in
+#'   metres between the two.
 #'
 #' @param nearest_df dataframe containing latitude and longitude
 #' @param to_df dataframe containing latitude and longitude
-#' @param distance_cutoff integer the distance threshold you are interested in assessing coverage at
+#' @param distance_cutoff integer the distance threshold you are interested
+#'   in assessing coverage at
 #' @param ... extra arguments to pass to nearest
 #'
-#' @return a dataframe containing information about the distance threshold uses (distance_within), the number of events covered and not covered (n_cov, n_not_cov), the percentage covered and not covered (pct_cov, pct_not_cov), and the average distance and sd distance.
+#' @return a dataframe containing information about the distance threshold
+#'   uses (distance_within), the number of events covered and not covered
+#'   (n_cov, n_not_cov), the percentage covered and not covered
+#'   (pct_cov, pct_not_cov), and the average distance and sd distance.
 #'
 #' @export
 #'
@@ -170,13 +177,12 @@ coverage <- function(nearest_df,
 #'                                cost_total = 50000,
 #'                                distance_cutoff = 100,
 #'                                solver = "gurobi"))
-#' #'
+#'
 #'  summary_mc_cv_relocate(mc_cv_relocate, mc_cv$test)
 #'
 #' }
 #'
 #' @export
-#'
 #'
 summary_mc_cv_relocate <- function(model,
                                    test_data){

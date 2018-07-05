@@ -5,8 +5,8 @@
 \alias{york}
 \title{York Listed Buildings.}
 \format{A data frame with seven variables: \code{long}, \code{lat},
-  \code{object_id}, \code{desig_id}, \code{pref_ref}, \code{name}, and
-  \code{grade}.
+\code{object_id}, \code{desig_id}, \code{pref_ref}, \code{name}, and
+\code{grade}.
 
 \describe{
 \item{\code{long}}{longitude of the building}

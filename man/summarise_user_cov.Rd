@@ -13,8 +13,8 @@ threshold (\code{is_covered}).}
 }
 \value{
 dataframe containing information on the number of users, the number
-  of events covered, the proportion of events covered, and the distance from
-  each
+of events covered, the proportion of events covered, and the distance from
+each
 }
 \description{
 This uses a \code{user} dataframe obtained from something like
@@ -28,6 +28,5 @@ summarise_user_cov(augmented_user_test)
 
 
 }
-
 
 }

@@ -8,11 +8,14 @@ max_coverage(existing_facility = NULL, proposed_facility, user,
   distance_cutoff, n_added, solver = "lpSolve", return_early = FALSE)
 }
 \arguments{
-\item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
+\item{existing_facility}{data.frame containing the facilities that are
+already in existing, with columns names lat, and long.}
 
-\item{proposed_facility}{data.frame containing the facilities that are being proposed, with column names lat, and long.}
+\item{proposed_facility}{data.frame containing the facilities that are
+being proposed, with column names lat, and long.}
 
-\item{user}{data.frame containing the users of the facilities, along with column names lat, and long.}
+\item{user}{data.frame containing the users of the facilities, along with
+column names lat, and long.}
 
 \item{distance_cutoff}{numeric indicating the distance cutoff (in metres)
 you are interested in. If a number is less than distance_cutoff, it will be
@@ -20,7 +23,8 @@ you are interested in. If a number is less than distance_cutoff, it will be
 
 \item{n_added}{the maximum number of facilities to add.}
 
-\item{solver}{character default is lpSolve, but glpk and Gurobi can also be used.}
+\item{solver}{character lpSolve" (default) or "glpk". "gurobi" is currently
+in development, see \url{https://github.com/njtierney/maxcovr/issues/25}}
 
 \item{return_early}{logical - should I return the object early?}
 }
@@ -28,7 +32,13 @@ you are interested in. If a number is less than distance_cutoff, it will be
 dataframe of results
 }
 \description{
-\code{max_coverage} solves the binary optimisation problem known as the "maximal covering location problem" as described by Church (http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). This package was implemented to make it easier to solve this problem in the context of the research initially presented by Chan et al (http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal locations to place AEDs.
+\code{max_coverage} solves the binary optimisation problem known as the
+"maximal covering location problem" as described by Church
+(http://www.geo .ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf).
+This package was implemented to make it easier to solve this problem in the
+context of the research initially presented by Chan et al
+(http://circ.ahajournals.org/content/127/17/1801.short) to identify ideal
+locations to place AEDs.
 }
 \examples{
 

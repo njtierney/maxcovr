@@ -10,7 +10,7 @@ is.maxcovr_relocation(x)
 \item{x}{An object}
 }
 \value{
-`TRUE` if the object inherits from the `maxcovr_relocation` class.
+\code{TRUE} if the object inherits from the \code{maxcovr_relocation} class.
 }
 \description{
 Test if the object is a maxcovr_relocation object
