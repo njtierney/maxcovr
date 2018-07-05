@@ -1,0 +1,8 @@
+pandoc: 2.2.1
+pkgdown: 1.1.0
+pkgdown_sha: ~
+articles:
+  cross_validation_with_maxcovr: cross_validation_with_maxcovr.html
+  intro_to_maxcovr: intro_to_maxcovr.html
+  using_max_coverage_relocation: using_max_coverage_relocation.html
+
