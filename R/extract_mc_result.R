@@ -15,14 +15,14 @@
 
 extract_mc_results <- function(x){
 
-# find the facilities selected ------------------------------------------------
+# find the facilities selected ================================================
 
     mc_facilities_selected <- extract_facility_selected(
         solution_vector = x$lp_solution$solution,
         A_mat = x$A,
         proposed_facilities = x$proposed_facility)
 
-# user_affected ---------------------------------------------------------------
+# user_affected ==============================================================
 
     mc_users_affected <- extract_users_affected(
         A_mat = x$A,
@@ -90,7 +90,7 @@ extract_mc_results <- function(x){
 }
 
 #
-#     # extract results ---------------------------------------------------------
+#     # extract results =======================================================
 #
 #     # get the dimenions from the matrix
 #     J <- nrow(x$A)

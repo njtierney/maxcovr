@@ -29,7 +29,7 @@ my_dist_cpp <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
 
 # my_dist_cpp[1:5,1:5]
 
-# compare this to the dplyr method ---------------------------------------------
+# compare this to the dplyr method ============================================
 
 # maxcovr::facility_user_dist(facility = york,
 #                                          user = york_crime,
@@ -65,10 +65,6 @@ my_dist_dplyr <- user %>%
     select(-user_id) %>%
     as.matrix()
 
-# my_dist_dplyr[1:5,1:5]
-
-# my_dist_dplyr <-
-# -----------------
 
 testthat::test_that("cpp distance matrix produces same numeric result as using dplyr method",{
     # I still need to make a method that gives the big matrix names

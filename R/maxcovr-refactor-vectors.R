@@ -61,7 +61,7 @@ max_coverage_vec <- function(existing_facility = NULL,
     # constraint_dir
     # rhs
 
-# create objective -------------------------------------------------------------
+# create objective =============================================================
     # this should be made into a function that would perform different
     # functions based on whether relocation == TRUE
 
@@ -121,12 +121,12 @@ c <- c(rep(0, Ny), rep(1,Nx))
     # Ny
     # c (objective_in)
 
-# perform extra functions for data munging -------------------------------------
+# perform extra functions for data munging ===================================
 facility_id_list <- 1:nrow(proposed_facility)
 colnames(A) <- facility_id_list
 user_id_list <- 1:nrow(user_not_covered)
 
-# create constraint matrix -----------------------------------------------------
+# create constraint matrix ====================================================
     # this should be made into a function that would perform different
     # functions based on whether relocation == TRUE
     # create_constraint_matrix(..., relocation){
@@ -143,7 +143,7 @@ constraint_matrix <- rbind(
     c(rep(1, Ny), rep(0,Nx))
     )
 
-# create constraint directions -------------------------------------------------
+# create constraint directions ================================================
 
 # lpSolve: const.dir
 # glpk: dir
@@ -164,7 +164,7 @@ constraint_directions <- c(rep("<=", Nx), "==")
 
 } # end else
 
-# create right hand side matrix ------------------------------------------------
+# create right hand side matrix ===============================================
 
 # bin <- matrix(rep(0,Nx), ncol = 1)
 # rhs_matrix <- rbind(bin, beq)
@@ -180,7 +180,7 @@ rhs_matrix <- purrr::map(
     )
 )
 
-# solve the model --------------------------------------------------------------
+# solve the model =============================================================
 
 # at this point, all of the model outputs, independent of being relocation or
 # not, are ready for the analysis.
@@ -301,7 +301,7 @@ x <- list(
     # model_call = model_call
 )
 
-# extract the model results ----------------------------------------------------
+# extract the model results ===================================================
 
 # this is a place where I'll need to generalise it into separate function for
 # relocation and fixed methods.
@@ -440,7 +440,7 @@ return(res)
 
 
 
-# return the model -------------------------------------------------------------
+# return the model ===========================================================
 
 # model_result <- extract_mc_results_2(x)
 

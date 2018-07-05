@@ -16,7 +16,7 @@ near_cpp <- nearest_facility_dist(facility = facility_test_cpp,
 #                                  coverage_distance = 100)
 
 
-# begin old dplyr way ---------------------------------------------------------
+# begin old dplyr way =========================================================
 
 facility <- dplyr::mutate(york, key = 1) %>%
     dplyr::rename(lat_facility = lat,

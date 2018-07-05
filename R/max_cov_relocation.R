@@ -118,7 +118,7 @@ c <- c(rep(0, Ny), rep(1,Nx))
 # this is a line to optimise with cpp
 Ain <- cbind(-A, diag(Nx))
 
-# create the m vector ----------------------------------------------------------
+# create the m vector =========================================================
 
 # this is the vector of costs, which will have the length
 # of the number of rows of y plus the number of x's as 0s

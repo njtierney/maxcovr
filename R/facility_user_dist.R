@@ -35,7 +35,7 @@ facility_user_dist <- function(facility,
                                coverage_distance = 100,
                                nearest = "facility"){
 
-    # check that lat and long are specified -----------------------------------
+    # check that lat and long are specified
     # if(
     #     (c("lat") %in% names(facility) == TRUE) |
     #     (c("long") %in% names(facility) == TRUE) |
@@ -45,7 +45,7 @@ facility_user_dist <- function(facility,
     #     warning("make sure lat and long are in the names")
     # }
 
-    # dodgy method to get the cross product ---------------------------------------
+    # dodgy method to get the cross product
 
     # do a dodgy cross product by adding a column of 1
     # and then joining on this column

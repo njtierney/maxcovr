@@ -316,7 +316,7 @@ extract_mc_results_relocation <- function(x){
 #     # n_existing_removed
 #     # which_existing_removed
 #
-#     # back to old summary method ---------------------------------------------------
+#     # back to old summary method =============================================
 #
 #     # ... surprisingly (!) this works with very few changes  good job, past nick!
 #

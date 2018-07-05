@@ -48,7 +48,7 @@ distance_matrix_cpp <- function(facility, user) {
 #' you are interested in. If a number is less than distance_cutoff, it will be
 #' 1, if it is greater than it, it will be 0.
 #'
-#' @return a logical matrix 1 if distance between element[i,j] is less than or
+#' @return a logical matrix 1 if distance between element i, j is less than or
 #' equal to the distance_cutoff, and 0 otherwise
 #'
 #' @export
