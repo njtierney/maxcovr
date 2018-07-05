@@ -19,8 +19,8 @@
 #'   1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
-#' @param solver character default is lpSolve, but glpk and Gurobi can also
-#'   be used.
+#' @param solver character lpSolve" (default) or "glpk". "gurobi" is currently
+#'   in development, see \url{https://github.com/njtierney/maxcovr/issues/25}
 #' @param return_early logical - should I return the object early?
 #'
 #' @return dataframe of results

@@ -102,10 +102,9 @@ mc_relocate_worst <-  max_coverage_relocation(
     proposed_facility = york_proposed_best,
     user = york_crime,
     distance_cutoff = 100,
-    cost_install = 10,
-    cost_removal = 1,
-    cost_total = 100)
-    # solver = "gurobi")
+    cost_install = 500,
+    cost_removal = 100,
+    cost_total = 1000)
 )
 
 mc_relocate_worst
