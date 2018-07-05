@@ -1,7 +1,7 @@
 Package: maxcovr
 Type: Package
 Title: A Set of Tools For Solving Maximal Coverage Problem
-Version: 0.0.9.9000
+Version: 0.1.0
 Authors@R: c(
     person("Nicholas", "Tierney", email = "nicholas.tierney@gmail.com",
     role = c("aut", "cre"))

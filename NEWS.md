@@ -1,10 +1,7 @@
-# maxcovr 0.0.9.9000 (2018-07-05)
+# maxcovr 0.1.0 (2018-07-05) "Mach in D Minor"
 
-## Bug fixes 
-
-## Note
-
-* That was a LONG time between development on this package.
+This release is created to assist in replicating previous journal articles
+that used this software. The API of maxcovr is likely to change from here.
 
 # maxcovr 0.0.5.9700 (2017-02-08)
 
