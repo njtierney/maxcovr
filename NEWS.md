@@ -1,5 +1,7 @@
 # maxcovr 0.1.0.9000 (2018-07-05)
 
+* Now byte compiles by default (which may not be necessary for R >= 3.5)
+
 # maxcovr 0.1.0 (2018-07-05) "Mach in D Minor"
 
 This release is created to assist in replicating previous journal articles
