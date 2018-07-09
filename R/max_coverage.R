@@ -19,7 +19,7 @@
 #'   1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
 # @param n_solutions Number of possible solutions to return. Default is 1.
-#' @param solver character lpSolve" (default) or "glpk". "gurobi" is currently
+#' @param solver character "glpk" (default) or "lpSolve". "gurobi" is currently
 #'   in development, see <https://github.com/njtierney/maxcovr/issues/25>
 #' @param return_early logical - should I return the object early?
 #'
@@ -66,15 +66,6 @@ max_coverage <- function(existing_facility = NULL,
                          solver = "glpk",
                          return_early = FALSE){
 
-    # testing...
-        # existing_facility = york_selected
-        # proposed_facility = york_proposed
-        # user = york_crime
-        # distance_cutoff = 100
-        # n_added = 20
-        # n_solutions = 1
-    # end testing ....
-
     # turn existing_facility into a matrix suitable for cpp
 
     existing_facility_cpp <- existing_facility %>%
@@ -106,14 +97,12 @@ max_coverage <- function(existing_facility = NULL,
                          by = "user_id")
 
     # Take original user list, the full set of crime, or ohcas, etc
-    # existing_user <- user
-    # # update user to be the new users, those who are not covered
-    # user <- user_not_covered
 
     proposed_facility_cpp <- proposed_facility %>%
         dplyr::select(lat, long) %>%
         as.matrix()
 
+    # # update user to be the new users, those who are not covered
     user_cpp <- user_not_covered %>%
         dplyr::select(lat, long) %>%
         as.matrix()
@@ -123,28 +112,17 @@ max_coverage <- function(existing_facility = NULL,
                                     distance_cutoff = distance_cutoff)
 
 
-    # facility_names <- sprintf("facility_id_%s", 1:nrow(proposed_facility))
     # colnames(A) <- facility_names
     # the facility names aren't used anymore
 
     colnames(A) <- 1:nrow(proposed_facility)
 
     # hang on to the list of OHCA ids
-    # user_id_list <- A[,"user_id"]
-
     user_id_list <- 1:nrow(user_not_covered)
 
     # facility_names <- sprintf("facility_id_%s", 1:nrow(proposed_facility))
-    #
-    # colnames(A) <- facility_names
-    #
     # # hang on to the list of OHCA ids
     # # user_id_list <- A[,"user_id"]
-    #
-    # user_id_list <- 1:nrow(user_not_covered)
-
-    # drop ohca_id
-    # A <- A[ ,-1]
 
     # A is a matrix containing 0s and 1s
     # 1 indicates that the OHCA in row I is covered by an AED in location J
@@ -156,16 +134,12 @@ max_coverage <- function(existing_facility = NULL,
 
     # J <- nrow(A)
     # I <- ncol(A)
-# profvis::profvis({
     Nx <- nrow(A)
     Ny <- ncol(A)
     N <- n_added
-    # N <- n_added[i]
 
-    # c <- -[zeros(Ny,1); ones(Nx,1)];
     c <- c(rep(0, Ny), rep(1,Nx))
 
-    # d <- [ones(1,Ny) zeros(1,Nx)];
     d <- c(rep(1, Ny), rep(0,Nx))
 
     Aeq <- d
@@ -185,11 +159,8 @@ max_coverage <- function(existing_facility = NULL,
 
     # this is another line to optimise with c++
     constraint_directions <- c(rep("<=", Nx), "==")
-# }) # end profvis
 
-    # optim_result_box[[i]] <-
-
-    if(solver == "lpSolve"){
+    if (solver == "lpSolve") {
 # for the york data, it takes 0.658 seconds
     lp_solution <- lpSolve::lp(direction = "max",
                            objective.in = c,
@@ -207,7 +178,6 @@ max_coverage <- function(existing_facility = NULL,
                            # dense.const,
                            num.bin.solns = 1,
                            use.rw = TRUE)
-
 
 # note: add a custom class to this object so that I can make sure the next function only accepts it once it has gone through there.
 
@@ -234,15 +204,19 @@ x <- list(
         model_call = model_call
     )
 
-if(return_early){
+if (return_early) {
+
     return(x)
+
 } else {
 
-model_result <- extract_mc_results(x)
+    model_result <- extract_mc_results(x)
 
-return(model_result)
-}
-    } else if(solver == "glpk"){
+    return(model_result)
+
+    }
+
+} else if (solver == "glpk") {
 
         glpk_solution <- Rglpk::Rglpk_solve_LP(obj = c,
                                                mat = constraint_matrix,
@@ -272,14 +246,14 @@ return(model_result)
 
         return(x)
 
-    } else if(solver == "gurobi"){
+    } else if (solver == "gurobi") {
 
         if (!requireNamespace("gurobi", quietly = TRUE)) {
             stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
 
         }
 
-        # gurobi is a little precious and doesn't take `==`.
+        # gurobi doesn't take `==`.
         constraint_directions_gurobi <- c(rep("<=", Nx), "=")
         model_call <- match.call()
         model <- list()
@@ -316,11 +290,3 @@ return(model_result)
     }
 
 } # end of function
-#
-# # try out gurobi
-# system.time(
-# test_cov_lp <- max_coverage(A = a_indic_mat_old,
-#                          facility = dat_building,
-#                          user = dat_ohca_not_cov,
-#                          num_aed = 20)
-# )
