@@ -16,6 +16,7 @@ Depends:
 License: GPL-3
 RoxygenNote: 6.0.1.9000
 LazyData: true
+ByteCompile: TRUE
 URL: https://github.com/njtierney/maxcovr
 BugReports: https://github.com/njtierney/maxcovr/issues
 Imports: lpSolve,
