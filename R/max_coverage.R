@@ -63,7 +63,7 @@ max_coverage <- function(existing_facility = NULL,
                          distance_cutoff,
                          n_added,
                          # n_solutions = 1,
-                         solver = "lpSolve",
+                         solver = "glpk",
                          return_early = FALSE){
 
     # testing...

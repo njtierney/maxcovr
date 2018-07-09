@@ -1,6 +1,7 @@
-# maxcovr 0.1.0.9000 (2018-07-05)
+# maxcovr 0.1.1.9000 (2018-07-09)
 
 * Now byte compiles by default (which may not be necessary for R >= 3.5)
+* `max_coverage` now uses `glpk` by default, as it is much faster.
 
 # maxcovr 0.1.0 (2018-07-05) "Mach in D Minor"
 
