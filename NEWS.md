@@ -1,4 +1,12 @@
+# maxcovr 0.1.1.9100 (2018-07-10)
+
+# Minor changes
+
+* `max_coverage` now has consistent output for solver `glpk`
+
 # maxcovr 0.1.1.9000 (2018-07-09)
+
+## Minor changes
 
 * Now byte compiles by default (which may not be necessary for R >= 3.5)
 * `max_coverage` now uses `glpk` by default, as it is much faster.

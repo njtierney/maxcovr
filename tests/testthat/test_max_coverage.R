@@ -16,9 +16,6 @@ mc_result_glpk <- max_coverage(existing_facility = york_selected,
                           n_added = 20,
                           solver = "glpk")
 
-# lapply(mc_result, class)
-
-
 testthat::test_that("maximum coverage glpk returns the correct names",{
     testthat::expect_named(
         object = mc_result_glpk,
