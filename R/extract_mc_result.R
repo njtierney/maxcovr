@@ -18,7 +18,7 @@ extract_mc_results <- function(x){
 # find the facilities selected ================================================
 
     mc_facilities_selected <- extract_facility_selected(
-        solution_vector = x$lp_solution$solution,
+        solution_vector = x$solution$solution,
         A_mat = x$A,
         proposed_facilities = x$proposed_facility)
 
@@ -26,7 +26,7 @@ extract_mc_results <- function(x){
 
     mc_users_affected <- extract_users_affected(
         A_mat = x$A,
-        solution_vector = x$lp_solution$solution,
+        solution_vector = x$solution$solution,
         user_id = x$user_id,
         users_not_covered = x$user_not_covered)
 
@@ -80,7 +80,7 @@ extract_mc_results <- function(x){
         existing_coverage = list(mc_existing_coverage),
         summary = list(mc_summary),
         model_call = list(x$model_call),
-        solution = list(x$lp_solution)
+        solution = list(x$solution)
     )
 
     class(mc_res) <- c("maxcovr",class(mc_res))
