@@ -7,10 +7,10 @@ Authors@R: c(
     role = c("aut", "cre"))
     )
 Maintainer: Nicholas Tierney <nicholas.tierney@gmail.com>
-Description: Solving the "maximum location coverage problem" as described by 
+Description: Solving the "maximal covering location problem" as described by 
     Church can be difficult for users not familiar with linear programming. 
-    maxcovr provides functions to make it easy to solve this problem, as well 
-    provide tools to calculate facility coverage.
+    maxcovr provides functions to make it easy to solve this problem, and tools
+    to calculate facility coverage.
 Depends:
     R (>= 3.2.2)
 License: GPL-3
