@@ -246,6 +246,10 @@ if (return_early) {
 
         return(x)
 
+        # model_result <- extract_mc_results(x)
+#
+        # return(model_result)
+
     } else if (solver == "gurobi") {
 
         if (!requireNamespace("gurobi", quietly = TRUE)) {
