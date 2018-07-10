@@ -199,7 +199,7 @@ x <- list(
         # n_solutions = 1,
         A = A,
         user_id = user_id_list,
-        lp_solution = lp_solution,
+        solution = lp_solution,
         # remove a constraint!
         model_call = model_call
     )
@@ -240,15 +240,13 @@ if (return_early) {
             # n_solutions = 1,
             A = A,
             user_id = user_id_list,
-            glpk_solution = glpk_solution,
+            solution = glpk_solution,
             model_call = model_call
         )
 
-        return(x)
-
-        # model_result <- extract_mc_results(x)
+        model_result <- extract_mc_results(x)
 #
-        # return(model_result)
+        return(model_result)
 
     } else if (solver == "gurobi") {
 
