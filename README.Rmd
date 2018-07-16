@@ -248,5 +248,5 @@ If you have any suggestions, please [file an issue](http://www.github.com/njtier
 
 # Acknowledgements
 
-Oliver Czibula, for this initial help in helping me understand the Maximum Covering Location Problem. Angelo Auricchio and Antonietta Mira for their supervision. Alessio Quaglino and Jost Reinhold for their help in implementing the first implementation of this problem in lpSolve. Martin Weiser for his suggestion for the relocation process. Matt Sutton for very his very thoughtful explanations on how to interact with high level solvers, which led to implementing maxcovr in lpsolve, glpk, and gurobi. And Alex Simmons, for teachiing me how to write better C++ code. 
+Oliver Czibula, for this initial help in helping me understand the Maximum Covering Location Problem. Angelo Auricchio and Antonietta Mira for their supervision. Alessio Quaglino and Jost Reinhold for their help in implementing the first implementation of this problem in lpSolve. Martin Weiser for his suggestion for the relocation process. Matt Sutton for very his very thoughtful explanations on how to interact with high level solvers, which led to implementing maxcovr in lpsolve, glpk, and gurobi. And Alex Simmons, for teaching me how to write better C++ code. 
 
