@@ -1,5 +1,4 @@
-# These are functions that extract results from the lp_solve in maxcovr
-# fixed locations
+# These functions extract results from solvers in maxcovr fixed locations
 
 #' Extract Selected Facilities
 #'
@@ -30,20 +29,15 @@ extract_facility_selected <- function(solution_vector,
                                       proposed_facilities){
 
     # the number of facilities, is given by the number of columns in A.
-    # Ideally, this should be related to the number of facilities
-    # like ncol(proposed_facilities)
-
     I <- ncol(A_mat)
 
     facility_solution <- solution_vector[1:I]
 
     facility_id <- readr::parse_number(colnames(A_mat))
 
-    # which facilities are selected?
-    facility_temp <- tibble::tibble(
-        # get the facility ids
-        facility_id = facility_id,
-        facility_chosen = facility_solution) %>%
+    # Which facilities were selected -------------------------------------------
+    facility_temp <- tibble::tibble(facility_id = facility_id,
+                                    facility_chosen = facility_solution) %>%
         dplyr::filter(facility_chosen == 1)
 
     # join these back on.
@@ -88,9 +82,8 @@ extract_users_affected <- function(A_mat,
 
     user_solution <- solution_vector[c(I + 1):c(I + J)]
 
-    user_temp <- tibble::tibble(
-        user_id = user_id,
-        user_chosen = user_solution) %>%
+    user_temp <- tibble::tibble(user_id = user_id,
+                                user_chosen = user_solution) %>%
         dplyr::filter(user_chosen == 1)
 
     user_affected <- dplyr::left_join(user_temp,
@@ -101,7 +94,7 @@ extract_users_affected <- function(A_mat,
 
 }
 
-#' Augment the users data; add useful information
+#' Augment users data; add useful information
 #'
 #' This returns the `user` dataframe, with added columns containing distance
 #'   between that user and a given facility - IDs are generated for IDs and
@@ -223,8 +216,7 @@ extract_existing_coverage <- function(existing_facilities,
         dplyr::mutate(is_covered = (distance <= distance_cutoff)) %>%
         # very similar summary function is called here and above,
         # ideally this should be written up as a function
-          # it is already written up as `summarise_coverage`
-          # but there needs to be a better way to do this...
+        # it is already written up as `summarise_coverage`
         dplyr::summarise(n_added = 0,
                          distance_within = as.numeric(distance_cutoff),
                          n_cov = sum(is_covered),
@@ -237,4 +229,3 @@ extract_existing_coverage <- function(existing_facilities,
 
     return(existing_coverage)
 }
-

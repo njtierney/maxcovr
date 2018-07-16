@@ -2,7 +2,7 @@
 % Please edit documentation in R/extractors.R
 \name{augment_user}
 \alias{augment_user}
-\title{Augment the users data; add useful information}
+\title{Augment users data; add useful information}
 \usage{
 augment_user(facilities_selected, existing_facilities, existing_users)
 }
