@@ -1,16 +1,10 @@
-#' extract_mc_results_relocation
+#' (Internal) Summarise maxcovr relocation model with facility and user info
 #'
 #' `extract_mc_results_relocation` takes a fitted max_coverage object and
 #'   returns useful summary information from the model, specifically for the
 #'   relocation method.
 #'
-#' @description extract_mc_results exists so that the manipulation functions for
-#'   the outcomes from the lp solver have another home - this makes it easier to
-#'   maintain this package, and heeds to this idea of having functions that are
-#'   specialised. The name of this function is likely to change in the near
-#'   future.
-#'
-#' @param x the fitted model from max_coverage
+#' @param x the fitted model from max_coverage_relocation
 #'
 #' @return a list containing multiple dataframes summarising the model
 
@@ -53,7 +47,7 @@ extract_mc_results_relocation <- function(x){
     # number of users affected
     n_users_affected <- sum(solution[n_bit_3:n_bit_4])
 
-    # which AEDs are to be used
+    # which facilities are to be used
     facility_solution <- solution[1:I]
 
     facility_id <- readr::parse_number(colnames(x$A))
@@ -70,7 +64,7 @@ extract_mc_results_relocation <- function(x){
         # facility_id is not needed anymore
         dplyr::select(-facility_id)
 
-    # which OHCAs are affected
+    # which users are affected
     user_solution <- solution[c(I + 1):c(I + J)]
 
     user_temp <- tibble::tibble(user_id = x$user_id,
@@ -110,7 +104,6 @@ extract_mc_results_relocation <- function(x){
                          distance_within = as.numeric(x$distance_cutoff),
                          n_cov = sum(is_covered),
                          pct_cov = (sum(is_covered) / nrow(.)),
-                         # really, these are not needed
                          n_not_cov =  (sum(is_covered == 0)),
                          pct_not_cov = (sum(is_covered == 0) / nrow(.)),
                          dist_avg = mean(distance),
@@ -128,7 +121,6 @@ extract_mc_results_relocation <- function(x){
                          dist_avg = mean(distance),
                          dist_sd = stats::sd(distance))
 
-    # add a summary coverage
     summary_coverage <- dplyr::bind_rows(existing_coverage,
                                          model_coverage)
 
