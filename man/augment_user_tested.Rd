@@ -7,7 +7,7 @@
 augment_user_tested(all_facilities, test_data, distance_threshold = 100)
 }
 \arguments{
-\item{all_facilities}{data.frame All facilities selected in maxcovr model}
+\item{all_facilities}{data.frame Facilities selected in maxcovr model}
 
 \item{test_data}{data.frame test data (but it could be any \code{user}-type data)}
 
@@ -18,13 +18,10 @@ dataframe containing distances between each test data observation
 and the nearest facility.
 }
 \description{
-This function provides a little wrapper function for \code{nearest}.
-Although, adding \code{is_covered} to the model. In the future this might
-get added to nearest, and this function will become sorta obsolete.
-For the moment, this function exists because (to me, as least) it is
-explicit about the input. It is used so that in a cross validation context
-we can evaluate how well the test data performs against the facilities
-suggested in the training set.
+This function is wrapper to \code{nearest}, adding \code{is_covered} to the model. This
+function is explicit about inputs, and is useful in cross validation -
+evaluating how test data performs against suggested facilities in the
+training set. This might be added to \code{nearest}, and may become obsolete.
 }
 \examples{
 

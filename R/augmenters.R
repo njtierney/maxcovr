@@ -5,15 +5,12 @@
 
 #' Nearest wrapper
 #'
-#' This function provides a little wrapper function for `nearest`.
-#'   Although, adding `is_covered` to the model. In the future this might
-#'   get added to nearest, and this function will become sorta obsolete.
-#'   For the moment, this function exists because (to me, as least) it is
-#'   explicit about the input. It is used so that in a cross validation context
-#'   we can evaluate how well the test data performs against the facilities
-#'   suggested in the training set.
+#' This function is wrapper to `nearest`, adding `is_covered` to the model. This
+#'   function is explicit about inputs, and is useful in cross validation -
+#'   evaluating how test data performs against suggested facilities in the
+#'   training set. This might be added to `nearest`, and may become obsolete.
 #'
-#' @param all_facilities data.frame All facilities selected in maxcovr model
+#' @param all_facilities data.frame Facilities selected in maxcovr model
 #' @param test_data data.frame test data (but it could be any `user`-type data)
 #' @param distance_threshold numeric
 #'
@@ -125,14 +122,14 @@ augment_facility_relocated <- function(proposed_facility,
     )
 }
 
-# the little tiny cute summaries of proposed facilities
+# the little summaries of proposed facilities
 
 #' Extract the number of facilities relocated.
 #'
-#' @param existing_facility the facilities originally existing - this will have
-#'   to be output from the model, however.
+#' @param existing_facility the facilities originally existing, as output from
+#'   the model (e.g., `model$existing_facility[[1]]`)
 #'
-#' @return dataframe containing a single column of
+#' @return dataframe containing one column of the number of things relocated
 #'
 #' @examples
 #'
@@ -192,9 +189,9 @@ n_installed <- function(proposed_facility){
 
 #' Find the average distance from facilities relocated to their final place
 #'
-#' This takes data from the function `augment_facility_relocated`
-#'   function of the same name and then summarises it to find the average and sd
-#'   of the distance between the two.
+#' This takes data from the function `augment_facility_relocated` function of
+#'   the same name and then summarises it to find the average and sd of the
+#'   distance between the two.
 #'
 #' @param augment_facility_relocated dataframe from function:
 #'   `augment_facility_relocated`

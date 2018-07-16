@@ -7,11 +7,11 @@
 n_relocated(existing_facility)
 }
 \arguments{
-\item{existing_facility}{the facilities originally existing - this will have
-to be output from the model, however.}
+\item{existing_facility}{the facilities originally existing, as output from
+the model (e.g., \code{model$existing_facility[[1]]})}
 }
 \value{
-dataframe containing a single column of
+dataframe containing one column of the number of things relocated
 }
 \description{
 Extract the number of facilities relocated.

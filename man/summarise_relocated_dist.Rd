@@ -14,9 +14,9 @@ summarise_relocated_dist(augment_facility_relocated)
 dataframe
 }
 \description{
-This takes data from the function \code{augment_facility_relocated}
-function of the same name and then summarises it to find the average and sd
-of the distance between the two.
+This takes data from the function \code{augment_facility_relocated} function of
+the same name and then summarises it to find the average and sd of the
+distance between the two.
 }
 \examples{
 
