@@ -157,9 +157,9 @@ covered by the first thing.
 
 coverage(york_selected, york_crime)
 #> # A tibble: 1 x 7
-#>   distance_within n_cov n_not_cov pct_cov pct_not_cov dist_avg dist_sd
-#>             <dbl> <int>     <int>   <dbl>       <dbl>    <dbl>   <dbl>
-#> 1             100   339      1475   0.187       0.813    1400.   1597.
+#>   distance_within n_cov n_not_cov prop_cov prop_not_cov dist_avg dist_sd
+#>             <dbl> <int>     <int>    <dbl>        <dbl>    <dbl>   <dbl>
+#> 1             100   339      1475    0.187        0.813    1400.   1597.
 ```
 
 This tells us that out of all the crime, 18.68% of it is within 100m,
@@ -174,9 +174,9 @@ dat_dist %>%
     mutate(is_covered = distance <= 100) %>%
     summarise_coverage()
 #> # A tibble: 1 x 7
-#>   distance_within n_cov n_not_cov pct_cov pct_not_cov dist_avg dist_sd
-#>             <dbl> <int>     <int>   <dbl>       <dbl>    <dbl>   <dbl>
-#> 1             100   339      1475   0.187       0.813    1400.   1597.
+#>   distance_within n_cov n_not_cov prop_cov prop_not_cov dist_avg dist_sd
+#>             <dbl> <int>     <int>    <dbl>        <dbl>    <dbl>   <dbl>
+#> 1             100   339      1475    0.187        0.813    1400.   1597.
 ```
 
 ## Maximising coverage
@@ -195,20 +195,25 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.582   0.223   1.832
+#>   1.050   0.119   1.231
 ```
 
 `max_coverage` actually returns a dataframe of lists.
 
 ``` r
 mc_20
-#> # A tibble: 1 x 10
-#>   n_added  distance_cutoff user_affected  augmented_users facility_select…
-#>   <list>   <list>          <list>         <list>          <list>          
-#> 1 <dbl [1… <dbl [1]>       <tibble [201 … <tibble [1,814… <tibble [20 × 7…
-#> # ... with 5 more variables: model_coverage <list>,
-#> #   existing_coverage <list>, summary <list>, model_call <list>,
-#> #   solution <list>
+#> 
+#> ------------------------------------------- 
+#> Model Fit: maxcovr fixed location model 
+#> ------------------------------------------- 
+#> model_used:        max_coverage 
+#> existing_facility: york_selected 
+#> proposed_facility: york_unselected 
+#> user:              york_crime 
+#> distance_cutoff:   100 
+#> n_added:           20 
+#> solver:            lpSolve 
+#> -------------------------------------------
 ```
 
 This is handy because it means that later when you want to explore
@@ -249,7 +254,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  11.629   0.933  12.615
+#>  30.365   0.734  31.198
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -330,6 +335,6 @@ Maximum Covering Location Problem. Angelo Auricchio and Antonietta Mira
 for their supervision. Alessio Quaglino and Jost Reinhold for their help
 in implementing the first implementation of this problem in lpSolve.
 Martin Weiser for his suggestion for the relocation process. Matt Sutton
-for very his very thoughtful explanations on how to interact with high
-level solvers, which led to implementing maxcovr in lpsolve, glpk, and
-gurobi. And Alex Simmons, for teachiing me how to write better C++ code.
+for his very thoughtful explanations on how to interact with high level
+solvers, which led to implementing maxcovr in lpsolve, glpk, and gurobi.
+And Alex Simmons, for teaching me how to write better C++ code.
