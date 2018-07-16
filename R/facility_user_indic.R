@@ -27,7 +27,7 @@ facility_user_indic <- function(df_dist,
                       facility_id,
                       distance) %>%
         # create indicator variable whether distance is less than indicator?
-        # 100m is the default
+        # *>* 100m is the default *<*
         dplyr::mutate(distance_indic = (distance <= dist_indic)) %>%
         dplyr::select(-distance) %>%
         # spread this out so we can get this in a matrix format
@@ -35,8 +35,6 @@ facility_user_indic <- function(df_dist,
         tidyr::spread(key = "facility_id",
                       value = "distance_indic",
                       sep = "_") %>%
-        # get rid of the ohca_id as this makes it hard to read later
-        # select(-ohca_id) %>%
         as.matrix()
 
     return(df_dist_indic_mat)

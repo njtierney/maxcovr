@@ -58,21 +58,19 @@ facility_user_dist <- function(facility,
         # drop key
         dplyr::select(-key)
 
-    # calculate information about coverage for the OHCAs to AEDs, either:
-    # finding the nearest AED to each OHCA
-    # finding the nearest OHCA to each AED
+    # calculate information about coverage for the users to facilities:
+      # finding the nearest facility to each user
+      # finding the nearest user to each facility
 
     if (nearest == "facility"){
 
-        dist_df <-
-            dist_df %>%
+        dist_df <- dist_df %>%
             dplyr::arrange(distance) %>%
             dplyr::group_by(user_id) %>%
-            # find those that are closest to each other
+            # find those closest to each other
             dplyr::mutate(rank_distance = 1:n()) %>%
             dplyr::ungroup() %>%
             dplyr::filter(rank_distance == 1) %>%
-            # drop the rank_distance
             dplyr::select(-rank_distance) %>%
             dplyr::mutate(is_covered = (distance < coverage_distance))
 

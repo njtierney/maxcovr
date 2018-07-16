@@ -9,8 +9,8 @@ summarise_coverage(df_dist, distance_cutoff = 100)
 \arguments{
 \item{df_dist}{distance matrix, as computed by facility_user_dist}
 
-\item{distance_cutoff}{the critical distance range that you would like to know,
-default is 100m}
+\item{distance_cutoff}{the critical distance range that you would like to
+know. The default is 100m.}
 }
 \value{
 dataframe

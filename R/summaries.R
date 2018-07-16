@@ -4,8 +4,8 @@
 #'   created by `maxcovr::facility_user_dist`().
 #'
 #' @param df_dist distance matrix, as computed by facility_user_dist
-#' @param distance_cutoff the critical distance range that you would like to know,
-#'     default is 100m
+#' @param distance_cutoff the critical distance range that you would like to
+#'   know. The default is 100m.
 #'
 #' @return dataframe
 #' @export

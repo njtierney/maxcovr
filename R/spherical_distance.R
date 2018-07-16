@@ -41,7 +41,7 @@ spherical_distance <- function(lat1,
     lat2 <- deg2rad(lat2)
     long2 <- deg2rad(long2)
 
-    # Determine distance using the haversine formula, assuming a spherical earth
+    # Determine distance using haversines formula, assuming a spherical earth
     a <- sin((lat2 - lat1) / 2) ^ 2 + cos(lat1) * cos(lat2) *
         sin((long2 - long1) / 2) ^ 2
 
