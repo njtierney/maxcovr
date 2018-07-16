@@ -1,8 +1,10 @@
-# maxcovr 0.1.1.9100 (2018-07-10)
+# maxcovr 0.1.1.9300 (2018-07-10)
 
 # Minor changes
 
 * `max_coverage` now has consistent output for solver `glpk`
+* `summarise_coverage` now uses `distance_cutoff` instead of `dist_indic`
+* `coverage` now propagates distance cutoff properly now has consistent output for solver `glpk`
 
 # maxcovr 0.1.1.9000 (2018-07-09)
 
