@@ -33,14 +33,13 @@ spherical_distance <- function(lat1,
                                long1,
                                lat2,
                                long2) {
-
     radius_earth <- 6371
 
     # Convert angle values into radians
-        lat1 <- deg2rad(lat1)
-        long1 <- deg2rad(long1)
-        lat2 <- deg2rad(lat2)
-        long2 <- deg2rad(long2)
+    lat1 <- deg2rad(lat1)
+    long1 <- deg2rad(long1)
+    lat2 <- deg2rad(lat2)
+    long2 <- deg2rad(long2)
 
     # Determine distance using the haversine formula, assuming a spherical earth
     a <- sin((lat2 - lat1) / 2) ^ 2 + cos(lat1) * cos(lat2) *
@@ -55,12 +54,13 @@ spherical_distance <- function(lat1,
     return(d)
 
 } # End function
+
 #' Convert from degrees to radians
 #'
 #' @param deg A numeric vector in units of degrees.
 #'
 #' @return The input numeric vector, converted to units of radians.
 deg2rad <- function(deg) {
-    return(deg*pi/180)
+    return(deg * pi / 180)
 } # End deg2rad
 

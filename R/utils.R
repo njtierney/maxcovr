@@ -1,18 +1,12 @@
-
 #' @export
 print.maxcovr_relocation <- function(x, ...){
 
-# x = mc_relocate
-    # x = mc_relocate
-    #
-    user_input <- c(paste(x$model_call[[1]]),
-                    # x$solver)
-                    x$solver_used[[1]])
+    user_input <- c(
+        paste(x$model_call[[1]]),
+        x$solver_used[[1]]
+        )
 
     model_input <- c("model_used",names(formals(max_coverage_relocation)))
-    # tibble::tibble(model_input,
-    #                user_input)
-
 
     cat("\n-----------------------------------------" ,
         "\nModel Fit: maxcovr relocation model",
@@ -80,23 +74,14 @@ summary.maxcovr_relocation <- function(object, ...){
 #' @export
 print.maxcovr <- function(x, ...){
 
-    # x = mc_result
-    #
     user_input <- c(paste(x$model_call[[1]]),
                     "lpSolve")
 
     model_input <- c("model_used",names(formals(max_coverage)))
-    # tibble::tibble(model_input,
-    #                user_input)
-
 
     cat("\n-------------------------------------------" ,
         "\nModel Fit: maxcovr fixed location model",
         "\n-------------------------------------------",
-        # I tried, I really did, to use purrr. "
-        # purrr::map2(model_input, user_input,
-        #             +              sprintf("%s: %s"))
-        # Error in sprintf("%s: %s") : too few arguments
         sprintf("\n%s:        %s", model_input[[1]], user_input[[1]]),
         sprintf("\n%s: %s", model_input[[2]], user_input[[2]]),
         sprintf("\n%s: %s", model_input[[3]], user_input[[3]]),
@@ -106,7 +91,6 @@ print.maxcovr <- function(x, ...){
         sprintf("\n%s:            %s", model_input[[7]], user_input[[7]]),
         "\n-------------------------------------------"
     )
-
 
 }
 

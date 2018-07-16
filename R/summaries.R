@@ -13,20 +13,21 @@
 summarise_coverage <- function(df_dist,
                                distance_cutoff = 100){
 
+   # Programmatically specify a column named "distance"
     df_dist %>%
-        # allow for a programmatic way to specify a column named "distance"
-        # mutate(is_covered = distance <= dist_indic) %>%
-        dplyr::summarise(distance_within = distance_cutoff,
-                         n_cov = sum(is_covered),
-                         n_not_cov =  sum(is_covered == 0),
-                         # divide by the number of total events covered, not the
-                         # number of rows in the dataframe passed
-                         # this allows it to behave with group_by in a more
-                         # sensible and predictable way
-                         prop_cov = sum(is_covered) / sum(n_cov, n_not_cov),
-                         prop_not_cov = sum(is_covered == 0) / sum(n_cov,n_not_cov),
-                         dist_avg = mean(distance),
-                         dist_sd = stats::sd(distance))
+        dplyr::summarise(
+            distance_within = distance_cutoff,
+            n_cov = sum(is_covered),
+            n_not_cov =  sum(is_covered == 0),
+            # divide by the number of total events covered, not the
+            # number of rows in the dataframe passed
+            # this allows it to behave with group_by in a more
+            # sensible and predictable way
+            prop_cov = sum(is_covered) / sum(n_cov, n_not_cov),
+            prop_not_cov = sum(is_covered == 0) / sum(n_cov, n_not_cov),
+            dist_avg = mean(distance),
+            dist_sd = stats::sd(distance)
+            )
 
 }
 
@@ -81,6 +82,7 @@ summary_mc_cv <- function(model,
                       dist_cutoff, # the distance cutoff
                       n_added, # the number of AEDs added
                       n_fold){
+
             maxcovr::nearest(nearest_df = facility_selected,
                              to_df = test_data) %>%
                 dplyr::mutate(is_covered = (distance <= dist_cutoff)) %>%
@@ -94,10 +96,11 @@ summary_mc_cv <- function(model,
                                  dist_avg = mean(distance),
                                  dist_sd = stats::sd(distance))
 
-                   } # end internal function
-) # close pmap
+            } # end internal function
 
-} # close function
+        ) # close pmap
+
+    } # close function
 
 #' Create a summary of the coverage between two dataframes
 #'
@@ -187,14 +190,11 @@ coverage <- function(nearest_df,
 summary_mc_cv_relocate <- function(model,
                                    test_data){
 
-        # model = mc_cv_relocate
-        # test_data = mc_cv$test
         cost = model$total_cost[[1]]
         purrr::pmap_df(.l = list(
             facility_selected = model$facility_selected,
             test_data = test_data$test,
             dist_cutoff = model$distance_cutoff,
-            # cost = model$total_cost,
             n_fold = test_data$.id
         ),
 
@@ -207,7 +207,6 @@ summary_mc_cv_relocate <- function(model,
                              to_df = test_data) %>%
                 dplyr::mutate(is_covered = (distance <= dist_cutoff)) %>%
                 dplyr::summarise(
-                    # cost = cost,
                     n_fold = n_fold,
                     distance_within = dist_cutoff,
                     n_cov = sum(is_covered),
