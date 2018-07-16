@@ -438,8 +438,6 @@ return(res)
 
 }
 
-
-
 # return the model ===========================================================
 
 # model_result <- extract_mc_results_2(x)
@@ -449,6 +447,6 @@ return(res)
 
 # } # end function
 
-    # lpSolve: const.rhs
+# lpSolve: const.rhs
 # glpk: rhs
 # gurobi: rhs

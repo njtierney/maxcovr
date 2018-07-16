@@ -35,18 +35,6 @@ facility_user_dist <- function(facility,
                                coverage_distance = 100,
                                nearest = "facility"){
 
-    # check that lat and long are specified
-    # if(
-    #     (c("lat") %in% names(facility) == TRUE) |
-    #     (c("long") %in% names(facility) == TRUE) |
-    #     (c("lat") %in% names(user) == TRUE) |
-    #     (c("long") %in% names(user) == TRUE)
-    #     ){
-    #     warning("make sure lat and long are in the names")
-    # }
-
-    # dodgy method to get the cross product
-
     # do a dodgy cross product by adding a column of 1
     # and then joining on this column
     facility <- dplyr::mutate(facility, key = 1) %>%
@@ -70,10 +58,9 @@ facility_user_dist <- function(facility,
         # drop key
         dplyr::select(-key)
 
-    # calculate information about coverage for the OHCAs to AEDs.
-    # switch here either :
-    # finds the nearest AED to each OHCA
-    # finds the nearest OHCA to each AED
+    # calculate information about coverage for the OHCAs to AEDs, either:
+    # finding the nearest AED to each OHCA
+    # finding the nearest OHCA to each AED
 
     if (nearest == "facility"){
 
@@ -91,7 +78,9 @@ facility_user_dist <- function(facility,
 
         return(dist_df)
 
-    } else if (nearest == "user"){
+    }
+
+    if (nearest == "user") {
 
         dist_df <- dist_df %>%
             dplyr::group_by(facility_id) %>%
@@ -104,23 +93,15 @@ facility_user_dist <- function(facility,
 
         return(dist_df)
 
-    } else if (nearest == "both"){
+    }
+
+    if (nearest == "both") {
 
         dist_df <- dist_df %>%
             dplyr::mutate(is_covered = (distance < coverage_distance))
+
         return(dist_df)
 
     }
-
-    # return a dataframe
-    # return(dist_df)
-
-    # option to spread?
-    # select(ohca_id,
-    #        aed_id,
-    #        distance) %>%
-    # spread(key = "aed_id",
-    #        value = "distance",
-    #        sep = "_")
 
 }

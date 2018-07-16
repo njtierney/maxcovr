@@ -5,16 +5,15 @@ library(dplyr)
 library(tibble)
 library(tidyr)
 
-
 york_selected <- york %>% dplyr::filter(grade == "I")
 york_unselected <- york %>% dplyr::filter(grade != "I")
 
 mc_result_glpk <- max_coverage(existing_facility = york_selected,
-                          proposed_facility = york_unselected,
-                          user = york_crime,
-                          distance_cutoff = 100,
-                          n_added = 20,
-                          solver = "glpk")
+                               proposed_facility = york_unselected,
+                               user = york_crime,
+                               distance_cutoff = 100,
+                               n_added = 20,
+                               solver = "glpk")
 
 testthat::test_that("maximum coverage glpk returns the correct names",{
     testthat::expect_named(
@@ -45,9 +44,6 @@ mc_result_lpsolve <- max_coverage(existing_facility = york_selected,
                           distance_cutoff = 100,
                           n_added = 20,
                           solver = "lpSolve")
-
-# lapply(mc_result, class)
-
 
 testthat::test_that("maximum coverage lpsolve returns the correct names",{
     testthat::expect_named(

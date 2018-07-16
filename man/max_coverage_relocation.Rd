@@ -9,11 +9,14 @@ max_coverage_relocation(existing_facility = NULL, proposed_facility,
   solver = "lpSolve", return_early = FALSE)
 }
 \arguments{
-\item{existing_facility}{data.frame containing the facilities that are already in existing, with columns names lat, and long.}
+\item{existing_facility}{data.frame containing the facilities that are
+already in existing, with columns names lat, and long.}
 
-\item{proposed_facility}{data.frame containing the facilities that are being proposed, with column names lat, and long.}
+\item{proposed_facility}{data.frame containing the facilities that are
+being proposed, with column names lat, and long.}
 
-\item{user}{data.frame containing the users of the facilities, along with column names lat, and long.}
+\item{user}{data.frame containing the users of the facilities, along with
+column names lat, and long.}
 
 \item{distance_cutoff}{numeric indicating the distance cutoff (in metres)
 you are interested in. If a number is less than distance_cutoff, it will be
@@ -28,7 +31,8 @@ you are interested in. If a number is less than distance_cutoff, it will be
 \item{solver}{character "glpk" (default) or "lpSolve". "gurobi" is currently
 in development, see \url{https://github.com/njtierney/maxcovr/issues/25}}
 
-\item{return_early}{logical TRUE if I do not want to run the extraction process, FALSE if I want to just return the lpsolve model etc.}
+\item{return_early}{logical TRUE if I do not want to run the extraction
+process, FALSE if I want to just return the lpsolve model etc.}
 }
 \value{
 dataframe of results

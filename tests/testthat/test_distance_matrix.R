@@ -2,8 +2,6 @@ library(maxcovr)
 library(dplyr)
 library(tibble)
 library(tidyr)
-# library(testthat)
-# my_dist_cpp <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
 
 context("missings in distance_matrix")
 
@@ -27,13 +25,7 @@ user_test_cpp <- york_crime %>%
 
 my_dist_cpp <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
 
-# my_dist_cpp[1:5,1:5]
-
 # compare this to the dplyr method ============================================
-
-# maxcovr::facility_user_dist(facility = york,
-#                                          user = york_crime,
-#                                          nearest = "both") %>%
 
 facility <- dplyr::mutate(york, key = 1) %>%
     dplyr::rename(lat_facility = lat,

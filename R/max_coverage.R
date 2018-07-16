@@ -67,17 +67,17 @@ max_coverage <- function(existing_facility = NULL,
                          return_early = FALSE){
 
     # turn existing_facility into a matrix suitable for cpp
-
     existing_facility_cpp <- existing_facility %>%
-        dplyr::select(lat,long) %>%
+        dplyr::select(lat, long) %>%
         as.matrix()
 
     user_cpp <- user %>%
-        dplyr::select(lat,long) %>%
+        dplyr::select(lat, long) %>%
         as.matrix()
 
-    dat_nearest_dist <- nearest_facility_dist(facility = existing_facility_cpp,
-                                              user = user_cpp)
+    dat_nearest_dist <-
+        nearest_facility_dist(facility = existing_facility_cpp,
+                              user = user_cpp)
 
     # make nearest dist into dataframe
     # leave only those not covered
@@ -97,12 +97,11 @@ max_coverage <- function(existing_facility = NULL,
                          by = "user_id")
 
     # Take original user list, the full set of crime, or ohcas, etc
-
     proposed_facility_cpp <- proposed_facility %>%
         dplyr::select(lat, long) %>%
         as.matrix()
 
-    # # update user to be the new users, those who are not covered
+    # update user to be the new users, those who are not covered
     user_cpp <- user_not_covered %>%
         dplyr::select(lat, long) %>%
         as.matrix()
@@ -111,120 +110,86 @@ max_coverage <- function(existing_facility = NULL,
                                     user = user_cpp,
                                     distance_cutoff = distance_cutoff)
 
-
-    # colnames(A) <- facility_names
-    # the facility names aren't used anymore
-
     colnames(A) <- 1:nrow(proposed_facility)
 
-    # hang on to the list of OHCA ids
     user_id_list <- 1:nrow(user_not_covered)
 
-    # facility_names <- sprintf("facility_id_%s", 1:nrow(proposed_facility))
-    # # hang on to the list of OHCA ids
-    # # user_id_list <- A[,"user_id"]
-
-    # A is a matrix containing 0s and 1s
-    # 1 indicates that the OHCA in row I is covered by an AED in location J
-
-    # quasi-code for making max_coverage accept n_added as a vector.
-    # optim_result_box <- vector("list", length(n_added))
-    # n_added <- c(20,40)
-    # for(i in n_added){
-
-    # J <- nrow(A)
-    # I <- ncol(A)
     Nx <- nrow(A)
     Ny <- ncol(A)
     N <- n_added
-
-    c <- c(rep(0, Ny), rep(1,Nx))
-
-    d <- c(rep(1, Ny), rep(0,Nx))
-
+    c <- c(rep(0, Ny), rep(1, Nx))
+    d <- c(rep(1, Ny), rep(0, Nx))
     Aeq <- d
     beq <- N
 
     # this is a line to optimise with cpp
     Ain <- cbind(-A, diag(Nx))
-
-    bin <- matrix(rep(0,Nx), ncol = 1)
+    bin <- matrix(rep(0, Nx), ncol = 1)
 
     # matrix of numeric constraint coefficients,
     # one row per constraint
     # one column per variable
     constraint_matrix <- rbind(Ain, Aeq)
-
     rhs_matrix <- rbind(bin, beq)
 
     # this is another line to optimise with c++
     constraint_directions <- c(rep("<=", Nx), "==")
 
     if (solver == "lpSolve") {
-# for the york data, it takes 0.658 seconds
-    lp_solution <- lpSolve::lp(direction = "max",
-                           objective.in = c,
-                           const.mat = constraint_matrix,
-                           const.dir = constraint_directions,
-                           const.rhs = rhs_matrix,
-                           transpose.constraints = TRUE,
-                           # int.vec,
-                           # presolve = 0,
-                           # compute.sens = 0,
-                           # binary.vec,
-                           # all.int = FALSE,
-                           all.bin = TRUE,
-                           # scale = 196,
-                           # dense.const,
-                           num.bin.solns = 1,
-                           use.rw = TRUE)
+        lp_solution <- lpSolve::lp(
+            direction = "max",
+            objective.in = c,
+            const.mat = constraint_matrix,
+            const.dir = constraint_directions,
+            const.rhs = rhs_matrix,
+            transpose.constraints = TRUE,
+            all.bin = TRUE,
+            num.bin.solns = 1,
+            use.rw = TRUE
+        )
 
-# note: add a custom class to this object so that I can make sure the next function only accepts it once it has gone through there.
+        # Add a custom class so that I can make the next function only accepts
+        # it once it has gone through there.
 
-    # capture user input
-    model_call <- match.call()
+        # capture user input
+        model_call <- match.call()
 
-    # remove the constraints, as they are too big
-    lp_solution[["constraints"]] <- NULL
+        # remove the constraints, as they are too big
+        lp_solution[["constraints"]] <- NULL
 
-x <- list(
-        # #add the variables that were used here to get more info
-        existing_facility = existing_facility,
-        proposed_facility = proposed_facility,
-        distance_cutoff = distance_cutoff,
-        existing_user = user,
-        user_not_covered = user_not_covered,
-        # dist_indic = dist_indic,
-        n_added = n_added,
-        # n_solutions = 1,
-        A = A,
-        user_id = user_id_list,
-        solution = lp_solution,
-        # remove a constraint!
-        model_call = model_call
-    )
+        x <- list(existing_facility = existing_facility,
+                  proposed_facility = proposed_facility,
+                  distance_cutoff = distance_cutoff,
+                  existing_user = user,
+                  user_not_covered = user_not_covered,
+                  n_added = n_added,
+                  A = A,
+                  user_id = user_id_list,
+                  solution = lp_solution,
+                  model_call = model_call)
 
-if (return_early) {
+        if (return_early) {
+            return(x)
+        }
 
-    return(x)
+        if (!return_early){
+            model_result <- extract_mc_results(x)
+            return(model_result)
+        }
 
-} else {
+    } # close lpSolve solver
 
-    model_result <- extract_mc_results(x)
+    if (solver == "glpk") {
 
-    return(model_result)
-
-    }
-
-} else if (solver == "glpk") {
-
-        glpk_solution <- Rglpk::Rglpk_solve_LP(obj = c,
-                                               mat = constraint_matrix,
-                                               dir = constraint_directions,
-                                               rhs = rhs_matrix,
-                                               bounds = NULL,
-                                               types = "B",
-                                               max = TRUE)
+        glpk_solution <- Rglpk::Rglpk_solve_LP(
+            obj = c,
+            mat = constraint_matrix,
+            dir = constraint_directions,
+            rhs = rhs_matrix,
+            bounds = NULL,
+            types = "B",
+            max = TRUE
+        )
 
         model_call <- match.call()
 
@@ -235,9 +200,7 @@ if (return_early) {
             distance_cutoff = distance_cutoff,
             existing_user = user,
             user_not_covered = user_not_covered,
-            # dist_indic = dist_indic,
             n_added = n_added,
-            # n_solutions = 1,
             A = A,
             user_id = user_id_list,
             solution = glpk_solution,
@@ -245,7 +208,6 @@ if (return_early) {
         )
 
         model_result <- extract_mc_results(x)
-#
         return(model_result)
 
     } else if (solver == "gurobi") {
@@ -255,7 +217,6 @@ if (return_early) {
 
         }
 
-        # gurobi doesn't take `==`.
         constraint_directions_gurobi <- c(rep("<=", Nx), "=")
         model_call <- match.call()
         model <- list()
@@ -267,25 +228,18 @@ if (return_early) {
         model$vtype <- "B"
         model$modelsense <- "max"
 
-        model
-
         gurobi_solution <- gurobi::gurobi(model)
 
-        x <- list(
-            # #add the variables that were used here to get more info
-            existing_facility = existing_facility,
-            proposed_facility = proposed_facility,
-            distance_cutoff = distance_cutoff,
-            existing_user = user,
-            user_not_covered = user_not_covered,
-            # dist_indic = dist_indic,
-            n_added = n_added,
-            # n_solutions = 1,
-            A = A,
-            user_id = user_id_list,
-            gurobi_solution = gurobi_solution,
-            model_call = model_call
-        )
+        x <- list(existing_facility = existing_facility,
+                  proposed_facility = proposed_facility,
+                  distance_cutoff = distance_cutoff,
+                  existing_user = user,
+                  user_not_covered = user_not_covered,
+                  n_added = n_added,
+                  A = A,
+                  user_id = user_id_list,
+                  gurobi_solution = gurobi_solution,
+                  model_call = model_call)
 
         return(x)
 

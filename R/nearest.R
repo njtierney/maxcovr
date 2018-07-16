@@ -45,22 +45,15 @@ nearest <- function(nearest_df,
                     to_lat = "lat",
                     to_long = "long"){
 
-    # this function is syntactic sugar to find the nearest lat/long from "nearest"
+    # this function is syntactic sugar to find nearest lat/long from "nearest"
     # "to" another lat/long.
-    # it reads quite nicely:
-    # facility %>% nearest(user)
-    # user %>% nearest(facility)
-    # nearest(nearest_df = facility, to_df = user)
-    # nearest(nearest_df = user, to_df = facility)
+    # it reads quite nicely
 
     nearest_mat <- as.matrix(nearest_df[c(nearest_lat,nearest_long)])
     to_mat <- as.matrix(to_df[c(to_lat,to_long)])
 
-    dist_mat <- nearest_facility_dist(facility = nearest_mat, # aed or building
-                                      user = to_mat) # ohca or crime
-
-    # repeat after me: "nearest(facility) to user"
-    # nearest = facility; to = user
+    dist_mat <- nearest_facility_dist(facility = nearest_mat,
+                                      user = to_mat)
 
     dist_df <- dist_mat %>%
         tibble::as_tibble() %>%
@@ -69,14 +62,13 @@ nearest <- function(nearest_df,
                       distance = V3)
 
     # there will need to be an option to add your own special ID
-    # because we are sorta hard coding the IDs, this would all break apart if
-    # the rows were differently arranged.
+    # because we are sorta hard coding the IDs
+    # this would all break apart if the rows were differently arranged.
 
     # create some IDs to join by
     to_df_id <- to_df %>% dplyr::mutate(to_id = 1:n())
     nearest_df_id <- nearest_df %>% dplyr::mutate(nearest_id = 1:n())
 
-    # dat_user_facility_dist <- dist_df %>%
     nearest_to_dist_df <- dist_df %>%
         dplyr::left_join(to_df_id,
                          by = "to_id") %>%
@@ -87,22 +79,6 @@ nearest <- function(nearest_df,
                       long_nearest = long.y,
                       lat_nearest = lat.y)
 
-    # consider
-    # unsure if I want to join on the OHCA (user) data to this?
-    # this line would follow the above
-    # nearest_df_id <- nearest_df %>% dplyr::mutate(nearest_id = 1:n())
-    # left_join(dat_user_id,
-    #           by = "user_id")
-    # but perhaps if people really want to do this they just do it themselves?
-
     return(nearest_to_dist_df)
-
-    # do I need to join on the facility information as well?
-    # option to add your own special ID
-    # document that the order of the rows is really important.
-    # otherwise, provide the IDs
-
-    # timing is 0.268 seconds compared to 10 seconds with the old method
-    # this also has the nice feature of being reversible
 
 }

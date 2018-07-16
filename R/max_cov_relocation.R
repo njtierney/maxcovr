@@ -2,20 +2,22 @@
 #'
 #' This function adds a relocation step
 #'
-#' @param existing_facility data.frame containing the facilities that are already in existing, with columns names lat, and long.
-#' @param proposed_facility data.frame containing the facilities that are being proposed, with column names lat, and long.
-#' @param user data.frame containing the users of the facilities, along with column names lat, and long.
+#' @param existing_facility data.frame containing the facilities that are
+#'   already in existing, with columns names lat, and long.
+#' @param proposed_facility data.frame containing the facilities that are
+#'   being proposed, with column names lat, and long.
+#' @param user data.frame containing the users of the facilities, along with
+#'   column names lat, and long.
 #' @param distance_cutoff numeric indicating the distance cutoff (in metres)
-#' you are interested in. If a number is less than distance_cutoff, it will be
-#' 1, if it is greater than it, it will be 0.
-#  @param n_added the maximum number of facilities to add.
-# @param n_solutions Number of possible solutions to return. Default is 1.
+#'   you are interested in. If a number is less than distance_cutoff, it will be
+#'   1, if it is greater than it, it will be 0.
 #' @param solver character "glpk" (default) or "lpSolve". "gurobi" is currently
 #'   in development, see <https://github.com/njtierney/maxcovr/issues/25>
 #' @param cost_install integer the cost of installing a new facility
 #' @param cost_removal integer the cost of removing a facility
 #' @param cost_total integer the total cost allocated to the project
-#' @param return_early logical TRUE if I do not want to run the extraction process, FALSE if I want to just return the lpsolve model etc.
+#' @param return_early logical TRUE if I do not want to run the extraction
+#'   process, FALSE if I want to just return the lpsolve model etc.
 #'
 #' @return dataframe of results
 #'
@@ -62,8 +64,8 @@ max_coverage_relocation <- function(existing_facility = NULL,
                                     solver = "lpSolve",
                                     return_early = FALSE){
 
-# a little utility function to take the data and then get the lat/long
-# out and call as.matrix on it
+# a little utility function to take the data and get lat/long out and call
+# as.matrix on it
 # flag - these shouldn't be called lat or long here, the user
 # should be able to quote/name the lat/long values
 # or there should be a function to find the likely lat/long values
@@ -91,172 +93,146 @@ max_coverage_relocation <- function(existing_facility = NULL,
         proposed_facility_cpp
     )
 
-Nx <- nrow(A)
+    Nx <- nrow(A)
+    Ny <- ncol(A)
 
-Ny <- ncol(A)
+    facility_names <- sprintf(
+        "facility_id_%s",
+        c(1:(nrow(existing_facility) + nrow(proposed_facility)))
+        )
 
-facility_names <- sprintf("facility_id_%s",
-                          c(1:(nrow(existing_facility) + nrow(proposed_facility))))
+    colnames(A) <- facility_names
 
-colnames(A) <- facility_names
+    user_id_list <- 1:nrow(user)
 
-# hang on to the list of OHCA ids
-# user_id_list <- A[,"user_id"]
+    # this is N0 is the second model
+    N <- nrow(existing_facility)
 
-user_id_list <- 1:nrow(user)
+    c <- c(rep(0, Ny), rep(1,Nx))
 
-# Ny
-# n_added <-
+    # this is a line to optimise with cpp
+    Ain <- cbind(-A, diag(Nx))
 
-# this is N0 is the second model
-N <- nrow(existing_facility)
+    # create the m vector =====================================================
+    # this is the vector of costs, which will have the length
+    # of the number of rows of y plus the number of x's as 0s
 
-# N <- n_added[i]
+    cost_relocate <- cost_install - cost_removal
 
-c <- c(rep(0, Ny), rep(1,Nx))
+    # This is the gain of removing an AED from a location (as opposed to buying)
+    # existing facilities will have this cost (ncol(existing_facility_cpp)),
+    # proposed facilities don't have this cost (hence, 0s)
+    m_under_i <- c(rep(cost_relocate * -1, ncol(existing_facility_cpp)),
+                   rep(0,ncol(proposed_facility_cpp)))
 
-# this is a line to optimise with cpp
-Ain <- cbind(-A, diag(Nx))
+    # cost of installing
+    # Existing facilities don't have an installation cost (hence, 0s)
+    # Proposed facilities have an installation cost, hence cost_install...
+    m_over_i <- c(rep(0, ncol(existing_facility_cpp)),
+                  rep(cost_install, ncol(proposed_facility_cpp)))
 
-# create the m vector =========================================================
+    # trust the algebra
+    m_vec <- c(
+        m_over_i - m_under_i,
+        rep(0, Nx)
+        )
 
-# this is the vector of costs, which will have the length
-# of the number of rows of y plus the number of x's as 0s
+    Aeq <- c(rep(1, Ny), rep(0,Nx))
 
-cost_relocate <- cost_install - cost_removal
+    # matrix of numeric constraint coefficients
+    # one row per constraint
+    # one column per variable - this is another line to optimise with c++
+    constraint_matrix <- rbind(Ain,
+                               m_vec,
+                               Aeq)
 
-# so this is the gain of removing an AED from a location (as opposed to buying)
-# the existing facilities will have this cost (ncol(existing_facility_cpp)),
-# and then the proposed facilities don't have this cost (hence, 0s)
-m_under_i <- c(rep(cost_relocate * -1, ncol(existing_facility_cpp)),
-               rep(0,ncol(proposed_facility_cpp)))
+    # constraint_matrix
+    bin <- matrix(rep(0,Nx), ncol = 1)
 
+    # trust the algebra
+    sum_c_mi <- cost_total - sum(m_under_i)
 
-# cost of installing
-# The existing facilities don't have an installation cost (hence, 0s)
-# the proposed facilities have an installation cost, hence cost_install...
-m_over_i <- c(rep(0, ncol(existing_facility_cpp)),
-              rep(cost_install, ncol(proposed_facility_cpp)))
+    beq <- N
 
-# trust the algebra
-m_vec <- c(
-    m_over_i - m_under_i,
-    rep(0, Nx)
-)
+    rhs_matrix <- rbind(bin,
+                        sum_c_mi,
+                        beq)
 
-Aeq <- c(rep(1, Ny), rep(0,Nx))
+    # this is another line to optimise with c++
+    constraint_directions <- c(rep("<=", Nx),
+                               "<=",
+                               ">=")
 
-# matrix of numeric constraint coefficients,
-# one row per constraint
-# one column per variable - this is another line to optimise with c++
-constraint_matrix <- rbind(Ain,
-                           m_vec,
-                           Aeq)
+    dat_nearest_dist <- nearest_facility_dist(
+        facility = mc_mat_prep(existing_facility),
+        user = mc_mat_prep(user)
+        )
 
-# constraint_matrix
+    # make nearest dist into dataframe
+    # leave only those not covered
+    dat_nearest_no_cov <- dat_nearest_dist %>%
+        dplyr::as_data_frame() %>%
+        dplyr::rename(user_id = V1,
+                      facility_id = V2,
+                      distance = V3) %>%
+        dplyr::filter(distance > distance_cutoff) # 100m is distance_cutoff
 
-bin <- matrix(rep(0,Nx), ncol = 1)
+    # give user an index
+    user <- user %>% dplyr::mutate(user_id = 1:n())
 
-# 2017/01/18 - remove the absolute, to corretly penalise reinstallation
-# sum_c_mi <- cost_total - sum(m_vec[m_vec<0])
+    # join them, to create the "not covered" set of data
+    user_not_covered <- dat_nearest_no_cov %>%
+        dplyr::left_join(user,
+                         by = "user_id")
 
-# trust the algebra.
-sum_c_mi <- cost_total - sum(m_under_i)
+    # capture the user input for printing
+    model_call <- match.call()
 
-beq <- N
+    if (solver == "lpSolve") {
+        lp_solution <- lpSolve::lp(
+            direction = "max",
+            objective.in = c,
+            const.mat = constraint_matrix,
+            const.dir = constraint_directions,
+            const.rhs = rhs_matrix,
+            transpose.constraints = TRUE,
+            all.bin = TRUE,
+            num.bin.solns = 1,
+            use.rw = TRUE
+        )
 
-rhs_matrix <- rbind(bin,
-                    sum_c_mi,
-                    beq)
+        x <- list(
+            # #add the variables that were used here to get more info
+            existing_facility = existing_facility,
+            proposed_facility = proposed_facility,
+            distance_cutoff = distance_cutoff,
+            existing_user = user,
+            user_not_covered = user_not_covered,
+            n_added = N,
+            A = A,
+            user_id = user_id_list,
+            solution = lp_solution,
+            cost_install = cost_install,
+            cost_removal = cost_removal,
+            cost_total = cost_total,
+            model_call = model_call,
+            sum_c_mi = sum_c_mi,
+            m_vec = m_vec,
+            solver = solver
+        )
 
-# this is another line to optimise with c++
-constraint_directions <- c(rep("<=", Nx),
-                           "<=",
-                           ">=")
+        if (return_early) {
+            return(x)
+        }
 
-dat_nearest_dist <- nearest_facility_dist(facility = mc_mat_prep(existing_facility),
-                                          user = mc_mat_prep(user))
+        if (!return_early) {
+            model_result <- extract_mc_results_relocation(x)
+            return(model_result)
+        }
 
-# make nearest dist into dataframe
-# leave only those not covered
-dat_nearest_no_cov <- dat_nearest_dist %>%
-    dplyr::as_data_frame() %>%
-    dplyr::rename(user_id = V1,
-                  facility_id = V2,
-                  distance = V3) %>%
-    dplyr::filter(distance > distance_cutoff) # 100m is distance_cutoff
+    }
 
-# give user an index
-user <- user %>% dplyr::mutate(user_id = 1:n())
-
-# join them, to create the "not covered" set of data
-user_not_covered <- dat_nearest_no_cov %>%
-    dplyr::left_join(user,
-                     by = "user_id")
-
-# / end determining users not covered
-
-# capture the user input for printing
-model_call <- match.call()
-
-
-if (solver == "lpSolve") {
-
-lp_solution <- lpSolve::lp(direction = "max",
-                           # objective.in = d, # as of 2016/08/19
-                           objective.in = c,
-                           const.mat = constraint_matrix,
-                           const.dir = constraint_directions,
-                           const.rhs = rhs_matrix,
-                           transpose.constraints = TRUE,
-                           # int.vec,
-                           # presolve = 0,
-                           # compute.sens = 0,
-                           # binary.vec,
-                           # all.int = FALSE,
-                           all.bin = TRUE,
-                           # scale = 196,
-                           # dense.const,
-                           num.bin.solns = 1,
-                           use.rw = TRUE)
-
-x <- list(
-    # #add the variables that were used here to get more info
-    existing_facility = existing_facility,
-    proposed_facility = proposed_facility,
-    distance_cutoff = distance_cutoff,
-    existing_user = user,
-    user_not_covered = user_not_covered,
-    # dist_indic = dist_indic,
-    n_added = N,
-    # n_solutions = n_solutions,
-    A = A,
-    user_id = user_id_list,
-    # lp_solution = lp_solution,
-    solution = lp_solution,
-    cost_install = cost_install,
-    cost_removal = cost_removal,
-    cost_total = cost_total,
-    model_call = model_call,
-    sum_c_mi = sum_c_mi,
-    m_vec = m_vec,
-    solver = solver
-)
-
-
-if (return_early) {
-
-    return(x)
-
-} else if (!return_early) {
-
-    model_result <- extract_mc_results_relocation(x)
-
-    return(model_result)
-
-}
-
-} else if (solver == "glpk") {
+    if (solver == "glpk") {
 
     glpk_solution <- Rglpk::Rglpk_solve_LP(obj = c,
                                            mat = constraint_matrix,
@@ -275,47 +251,43 @@ if (return_early) {
         distance_cutoff = distance_cutoff,
         existing_user = user,
         user_not_covered = user_not_covered,
-        # dist_indic = dist_indic,
         cost_install = cost_install,
         cost_removal = cost_removal,
         cost_total = cost_total,
         model_call = model_call,
         sum_c_mi = sum_c_mi,
         m_vec = m_vec,
-        # n_solutions = 1,
         A = A,
         user_id = user_id_list,
-        # glpk_solution = glpk_solution
         solution = glpk_solution,
         solver = solver
     )
 
-# return(x)
+    model_result <- extract_mc_results_relocation(x)
 
-model_result <- extract_mc_results_relocation(x)
-# model_result2 <- extract_mc_results_relocation2(x)
+    return(model_result)
 
-return(model_result)
+    }
 
-} else if (solver == "gurobi") {
+    if (solver == "gurobi") {
 
     if (!requireNamespace("gurobi", quietly = TRUE)) {
         stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
 
     }
 
-    # gurobi is a little precious and doesn't take `==`.
-    # constraint_directions_gurobi <- c(rep("<=", Nx), "=")
     model_call <- match.call()
-    # model <- list()
-    gurobi_solution <- gurobi::gurobi(model = list(
-        A = constraint_matrix,
-        obj = c,
-        sense = constraint_directions,
-        rhs = rhs_matrix,
-        vtype = "B",
-        modelsense = "max"
-    ))
+
+    gurobi_solution <- gurobi::gurobi(
+        model = list(
+            A = constraint_matrix,
+            obj = c,
+            sense = constraint_directions,
+            rhs = rhs_matrix,
+            vtype = "B",
+            modelsense = "max"
+        )
+    )
 
     x <- list(
         # #add the variables that were used here to get more info
@@ -324,14 +296,12 @@ return(model_result)
         distance_cutoff = distance_cutoff,
         existing_user = user,
         user_not_covered = user_not_covered,
-        # dist_indic = dist_indic,
         cost_install = cost_install,
         cost_removal = cost_removal,
         cost_total = cost_total,
         model_call = model_call,
         sum_c_mi = sum_c_mi,
         m_vec = m_vec,
-        # n_solutions = 1,
         A = A,
         user_id = user_id_list,
         solution = gurobi_solution,

@@ -1,8 +1,9 @@
+context("equality of binary matrices")
+
 library(dplyr)
 library(tibble)
 library(tidyr)
 library(maxcovr)
-context("equality of binary matrices")
 
 facility_test_cpp <- york %>%
     dplyr::select(lat, long) %>%
@@ -15,7 +16,6 @@ user_test_cpp <- york_crime %>%
 my_bin_cpp <- binary_matrix_cpp(facility = facility_test_cpp,
                                 user = user_test_cpp,
                                 distance_cutoff = 100)
-
 
 facility <- dplyr::mutate(york, key = 1) %>%
     dplyr::rename(lat_facility = lat,
@@ -59,5 +59,3 @@ testthat::test_that("cpp binary matrix produces the integer result as using dply
     testthat::expect_equal(my_bin_cpp,my_bin_dplyr, check.attributes = FALSE)
 })
 
-# my_bin_cpp[1203,2031]
-# my_bin_dplyr[1203,2031]

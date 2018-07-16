@@ -28,8 +28,6 @@ mc_relocate_lpsolve <-
                             cost_total = 1000,
                             solver = "lpSolve")
 
-# mc_relocate
-
 mc_table_names <- c("user",
                     "existing_facility",
                     "proposed_facility",

@@ -1,9 +1,9 @@
+context("equality of nearest distances")
+
 library(dplyr)
 library(tibble)
 library(tidyr)
 library(maxcovr)
-
-context("equality of nearest distances")
 
 facility_test_cpp <- york %>% select(lat, long) %>% as.matrix()
 user_test_cpp <- york_crime %>% select(lat, long) %>% as.matrix()
@@ -11,12 +11,7 @@ user_test_cpp <- york_crime %>% select(lat, long) %>% as.matrix()
 near_cpp <- nearest_facility_dist(facility = facility_test_cpp,
                                   user = user_test_cpp)
 
-# near_dplyr <- facility_user_dist(facility = york,
-#                                  user = york_crime,
-#                                  coverage_distance = 100)
-
-
-# begin old dplyr way =========================================================
+# old dplyr way ===============================================================
 
 facility <- dplyr::mutate(york, key = 1) %>%
     dplyr::rename(lat_facility = lat,
@@ -52,9 +47,6 @@ near_dplyr_test <- near_dplyr %>%
             facility_id) %>%
     dplyr::select(distance) %>%
     as.matrix()
-    # select(user_id,
-    #        facility_id,
-    #        distance)
 
 near_cpp_test <- near_cpp %>%
     tibble::as_tibble() %>%
