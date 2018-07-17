@@ -115,9 +115,6 @@ max_coverage <- function(existing_facility,
     # Another line to optimise with c++
     constraint_directions <- c(rep("<=", Nx), "==")
 
-    # capture user input
-    model_call <- match.call()
-
     # Solve the problem --------------------------------------------------------
 
     if (solver == "lpSolve") {
@@ -169,6 +166,9 @@ max_coverage <- function(existing_facility,
     }
 
     # Extract the results ------------------------------------------------------
+
+    # capture user input
+    model_call <- match.call()
 
     x <- list(
         existing_facility = existing_facility,
