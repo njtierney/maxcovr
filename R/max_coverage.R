@@ -53,7 +53,7 @@
 #' mc_result$summary
 #'
 #' @export
-max_coverage <- function(existing_facility = NULL,
+max_coverage <- function(existing_facility,
                          proposed_facility,
                          user,
                          distance_cutoff,
@@ -74,28 +74,25 @@ max_coverage <- function(existing_facility = NULL,
                               user = user_cpp)
 
     # make nearest dist into dataframe
-    # leave only those not covered
     dat_nearest_no_cov <- dat_nearest_dist %>%
-        dplyr::as_data_frame() %>%
+        tibble::as_tibble() %>%
         dplyr::rename(user_id = V1,
                       facility_id = V2,
                       distance = V3) %>%
-        dplyr::filter(distance > distance_cutoff) # 100m is distance_cutoff
+    # leave only those not covered
+        dplyr::filter(distance > distance_cutoff)
 
-    # give user an index
+    # give user an ID
     user <- user %>% dplyr::mutate(user_id = 1:n())
 
-    # create the "not covered" set of data with a join
     user_not_covered <- dat_nearest_no_cov %>%
         dplyr::left_join(user,
                          by = "user_id")
 
-    # Take original user list, the full set of crime, or ohcas, etc
     proposed_facility_cpp <- proposed_facility %>%
         dplyr::select(lat, long) %>%
         as.matrix()
 
-    # update user to be the new users, those who are not covered
     user_cpp <- user_not_covered %>%
         dplyr::select(lat, long) %>%
         as.matrix()
@@ -108,13 +105,20 @@ max_coverage <- function(existing_facility = NULL,
 
     user_id_list <- 1:nrow(user_not_covered)
 
+    # The pieces we need are:
+
+    # A
+    # n_added
+    # Ny
+    # Nx
+    # d_vec
+
     Nx <- nrow(A)
     Ny <- ncol(A)
-    N <- n_added
     c_vec <- c(rep(0, Ny), rep(1, Nx))
     d_vec <- c(rep(1, Ny), rep(0, Nx))
-    Aeq <- d_vec
-    beq <- N
+    # Aeq <- d_vec
+    # beq <- n_added
 
     # this is a line to optimise with cpp
     Ain <- cbind(-A, diag(Nx))
@@ -123,17 +127,16 @@ max_coverage <- function(existing_facility = NULL,
     # matrix of numeric constraint coefficients,
     # one row per constraint
     # one column per variable
-    constraint_matrix <- rbind(Ain, Aeq)
-    rhs_matrix <- rbind(bin, beq)
+    constraint_matrix <- rbind(Ain, d_vec)
+    rhs_matrix <- rbind(bin, n_added)
 
-    # this is another line to optimise with c++
+    # Another line to optimise with c++
     constraint_directions <- c(rep("<=", Nx), "==")
 
     # capture user input
     model_call <- match.call()
 
     if (solver == "lpSolve") {
-
         solution <- lpSolve::lp(
             direction = "max",
             objective.in = c_vec, # objective_in,
@@ -145,11 +148,9 @@ max_coverage <- function(existing_facility = NULL,
             num.bin.solns = 1,
             use.rw = TRUE
             )
-
         }
 
     if (solver == "glpk") {
-
         solution <- Rglpk::Rglpk_solve_LP(
             obj = c_vec,
             mat = constraint_matrix,
@@ -166,7 +167,6 @@ max_coverage <- function(existing_facility = NULL,
             stop(
                 "Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html"
             )
-
         }
 
         constraint_directions_gurobi <- c(rep("<=", Nx), "=")
@@ -183,7 +183,6 @@ max_coverage <- function(existing_facility = NULL,
     }
 
     x <- list(
-        # #add the variables that were used here to get more info
         existing_facility = existing_facility,
         proposed_facility = proposed_facility,
         distance_cutoff = distance_cutoff,
