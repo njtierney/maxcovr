@@ -1,3 +1,9 @@
+# maxcovr 0.1.2.9000 (2018-07-17)
+
+# Minor Changes
+
+* removed `return_early` argument from `max_coverage`.
+
 # maxcovr 0.1.1.9300 (2018-07-10)
 
 # Minor changes

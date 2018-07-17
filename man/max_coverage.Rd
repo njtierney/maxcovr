@@ -5,7 +5,7 @@
 \title{Solve the Maximal Covering Location Problem}
 \usage{
 max_coverage(existing_facility = NULL, proposed_facility, user,
-  distance_cutoff, n_added, solver = "glpk", return_early = FALSE)
+  distance_cutoff, n_added, solver = "glpk")
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are
@@ -25,8 +25,6 @@ you are interested in. If a number is less than distance_cutoff, it will be
 
 \item{solver}{character "glpk" (default) or "lpSolve". "gurobi" is currently
 in development, see \url{https://github.com/njtierney/maxcovr/issues/25}}
-
-\item{return_early}{logical - should I return the object early?}
 }
 \value{
 dataframe of results
@@ -51,23 +49,22 @@ york_selected <- york \%>\% filter(grade == "I")
 york_unselected <- york \%>\% filter(grade != "I")
 
 mc_result <- max_coverage(existing_facility = york_selected,
-                         proposed_facility = york_unselected,
-                         user = york_crime,
-                         distance_cutoff = 100,
-                         n_added = 20)
+                          proposed_facility = york_unselected,
+                          user = york_crime,
+                          distance_cutoff = 100,
+                          n_added = 20)
 
 mc_result
 
 summary(mc_result)
 
- # get the facilities chosen
- mc_result$facility_selected
+# get the facilities chosen
+mc_result$facility_selected
 
- # get the users affected
- mc_result$user_affected
+# get the users affected
+mc_result$user_affected
 
- # get the summaries
- mc_result$summary
-
+# get the summaries
+mc_result$summary
 
 }

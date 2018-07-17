@@ -18,10 +18,8 @@
 #'   you are interested in. If a number is less than distance_cutoff, it will be
 #'   1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
-# @param n_solutions Number of possible solutions to return. Default is 1.
 #' @param solver character "glpk" (default) or "lpSolve". "gurobi" is currently
 #'   in development, see <https://github.com/njtierney/maxcovr/issues/25>
-#' @param return_early logical - should I return the object early?
 #'
 #' @return dataframe of results
 #'
@@ -35,36 +33,32 @@
 #' # proposed locations
 #' york_unselected <- york %>% filter(grade != "I")
 #'
-#'mc_result <- max_coverage(existing_facility = york_selected,
-#'                          proposed_facility = york_unselected,
-#'                          user = york_crime,
-#'                          distance_cutoff = 100,
-#'                          n_added = 20)
+#' mc_result <- max_coverage(existing_facility = york_selected,
+#'                           proposed_facility = york_unselected,
+#'                           user = york_crime,
+#'                           distance_cutoff = 100,
+#'                           n_added = 20)
 #'
-#'mc_result
+#' mc_result
 #'
-#'summary(mc_result)
+#' summary(mc_result)
 #'
-#'  # get the facilities chosen
-#'  mc_result$facility_selected
+#' # get the facilities chosen
+#' mc_result$facility_selected
 #'
-#'  # get the users affected
-#'  mc_result$user_affected
+#' # get the users affected
+#' mc_result$user_affected
 #'
-#'  # get the summaries
-#'  mc_result$summary
-#'
+#' # get the summaries
+#' mc_result$summary
 #'
 #' @export
-#'
 max_coverage <- function(existing_facility = NULL,
                          proposed_facility,
                          user,
                          distance_cutoff,
                          n_added,
-                         # n_solutions = 1,
-                         solver = "glpk",
-                         return_early = FALSE){
+                         solver = "glpk"){
 
     # turn existing_facility into a matrix suitable for cpp
     existing_facility_cpp <- existing_facility %>%
@@ -168,14 +162,9 @@ max_coverage <- function(existing_facility = NULL,
                   solution = lp_solution,
                   model_call = model_call)
 
-        if (return_early) {
-            return(x)
-        }
-
-        if (!return_early){
             model_result <- extract_mc_results(x)
+
             return(model_result)
-        }
 
     } # close lpSolve solver
 
