@@ -75,28 +75,12 @@ max_coverage <- function(existing_facility,
                                          user,
                                          by = "user_id")
 
-    # browser()
-    #
-    # A <- binary_distance_matrix(facility = proposed_facility,
-    #                             user = user,
-    #                             distance_cutoff = distance_cutoff)
-
-    proposed_facility_cpp <- proposed_facility %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
-
-    user_cpp <- user_not_covered %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
-
-    A <- maxcovr::binary_matrix_cpp(facility = proposed_facility_cpp,
-                                    user = user_cpp,
-                                    distance_cutoff = distance_cutoff)
+    A <- binary_distance_matrix(facility = proposed_facility,
+                                user = user_not_covered,
+                                distance_cutoff = distance_cutoff)
 
     colnames(A) <- 1:nrow(proposed_facility)
-
     user_id_list <- 1:nrow(user_not_covered)
-
     Nx <- nrow(A)
     Ny <- ncol(A)
     c_vec <- c(rep(0, Ny), rep(1, Nx))
@@ -106,9 +90,7 @@ max_coverage <- function(existing_facility,
     Ain <- cbind(-A, diag(Nx))
     bin <- matrix(rep(0, Nx), ncol = 1)
 
-    # matrix of numeric constraint coefficients,
-    # one row per constraint
-    # one column per variable
+    # matrix of constraint coefs, one row per constraint, one col per variable
     constraint_matrix <- rbind(Ain, d_vec)
     rhs_matrix <- rbind(bin, n_added)
 
@@ -118,38 +100,32 @@ max_coverage <- function(existing_facility,
     # Solve the problem --------------------------------------------------------
 
     if (solver == "lpSolve") {
-        solution <- lpSolve::lp(
-            direction = "max",
-            objective.in = c_vec, # objective_in,
-            const.mat = constraint_matrix,
-            const.dir = constraint_directions,
-            const.rhs = rhs_matrix, # constraint_rhs,
-            transpose.constraints = TRUE,
-            all.bin = TRUE,
-            num.bin.solns = 1,
-            use.rw = TRUE
-            )
+        solution <- lpSolve::lp(direction = "max",
+                                objective.in = c_vec, # objective_in,
+                                const.mat = constraint_matrix,
+                                const.dir = constraint_directions,
+                                const.rhs = rhs_matrix, # constraint_rhs,
+                                transpose.constraints = TRUE,
+                                all.bin = TRUE,
+                                num.bin.solns = 1,
+                                use.rw = TRUE)
         }
 
     if (solver == "glpk") {
-        solution <- Rglpk::Rglpk_solve_LP(
-            obj = c_vec,
-            mat = constraint_matrix,
-            dir = constraint_directions,
-            rhs = rhs_matrix,
-            bounds = NULL,
-            types = "B",
-            max = TRUE
-        )
+        solution <- Rglpk::Rglpk_solve_LP(obj = c_vec,
+                                          mat = constraint_matrix,
+                                          dir = constraint_directions,
+                                          rhs = rhs_matrix,
+                                          bounds = NULL,
+                                          types = "B",
+                                          max = TRUE)
     }
 
     if (solver == "gurobi") {
         if (!requireNamespace("gurobi", quietly = TRUE)) {
-            stop(
-                "You must have installed the Gurobi software and accompanying
-                Gurobi R package, more details at
-                https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html"
-            )
+            stop("You must have installed the Gurobi software and accompanying
+                 Gurobi R package, more details at
+                 https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
         }
 
         constraint_directions_gurobi <- c(rep("<=", Nx), "=")
@@ -170,18 +146,16 @@ max_coverage <- function(existing_facility,
     # capture user input
     model_call <- match.call()
 
-    x <- list(
-        existing_facility = existing_facility,
-        proposed_facility = proposed_facility,
-        distance_cutoff = distance_cutoff,
-        existing_user = user,
-        user_not_covered = user_not_covered,
-        n_added = n_added,
-        A = A,
-        user_id = user_id_list,
-        solution = solution,
-        model_call = model_call
-    )
+    x <- list(existing_facility = existing_facility,
+              proposed_facility = proposed_facility,
+              distance_cutoff = distance_cutoff,
+              existing_user = user,
+              user_not_covered = user_not_covered,
+              n_added = n_added,
+              A = A,
+              user_id = user_id_list,
+              solution = solution,
+              model_call = model_call)
 
     model_result <- extract_mc_results(x)
 
