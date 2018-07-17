@@ -1,3 +1,9 @@
+# maxcovr 0.1.3.9100 (2018-07-18)
+
+# Minor Changes
+
+* Changed solution vector to be integer, not numeric, to reduce space - #42
+
 # maxcovr 0.1.3.9000 (2018-07-17)
 
 # Minor Changes
