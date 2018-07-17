@@ -142,9 +142,6 @@ max_coverage <- function(existing_facility = NULL,
             use.rw = TRUE
         )
 
-        # Add a custom class so that I can make the next function only accepts
-        # it once it has gone through there.
-
         # capture user input
         model_call <- match.call()
 
