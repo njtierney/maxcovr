@@ -38,6 +38,11 @@ testthat::test_that("max_coverage glpk returns has the right class",{
     testthat::expect_true(is.maxcovr(mc_result_glpk))
     })
 
+test_that("max_coverage glpk returns an integer, not numeric", {
+    expect_is(mc_result_glpk$solution[[1]]$solution, "integer")
+})
+
+
 mc_result_lpsolve <- max_coverage(existing_facility = york_selected,
                           proposed_facility = york_unselected,
                           user = york_crime,
@@ -67,3 +72,8 @@ testthat::test_that("max_coverage lpsolve returns has the right class",{
     testthat::expect_is(mc_result_lpsolve, "maxcovr")
     testthat::expect_true(is.maxcovr(mc_result_lpsolve))
     })
+
+test_that("max_coverage lpsolve returns an integer, not numeric", {
+    expect_is(mc_result_lpsolve$solution[[1]]$solution, "integer")
+})
+

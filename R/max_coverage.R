@@ -101,6 +101,9 @@ max_coverage <- function(existing_facility,
                                 all.bin = TRUE,
                                 num.bin.solns = 1,
                                 use.rw = TRUE)
+
+        # coerce to integer to save space
+        solution$solution <- as.integer(solution$solution)
         }
 
     if (solver == "glpk") {
@@ -111,6 +114,9 @@ max_coverage <- function(existing_facility,
                                           bounds = NULL,
                                           types = "B",
                                           max = TRUE)
+
+        # coerce to integer to save space
+        solution$solution <- as.integer(solution$solution)
     }
 
     if (solver == "gurobi") {
