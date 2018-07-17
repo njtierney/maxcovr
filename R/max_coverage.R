@@ -134,30 +134,24 @@ max_coverage <- function(existing_facility = NULL,
 
     if (solver == "lpSolve") {
 
-        model_result <- solve_with_lpsolve(
-            objective_in = c_vec,
-            const_mat = constraint_matrix,
-            const_dir = constraint_directions,
-            const_rhs = rhs_matrix,
-            existing_facility = existing_facility,
-            proposed_facility = proposed_facility,
-            distance_cutoff = distance_cutoff,
-            existing_user = user,
-            user_not_covered = user_not_covered,
-            n_added = n_added,
-            A = A,
-            user_id = user_id_list,
-            model_call = model_call
+        solution <- lpSolve::lp(
+            direction = "max",
+            objective.in = c_vec, # objective_in,
+            const.mat = constraint_matrix,
+            const.dir = constraint_directions,
+            const.rhs = rhs_matrix, # constraint_rhs,
+            transpose.constraints = TRUE,
+            all.bin = TRUE,
+            num.bin.solns = 1,
+            use.rw = TRUE
             )
 
-    return(model_result)
-
-    }
+        }
 
     if (solver == "glpk") {
 
-        glpk_solution <- Rglpk::Rglpk_solve_LP(
-            obj = c,
+        solution <- Rglpk::Rglpk_solve_LP(
+            obj = c_vec,
             mat = constraint_matrix,
             dir = constraint_directions,
             rhs = rhs_matrix,
@@ -165,59 +159,45 @@ max_coverage <- function(existing_facility = NULL,
             types = "B",
             max = TRUE
         )
+    }
 
-        # model_call <- match.call()
-
-        x <- list(
-            # #add the variables that were used here to get more info
-            existing_facility = existing_facility,
-            proposed_facility = proposed_facility,
-            distance_cutoff = distance_cutoff,
-            existing_user = user,
-            user_not_covered = user_not_covered,
-            n_added = n_added,
-            A = A,
-            user_id = user_id_list,
-            solution = glpk_solution,
-            model_call = model_call
-        )
-
-        model_result <- extract_mc_results(x)
-        return(model_result)
-
-    } else if (solver == "gurobi") {
-
+    if (solver == "gurobi") {
         if (!requireNamespace("gurobi", quietly = TRUE)) {
-            stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
+            stop(
+                "Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html"
+            )
 
         }
 
         constraint_directions_gurobi <- c(rep("<=", Nx), "=")
-        # model_call <- match.call()
-        model <- list()
 
+        model <- list()
         model$A <- constraint_matrix
-        model$obj <- c
+        model$obj <- c_vec
         model$sense <- constraint_directions_gurobi
         model$rhs <- rhs_matrix
         model$vtype <- "B"
         model$modelsense <- "max"
-
-        gurobi_solution <- gurobi::gurobi(model)
-
-        x <- list(existing_facility = existing_facility,
-                  proposed_facility = proposed_facility,
-                  distance_cutoff = distance_cutoff,
-                  existing_user = user,
-                  user_not_covered = user_not_covered,
-                  n_added = n_added,
-                  A = A,
-                  user_id = user_id_list,
-                  gurobi_solution = gurobi_solution,
-                  model_call = model_call)
-
-        return(x)
+        solution <- gurobi::gurobi(model)
 
     }
 
-} # end of function
+    x <- list(
+        # #add the variables that were used here to get more info
+        existing_facility = existing_facility,
+        proposed_facility = proposed_facility,
+        distance_cutoff = distance_cutoff,
+        existing_user = user,
+        user_not_covered = user_not_covered,
+        n_added = n_added,
+        A = A,
+        user_id = user_id_list,
+        solution = solution,
+        model_call = model_call
+    )
+
+    model_result <- extract_mc_results(x)
+
+    return(model_result)
+
+    } # end of function
