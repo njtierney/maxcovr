@@ -219,3 +219,29 @@ binary_distance_matrix <- function(facility,
     return(A)
 
 }
+
+#' (Internal) Create a dataframe of the users not covered
+#'
+#' @param existing_facility data.frame of existing facilities
+#' @param user  data.frame of existing users
+#' @param distance_cutoff integer of distance cutoff
+#'
+#' @return data.frame of those users not covered by current facilities
+find_users_not_covered <- function(existing_facility,
+                                   user,
+                                   distance_cutoff){
+
+
+    # make nearest dist into dataframe
+    dat_nearest_no_cov <- nearest_facility_distances(
+        existing_facility = existing_facility,
+        user = user) %>%
+        # leave only those not covered
+        dplyr::filter(distance > distance_cutoff)
+
+    user_not_covered <- dplyr::left_join(dat_nearest_no_cov,
+                                         user,
+                                         by = "user_id")
+
+    return(user_not_covered)
+}

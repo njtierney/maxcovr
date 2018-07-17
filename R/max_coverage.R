@@ -60,20 +60,12 @@ max_coverage <- function(existing_facility,
                          n_added,
                          solver = "glpk"){
 
-    # make nearest dist into dataframe
-    dat_nearest_no_cov <- nearest_facility_distances(
-        existing_facility = existing_facility,
-        user = user
-        ) %>%
-        # leave only those not covered
-        dplyr::filter(distance > distance_cutoff)
-
     # give user an ID
     user <- tibble::rowid_to_column(user, var = "user_id")
 
-    user_not_covered <- dplyr::left_join(dat_nearest_no_cov,
-                                         user,
-                                         by = "user_id")
+    user_not_covered <- find_users_not_covered(existing_facility,
+                                               user,
+                                               distance_cutoff)
 
     A <- binary_distance_matrix(facility = proposed_facility,
                                 user = user_not_covered,
@@ -124,16 +116,14 @@ max_coverage <- function(existing_facility,
     if (solver == "gurobi") {
         if (!requireNamespace("gurobi", quietly = TRUE)) {
             stop("You must have installed the Gurobi software and accompanying
-                 Gurobi R package, more details at
+                 Gurobi R package. For more details, see
                  https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
         }
-
-        constraint_directions_gurobi <- c(rep("<=", Nx), "=")
 
         model <- list()
         model$A <- constraint_matrix
         model$obj <- c_vec
-        model$sense <- constraint_directions_gurobi
+        model$sense <- c(rep("<=", Nx), "=") # constraint directions
         model$rhs <- rhs_matrix
         model$vtype <- "B"
         model$modelsense <- "max"
