@@ -60,26 +60,26 @@ max_coverage <- function(existing_facility,
                          n_added,
                          solver = "glpk"){
 
-    dat_nearest_dist <- nearest_facility_distances(
+    # make nearest dist into dataframe
+    dat_nearest_no_cov <- nearest_facility_distances(
         existing_facility = existing_facility,
         user = user
-        )
-
-    # make nearest dist into dataframe
-    dat_nearest_no_cov <- dat_nearest_dist %>%
-        tibble::as_tibble() %>%
-        dplyr::rename(user_id = V1,
-                      facility_id = V2,
-                      distance = V3) %>%
-    # leave only those not covered
+        ) %>%
+        # leave only those not covered
         dplyr::filter(distance > distance_cutoff)
 
     # give user an ID
-    user <- user %>% dplyr::mutate(user_id = 1:n())
+    user <- tibble::rowid_to_column(user, var = "user_id")
 
-    user_not_covered <- dat_nearest_no_cov %>%
-        dplyr::left_join(user,
-                         by = "user_id")
+    user_not_covered <- dplyr::left_join(dat_nearest_no_cov,
+                                         user,
+                                         by = "user_id")
+
+    # browser()
+    #
+    # A <- binary_distance_matrix(facility = proposed_facility,
+    #                             user = user,
+    #                             distance_cutoff = distance_cutoff)
 
     proposed_facility_cpp <- proposed_facility %>%
         dplyr::select(lat, long) %>%

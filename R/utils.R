@@ -159,11 +159,11 @@ is.maxcovr_relocation <- function(x) {
 #' @param existing_facility dataframe of existing facilities
 #' @param user dataframe of users to place facilities to cover
 #'
-#' @return A matrix with 3 columns: user_id, facility_id, distance, where the
+#' @return A tibble with 3 columns: user_id, facility_id, distance, where the
 #'   user_id is the identifier for the user, the facility_id is the identifier
 #'   for the facility that is closest to that user, and the distance is the
 #'   distance in metres from that user to that facility.
-#' @export
+#'
 nearest_facility_distances <- function(existing_facility,
                                        user){
 
@@ -177,8 +177,45 @@ nearest_facility_distances <- function(existing_facility,
 
     dat_nearest_dist <-
         nearest_facility_dist(facility = existing_facility_cpp,
-                              user = user_cpp)
+                              user = user_cpp) %>%
+        tibble::as_tibble() %>%
+        dplyr::rename(user_id = V1,
+                      facility_id = V2,
+                      distance = V3)
 
     return(dat_nearest_dist)
+
+}
+
+#' (Internal) Create a binary distance matrix
+#'
+#' This is a wrapper function that returns a logical matrix, of 1 if distance
+#'   between element i, j is less than or equal to the distance_cutoff, and
+#'   0 otherwise.
+#'
+#' @param facility data.frame of facilities
+#' @param user data.frame of users
+#' @param distance_cutoff integer of distance to use for cutoff
+#'
+#' @return a logical matrix, of 1 if distance
+#'   between element i, j is less than or equal to the distance_cutoff, and
+#'   0 otherwise.
+binary_distance_matrix <- function(facility,
+                                   user,
+                                   distance_cutoff){
+
+    facility_cpp <- facility %>%
+        dplyr::select(lat, long) %>%
+        as.matrix()
+
+    user_cpp <- user %>%
+        dplyr::select(lat, long) %>%
+        as.matrix()
+
+    A <- maxcovr::binary_matrix_cpp(facility = facility_cpp,
+                                    user = user_cpp,
+                                    distance_cutoff = distance_cutoff)
+
+    return(A)
 
 }

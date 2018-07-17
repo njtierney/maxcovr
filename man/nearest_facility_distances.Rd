@@ -12,7 +12,7 @@ nearest_facility_distances(existing_facility, user)
 \item{user}{dataframe of users to place facilities to cover}
 }
 \value{
-A matrix with 3 columns: user_id, facility_id, distance, where the
+A tibble with 3 columns: user_id, facility_id, distance, where the
 user_id is the identifier for the user, the facility_id is the identifier
 for the facility that is closest to that user, and the distance is the
 distance in metres from that user to that facility.
