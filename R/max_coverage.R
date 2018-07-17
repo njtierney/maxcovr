@@ -111,9 +111,9 @@ max_coverage <- function(existing_facility = NULL,
     Nx <- nrow(A)
     Ny <- ncol(A)
     N <- n_added
-    c <- c(rep(0, Ny), rep(1, Nx))
-    d <- c(rep(1, Ny), rep(0, Nx))
-    Aeq <- d
+    c_vec <- c(rep(0, Ny), rep(1, Nx))
+    d_vec <- c(rep(1, Ny), rep(0, Nx))
+    Aeq <- d_vec
     beq <- N
 
     # this is a line to optimise with cpp
@@ -129,41 +129,30 @@ max_coverage <- function(existing_facility = NULL,
     # this is another line to optimise with c++
     constraint_directions <- c(rep("<=", Nx), "==")
 
+    # capture user input
+    model_call <- match.call()
+
     if (solver == "lpSolve") {
-        lp_solution <- lpSolve::lp(
-            direction = "max",
-            objective.in = c,
-            const.mat = constraint_matrix,
-            const.dir = constraint_directions,
-            const.rhs = rhs_matrix,
-            transpose.constraints = TRUE,
-            all.bin = TRUE,
-            num.bin.solns = 1,
-            use.rw = TRUE
-        )
 
-        # capture user input
-        model_call <- match.call()
+        model_result <- solve_with_lpsolve(
+            objective_in = c_vec,
+            const_mat = constraint_matrix,
+            const_dir = constraint_directions,
+            const_rhs = rhs_matrix,
+            existing_facility = existing_facility,
+            proposed_facility = proposed_facility,
+            distance_cutoff = distance_cutoff,
+            existing_user = user,
+            user_not_covered = user_not_covered,
+            n_added = n_added,
+            A = A,
+            user_id = user_id_list,
+            model_call = model_call
+            )
 
-        # remove the constraints, as they are too big
-        lp_solution[["constraints"]] <- NULL
+    return(model_result)
 
-        x <- list(existing_facility = existing_facility,
-                  proposed_facility = proposed_facility,
-                  distance_cutoff = distance_cutoff,
-                  existing_user = user,
-                  user_not_covered = user_not_covered,
-                  n_added = n_added,
-                  A = A,
-                  user_id = user_id_list,
-                  solution = lp_solution,
-                  model_call = model_call)
-
-            model_result <- extract_mc_results(x)
-
-            return(model_result)
-
-    } # close lpSolve solver
+    }
 
     if (solver == "glpk") {
 
@@ -177,7 +166,7 @@ max_coverage <- function(existing_facility = NULL,
             max = TRUE
         )
 
-        model_call <- match.call()
+        # model_call <- match.call()
 
         x <- list(
             # #add the variables that were used here to get more info
@@ -204,7 +193,7 @@ max_coverage <- function(existing_facility = NULL,
         }
 
         constraint_directions_gurobi <- c(rep("<=", Nx), "=")
-        model_call <- match.call()
+        # model_call <- match.call()
         model <- list()
 
         model$A <- constraint_matrix
