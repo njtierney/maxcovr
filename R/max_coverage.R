@@ -60,18 +60,10 @@ max_coverage <- function(existing_facility,
                          n_added,
                          solver = "glpk"){
 
-    # turn existing_facility into a matrix suitable for cpp
-    existing_facility_cpp <- existing_facility %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
-
-    user_cpp <- user %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
-
-    dat_nearest_dist <-
-        nearest_facility_dist(facility = existing_facility_cpp,
-                              user = user_cpp)
+    dat_nearest_dist <- nearest_facility_distances(
+        existing_facility = existing_facility,
+        user = user
+        )
 
     # make nearest dist into dataframe
     dat_nearest_no_cov <- dat_nearest_dist %>%
@@ -105,20 +97,10 @@ max_coverage <- function(existing_facility,
 
     user_id_list <- 1:nrow(user_not_covered)
 
-    # The pieces we need are:
-
-    # A
-    # n_added
-    # Ny
-    # Nx
-    # d_vec
-
     Nx <- nrow(A)
     Ny <- ncol(A)
     c_vec <- c(rep(0, Ny), rep(1, Nx))
     d_vec <- c(rep(1, Ny), rep(0, Nx))
-    # Aeq <- d_vec
-    # beq <- n_added
 
     # this is a line to optimise with cpp
     Ain <- cbind(-A, diag(Nx))
@@ -135,6 +117,8 @@ max_coverage <- function(existing_facility,
 
     # capture user input
     model_call <- match.call()
+
+    # Solve the problem --------------------------------------------------------
 
     if (solver == "lpSolve") {
         solution <- lpSolve::lp(
@@ -165,7 +149,9 @@ max_coverage <- function(existing_facility,
     if (solver == "gurobi") {
         if (!requireNamespace("gurobi", quietly = TRUE)) {
             stop(
-                "Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html"
+                "You must have installed the Gurobi software and accompanying
+                Gurobi R package, more details at
+                https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html"
             )
         }
 
@@ -181,6 +167,8 @@ max_coverage <- function(existing_facility,
         solution <- gurobi::gurobi(model)
 
     }
+
+    # Extract the results ------------------------------------------------------
 
     x <- list(
         existing_facility = existing_facility,

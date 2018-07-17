@@ -149,3 +149,36 @@ is.maxcovr_relocation <- function(x) {
     inherits(x, "maxcovr_relocation")
 
 }
+
+#' (Internal) Calculate the nearest facility distances
+#'
+#' This function is a wrapper for the similarly named, `nearest_facility_dist`
+#'   function used inside `max_coverage` to calculate distances
+#'   so that the nearest facilities can be found.
+#'
+#' @param existing_facility dataframe of existing facilities
+#' @param user dataframe of users to place facilities to cover
+#'
+#' @return A matrix with 3 columns: user_id, facility_id, distance, where the
+#'   user_id is the identifier for the user, the facility_id is the identifier
+#'   for the facility that is closest to that user, and the distance is the
+#'   distance in metres from that user to that facility.
+#' @export
+nearest_facility_distances <- function(existing_facility,
+                                       user){
+
+    existing_facility_cpp <- existing_facility %>%
+        dplyr::select(lat, long) %>%
+        as.matrix()
+
+    user_cpp <- user %>%
+        dplyr::select(lat, long) %>%
+        as.matrix()
+
+    dat_nearest_dist <-
+        nearest_facility_dist(facility = existing_facility_cpp,
+                              user = user_cpp)
+
+    return(dat_nearest_dist)
+
+}
