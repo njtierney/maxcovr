@@ -176,7 +176,7 @@ system.time(
 map_mc_model <- map_df(.x = n_add_vec,
                        .f = ~max_coverage(existing_facility = york_selected,
                                           proposed_facility = york_unselected,
-                                          user = york,
+                                          user = york_crime,
                                           distance_cutoff = 100,
                                           n_added = .))
 )

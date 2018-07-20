@@ -68,7 +68,6 @@ of the listed buildings with a grade of I. We will call this dataset
 
 library(maxcovr)
 library(dplyr)
-#> Warning: package 'dplyr' was built under R version 3.5.1
 #> 
 #> Attaching package: 'dplyr'
 #> The following objects are masked from 'package:stats':
@@ -110,14 +109,14 @@ dat_dist <- york_selected %>% nearest(york_crime)
 
 head(dat_dist)
 #> # A tibble: 6 x 22
-#>   to_id nearest_id distance category  persistent_id   date  lat_to long_to
-#>   <dbl>      <dbl>    <dbl> <chr>     <chr>           <chr>  <dbl>   <dbl>
-#> 1     1         66    166.  anti-soc… 62299914865f07… 2016…   54.0   -1.08
-#> 2     2         48   2087.  anti-soc… 4e34f53d247f23… 2016…   54.0   -1.12
-#> 3     3         55     68.2 anti-soc… 2a0062f3dfac81… 2016…   54.0   -1.08
-#> 4     4         11    286.  anti-soc… eb53e09ae46a0f… 2016…   54.0   -1.09
-#> 5     5         25    536.  anti-soc… 6139f131b7243f… 2016…   54.0   -1.08
-#> 6     6         20    160.  anti-soc… d8de26d5af47ef… 2016…   54.0   -1.08
+#>   to_id nearest_id distance category persistent_id date  lat_to long_to
+#>   <dbl>      <dbl>    <dbl> <chr>    <chr>         <chr>  <dbl>   <dbl>
+#> 1     1         66    166.  anti-so… 62299914865f… 2016…   54.0   -1.08
+#> 2     2         48   2087.  anti-so… 4e34f53d247f… 2016…   54.0   -1.12
+#> 3     3         55     68.2 anti-so… 2a0062f3dfac… 2016…   54.0   -1.08
+#> 4     4         11    286.  anti-so… eb53e09ae46a… 2016…   54.0   -1.09
+#> 5     5         25    536.  anti-so… 6139f131b724… 2016…   54.0   -1.08
+#> 6     6         20    160.  anti-so… d8de26d5af47… 2016…   54.0   -1.08
 #> # ... with 14 more variables: street_id <chr>, street_name <chr>,
 #> #   context <chr>, id <chr>, location_type <chr>, location_subtype <chr>,
 #> #   outcome_status <chr>, long_nearest <dbl>, lat_nearest <dbl>,
@@ -195,7 +194,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.050   0.119   1.231
+#>   1.110   0.122   1.306
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -249,12 +248,12 @@ system.time(
 map_mc_model <- map_df(.x = n_add_vec,
                        .f = ~max_coverage(existing_facility = york_selected,
                                           proposed_facility = york_unselected,
-                                          user = york,
+                                          user = york_crime,
                                           distance_cutoff = 100,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  30.365   0.734  31.198
+#>   4.743   0.347   5.137
 ```
 
 This returns a list of dataframes, which we can bind together like so:
