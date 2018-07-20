@@ -42,8 +42,8 @@ extract_mc_results <- function(x){
         existing_users = x$existing_user,
         distance_cutoff = x$distance_cutoff)
 
-    mc_summary <- bind_rows(mc_existing_coverage,
-                            mc_model_coverage)
+    mc_summary <- dplyr::bind_rows(mc_existing_coverage,
+                                   mc_model_coverage)
 
     mc_res <- tibble::tibble(
         n_added = list(x$n_added),
