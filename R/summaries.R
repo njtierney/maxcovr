@@ -142,8 +142,6 @@ coverage <- function(nearest_df,
                      ...){
 
     nearest_df %>%
-        # not sure if this is the best way to use ..., but it seems to work!
-        # basically I want people to be able to pass arguments to nearest
         nearest(to_df, ...) %>%
         dplyr::mutate(is_covered = distance <= distance_cutoff) %>%
         summarise_coverage(distance_cutoff = distance_cutoff)

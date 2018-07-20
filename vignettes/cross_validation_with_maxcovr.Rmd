@@ -9,10 +9,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette provides a guide to performing cross validation with modelr and maxcovr. In the future if this is a feature that is under demand, I will incorporate cross validation into maxcovr. In the mean time, here's a vignette.
+This vignette provides a guide to performing cross validation with modelr and maxcovr. Cross validation is a bit of a strange concept in this context - we aren't trying to make predictions here, but what we are trying to do is appropriately evaluate the performance of maxcovr in a fairer way.
 
+In the future if this is a feature that is under demand, I will incorporate cross validation into maxcovr. In the mean time, here's a vignette.
 
-# performing cross validation on max_coverage
+# Performing cross validation on max_coverage
 
 We will stick with the previous example using york and york_crime
 
@@ -30,7 +31,7 @@ york_unselected <- york %>% filter(grade != "I")
 
 Thanks to the `modelr` package, it is relatively straightforward to perform cross validation.
 
-```{r}
+```{r cross-v-kfold}
 # first we partition the data into 5 folds
 library(modelr)
 library(purrr)
@@ -45,7 +46,7 @@ mc_cv <- modelr::crossv_kfold(york_crime, 5) %>%
 
 This creates a dataframe with test and training sets
 
-```{r}
+```{r print-mc-cv}
 
 mc_cv
 
@@ -53,7 +54,7 @@ mc_cv
 
 We then fit the model on the training set using `map_df`, from the `purrr` package.
 
-```{r}
+```{r apply-purrr-n20}
 library(purrr)
 # then we fit the model
 system.time(
@@ -70,16 +71,17 @@ system.time(
 Then we can use the `summary_mc_cv` function to extract out the summaries from each fold.
 This summary takes the facilities placed using the training set of users, and then takes the test set of users and counts what percent of these are being covered by the training model.
 
-```{r}
+```{r summarise-mc-cv}
 
 summarised_cv <- summary_mc_cv(mc_cv_fit, mc_cv)
 
 summarised_cv %>% knitr::kable()
+
 ```
 
 Eyeballing the values, it looks like the pct coverage stays around 10%, but we can plot it to get a better idea. We can overlay the coverage obtained using the full dataset to get an idea of how we are performing.
 
-```{r}
+```{r plot-summarised-cv}
 library(ggplot2)
 summarised_cv %>%
     ggplot(aes(x = n_fold,
@@ -87,8 +89,6 @@ summarised_cv %>%
     geom_point() +
     geom_line(group = 1) + 
     theme_minimal()
-    
-        
 
 ```
 
@@ -98,7 +98,7 @@ Coming up next, we will explore how to perform cross validation as we increase t
 
 Ideally, there should be a way to do this using purrr, so we don't have to fic 5 separate models, but perhaps this will change when we enable n_added to take a vector of values.
 
-```{r}
+```{r mc-cv-n20-n100}
 
 # then we fit the model
 system.time(
@@ -146,7 +146,7 @@ system.time(
 
 ```
 
-```{r}
+```{r summarise mc-n20-n100}
 
 summarised_cv_n20 <- summary_mc_cv(mc_cv_fit_n20, mc_cv)
 summarised_cv_n40 <- summary_mc_cv(mc_cv_fit_n40, mc_cv)
@@ -165,7 +165,7 @@ bound_testing_summaries <- bind_rows(summarised_cv_n20,
 
 It looks like the more facilities we add, the better the coverage...mostly.
 
-```{r}
+```{r bind-mc-cv-summaries}
 bound_training_summaries <- bind_rows(mc_cv_fit_n20$model_coverage,
                                       mc_cv_fit_n40$model_coverage,
                                       mc_cv_fit_n60$model_coverage,
@@ -179,7 +179,7 @@ bound_all_summaries <- bind_rows(bound_testing_summaries,
 ```
 
 
-```{r}
+```{r plot-testing-summaries}
 
 ggplot(bound_testing_summaries,
        aes(x = n_fold,
@@ -194,7 +194,7 @@ ggplot(bound_testing_summaries,
 
 Let's look at this another way, with boxplots for the number of facilities added.
 
-```{r}
+```{r plot-ncov}
 
 ggplot(bound_testing_summaries,
        aes(x = factor(n_added),
@@ -206,7 +206,7 @@ ggplot(bound_testing_summaries,
 
 We can also compare the % coverage for the test and training datasets
 
-```{r}
+```{r plot-all-summaries}
 
 bound_all_summaries %>%
     ggplot(aes(x = factor(n_added),
@@ -216,54 +216,3 @@ bound_all_summaries %>%
     theme_minimal()
 
 ```
-
-
-
-
-<!-- Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format: -->
-
-<!-- - Never uses retina figures -->
-<!-- - Has a smaller default figure size -->
-<!-- - Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style -->
-
-<!-- ## Vignette Info -->
-
-<!-- Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette. -->
-
-<!-- ## Styles -->
-
-<!-- The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows: -->
-
-<!--     output:  -->
-<!--       rmarkdown::html_vignette: -->
-<!--         css: mystyles.css -->
-
-<!-- ## Figures -->
-
-<!-- The figure sizes have been customised so that you can easily put two images side-by-side.  -->
-
-<!-- ```{r, fig.show='hold'} -->
-<!-- plot(1:10) -->
-<!-- plot(10:1) -->
-<!-- ``` -->
-
-<!-- You can enable figure captions by `fig_caption: yes` in YAML: -->
-
-<!--     output: -->
-<!--       rmarkdown::html_vignette: -->
-<!--         fig_caption: yes -->
-
-<!-- Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**. -->
-
-<!-- ## More Examples -->
-
-<!-- You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`. -->
-
-<!-- ```{r, echo=FALSE, results='asis'} -->
-<!-- knitr::kable(head(mtcars, 10)) -->
-<!-- ``` -->
-
-<!-- Also a quote using `>`: -->
-
-<!-- > "He who gives up [code] safety for [code] speed deserves neither." -->
-<!-- ([via](https://twitter.com/hadleywickham/status/504368538874703872)) -->

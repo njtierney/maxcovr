@@ -119,16 +119,6 @@ coverage(york_selected, york_crime)
 
 This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes are covered, but the mean distance to the surveillance camera is 1400m.
 
-Alternatively, one can also use the below code:
-
-```{r}
-
-dat_dist %>%
-    mutate(is_covered = distance <= 100) %>%
-    summarise_coverage()
-
-```
-
 ## Maximising coverage
 
 Say then we want to add another 20 surveillance towers, but we want to use the best 20, we use `max_coverage`.

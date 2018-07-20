@@ -4,13 +4,12 @@ author: "Nicholas Tierney"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Using max_coverage_relocation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette provides a guide to using maxcovr to solve the maximum covering location problem, assuming that you can relocate facilities. 
-
+This vignette provides a guide to using `maxcovr` to solve the maximum covering location problem, assuming that you can relocate facilities. 
 
 ```{r libraries}
 library(dplyr)
@@ -40,7 +39,7 @@ york_existing_worst <- york_selected_worst_id %>%
 
 Then we identify some really ideal locations.
 
-```{r}
+```{r identify-really-ideal-locations}
 
 york_not_selected_worst <- york %>%
     anti_join(york_existing_worst,
@@ -59,7 +58,7 @@ york_proposed_best <-
 
 ```
 
-```{r}
+```{r print-best-worst}
 
 york_proposed_best
 york_existing_worst
@@ -68,11 +67,12 @@ york_existing_worst
 
 Let's look at the coverage of these places, 
 
-```{r}
-nearest(york_existing_worst,
-        york_crime) %>%
-    mutate(is_covered = distance < 100) %>%
-    summarise_coverage()
+```{r explore-coverage}
+
+coverage(york_existing_worst,
+         york_crime,
+         distance_cutoff = 100)
+
 ```
 
 So these are *worst* placements - we should choose some better facilities. However, if we consider the possibility that we could move these existing facilities to better locations, then we might be able to save a lot of money! We can do this with `max_coverage_relocation`.
@@ -94,8 +94,7 @@ instead of specifying `n_added`, as in `max_coverage`, we specify three `cost_` 
 
 Here we state that the installation cost is 10, the remocal cost is 1, and the total available cost is 10. There is only enough total resources to install one facility.
 
-```{r}
-# library(gurobi)
+```{r max-coverage-relocation}
 system.time(
 mc_relocate_worst <-  max_coverage_relocation(
     existing_facility = york_existing_worst,
@@ -124,7 +123,7 @@ mc_relocate_worst$facilities_selected[[1]]
 You can then start to toy with the different pricings if you like.
 
 
-```{r}
+```{r explore-pricings}
 
 system.time(
 mc_relocate_worst_eq <-  max_coverage_relocation(

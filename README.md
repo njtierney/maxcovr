@@ -165,19 +165,6 @@ This tells us that out of all the crime, 18.68% of it is within 100m,
 339 crimes are covered, but the mean distance to the surveillance camera
 is 1400m.
 
-Alternatively, one can also use the below code:
-
-``` r
-
-dat_dist %>%
-    mutate(is_covered = distance <= 100) %>%
-    summarise_coverage()
-#> # A tibble: 1 x 7
-#>   distance_within n_cov n_not_cov prop_cov prop_not_cov dist_avg dist_sd
-#>             <dbl> <int>     <int>    <dbl>        <dbl>    <dbl>   <dbl>
-#> 1             100   339      1475    0.187        0.813    1400.   1597.
-```
-
 ## Maximising coverage
 
 Say then we want to add another 20 surveillance towers, but we want to
@@ -194,7 +181,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.115   0.120   1.267
+#>   1.070   0.119   1.228
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -253,7 +240,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>   4.627   0.336   4.978
+#>   4.585   0.343   4.945
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -276,7 +263,7 @@ bind_rows(map_mc_model$existing_coverage[[1]],
     theme_minimal()
 ```
 
-![](README-figs/unnamed-chunk-9-1.png)<!-- -->
+![](README-figs/unnamed-chunk-8-1.png)<!-- -->
 
 You can read more about the use of `max_coverage`, covering topics like
 cross validation in the vignette.

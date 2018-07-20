@@ -16,10 +16,9 @@ knitr::opts_chunk$set(fig.width = 7,
 
 ```
 
+maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). 
 
-maxcovr provides tools to make it easy to solve the "maximum covering location problem", a binary optimisation problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Currently it uses the `lp` solver from the `lpsolve` package.
-
-`maxcovr` aims to provide researchers and analysts with a fast, accurate and extendible implementation of Church's maximal covering location problem, while adhering as best as it can to [`tidyverse`](http://www.tidyverse.org) principles.  In the future `maxcovr` will be able to talk to commercial solvers like CPLEX and Gurobi, and will have a mechanism for extensions.
+`maxcovr` aims to provide researchers and analysts with an easy to user, fast, accurate and (eventually) extensible implementation of Church's maximal covering location problem, while adhering as best as it can to [`tidyverse`](http://www.tidyverse.org) principles.  
 
 This vignette aims to get users started with using maxcovr. In this vignette you
 will learn about:
@@ -30,24 +29,24 @@ will learn about:
 - Explore results of the new locations
 - How to explore the new locations proposed
 
-Other vignettes are (or will be!) provided in the package:
+Other vignettes provided in the package include:
 
 - "Cross Validation with maxcovr", which explains how to perform and interpret cross validation results in a maximum covering location framework
-- "Understanding the maximum covering location problem"
 - "Performing the maximal coverage relocation problem"
 
-# Why maxcovr
+# The moviation: Why `maxcovr`
 
-maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem. This problem is beginning to be applied in problems in AED placement, but has been applied in [many different areas](). However, many of the implementations in papers commercial software such as AMPL, Gurobi, or CPLEX. Additionally, the code that they use in the paper to implement the optimisation is not provided and has to be requested. As a result, these analyses are more difficult to implement and more difficult to reproduce.
+`maxcovr` was created to make it easy for a non expert to correctly solve the maximum covering location problem. This problem is beginning to be applied in problems in [AED placement](), but has been applied in [many different areas](). 
+Many implementations in papers apply commercial software such as AMPL, Gurobi, or CPLEX. Additionally, the code that they use in the paper to implement the optimisation is not provided, and has to be requested. As a result, these analyses are more difficult to implement, and more difficult to reproduce.
 
-maxcovr was created to address these shortcomings, using:
+`maxcovr` was created to address these shortcomings, using:
 
 - R, a free and open source language
 - Open source solvers, lpSolve, and glpk, that can be used on Linux, Windows, and OSX.
 - Real-world, open source example data.
-- Tidyverse principles to make it easy to use, code, and extend.
+- Tidyverse principles to design it for humans make it easy to use, code, and extend.
 
-As a result of this, results are easy to implement, reproduce, and extend.
+This means results are easy to implement, reproduce, and extend.
 
 # The problem
 
@@ -123,14 +122,14 @@ dat_dist_bldg <- nearest(york_crime,york_existing)
 head(dat_dist_bldg)
 ```
 
-To evaluate the coverage we can use `summarise_coverage`. Here, we need to create a column called "is_covered", which is TRUE if the distance measure from `nearest` is less than some set distance, and FALSE otherwise.
+To evaluate the coverage we use `coverage`, specifying the distance cutoff in `distance_cutoff` to be 100m.
 
 ```{r}
 
-dat_dist %>% 
-    mutate(is_covered = distance <= 100) %>%
-    summarise_coverage()
-    
+coverage(york_proposed, 
+         york_crime,
+         distance_cutoff = 100)
+
 ```
 
 This contains useful summary information:
@@ -440,4 +439,6 @@ leaflet() %>%
 
 ```
 
-To include leaflet in a 
+# Future work
+  
+In the future `maxcovr` will be able to talk to commercial solvers like CPLEX and Gurobi, and will have a mechanism for extensions.
