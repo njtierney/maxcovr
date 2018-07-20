@@ -211,6 +211,8 @@ You can read more about the use of `max_coverage`, covering topics like cross va
 
 - `max_coverage()` may take a bit of time to run, depending on your data size. From initial testing, if the product of the number of rows of the `proposed_facilities` and `users` exceeds 100 million, it might take more than 1 minute. Of course, this may depend on the structure / complexity of your data and problem.
 
+- The distances calculated in `maxcovr` use [haversines formula](https://en.wikipedia.org/wiki/Haversine_formula), which makes the assumption that the earth is a sphere and calculates the greater circle distance. Whilst not wholly correct, haversine is a useful approximation that is reasonable for small scale distances, where the accuracy can be within metres which is what `maxcovr` was initially built for. In the future `maxcovr` will use more accurate distance functions provided in [`geodist`](https://github.com/hypertidy/geodist), and give the user control over the distance calculation used (haversines, vincenty, cheap ruler, geodesic, etc).
+
 # Future Work
 
 I will be focussing on making `maxcovr` work well within the `tidyverse`. This includes providing sensible standard summaries using key function verbs from `broom`, adding exploratory plots, improving speed using Rcpp, and allowing users to select the solver they want to use.

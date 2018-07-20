@@ -194,7 +194,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.110   0.122   1.306
+#>   1.115   0.120   1.267
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -253,7 +253,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>   4.743   0.347   5.137
+#>   4.627   0.336   4.978
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -288,6 +288,18 @@ cross validation in the vignette.
     rows of the `proposed_facilities` and `users` exceeds 100 million,
     it might take more than 1 minute. Of course, this may depend on the
     structure / complexity of your data and problem.
+
+  - The distances calculated in `maxcovr` use [haversines
+    formula](https://en.wikipedia.org/wiki/Haversine_formula), which
+    makes the assumption that the earth is a sphere and calculates the
+    greater circle distance. Whilst not wholly correct, haversine is a
+    useful approximation that is reasonable for small scale distances,
+    where the accuracy can be within metres which is what `maxcovr` was
+    initially built for. In the future `maxcovr` will use more accurate
+    distance functions provided in
+    [`geodist`](https://github.com/hypertidy/geodist), and give the user
+    control over the distance calculation used (haversines, vincenty,
+    cheap ruler, geodesic, etc).
 
 # Future Work
 
