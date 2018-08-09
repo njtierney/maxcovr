@@ -10,3 +10,4 @@
 ^docs$
 ^LICENSE\.md$
 ^_pkgdown\.yml$
+^\.github$

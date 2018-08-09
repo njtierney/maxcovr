@@ -238,6 +238,12 @@ I will be focussing on making `maxcovr` work well within the `tidyverse`. This i
 
 If you have any suggestions, please [file an issue](http://www.github.com/njtierney/maxcovr/issues/new) and I will get to it as soon as I can.
 
+# Code of Conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](.github/CODE_OF_CONDUCT.md).
+
+By participating in this project you agree to abide by its terms.
+
 # Acknowledgements
 
 Oliver Czibula, for this initial help in helping me understand the Maximum Covering Location Problem. Angelo Auricchio and Antonietta Mira for their supervision. Alessio Quaglino and Jost Reinhold for their help in implementing the first implementation of this problem in lpSolve. Martin Weiser for his suggestion for the relocation process. Matt Sutton for his very thoughtful explanations on how to interact with high level solvers, which led to implementing maxcovr in lpsolve, glpk, and gurobi. And Alex Simmons, for teaching me how to write better C++ code. 
