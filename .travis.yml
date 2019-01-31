@@ -5,9 +5,8 @@ sudo: false
 cache: packages
 
 # packages needed in the builds
-r_github_packages:
-  - rstudio/leaflet
-  - hadley/modelr
+# r_github_packages:
+#  - rstudio/leaflet
 
 env:
   global:
