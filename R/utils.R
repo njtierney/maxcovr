@@ -24,7 +24,7 @@ print.maxcovr_relocation <- function(x, ...){
         sprintf("\n%s:     %s", model_input[[7]], user_input[[7]]),
         sprintf("\n%s:        %s", model_input[[8]], user_input[[8]]),
         sprintf("\n%s:            %s", model_input[[9]], user_input[[9]]),
-        "\n-----------------------------------------"
+        "\n-----------------------------------------\n"
     )
 
 }
@@ -66,7 +66,7 @@ summary.maxcovr_relocation <- function(object, ...){
         paste(deparse(object$model_coverage[[1]]$install_cost)),
         "\n    Removal: ",
         paste(deparse(object$model_coverage[[1]]$cost_removal)),
-        "\n---------------------------------------"
+        "\n---------------------------------------\n"
     )
 
 }
@@ -89,7 +89,7 @@ print.maxcovr <- function(x, ...){
         sprintf("\n%s:   %s", model_input[[5]], user_input[[5]]),
         sprintf("\n%s:           %s", model_input[[6]], user_input[[6]]),
         sprintf("\n%s:            %s", model_input[[7]], user_input[[7]]),
-        "\n-------------------------------------------"
+        "\n-------------------------------------------\n"
     )
 
 }
@@ -122,7 +122,7 @@ summary.maxcovr <- function(object, ...){
         sprintf("\n    SD:          %s (%s)",
                 round(object$model_coverage[[1]]$dist_sd,0),
                 round(object$existing_coverage[[1]]$dist_sd,0)),
-        "\n-------------------------------------------"
+        "\n-------------------------------------------\n"
     )
 
 }

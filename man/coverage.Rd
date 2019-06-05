@@ -27,7 +27,7 @@ In the york building and york crime context, writing
 \code{nearest(york_crime,york)} reads as "find the nearest crime in york to
 each building in york, and returns a dataframe with every building in
 york, the nearest york_crime to each building, and the distance in
-metres between the two.
+metres between the two."
 }
 \examples{
 
