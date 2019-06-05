@@ -1,3 +1,9 @@
+# maxcovr 0.1.3.9200 (2019-06-05)
+
+# Minor changes
+
+* Update to use `dplyr::n()` instead of just `n()`.
+
 # maxcovr 0.1.3.9100 (2018-07-18)
 
 # Minor Changes

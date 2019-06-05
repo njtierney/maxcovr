@@ -66,8 +66,8 @@ nearest <- function(nearest_df,
     # this would all break apart if the rows were differently arranged.
 
     # create some IDs to join by
-    to_df_id <- to_df %>% dplyr::mutate(to_id = 1:n())
-    nearest_df_id <- nearest_df %>% dplyr::mutate(nearest_id = 1:n())
+    to_df_id <- to_df %>% dplyr::mutate(to_id = 1:dplyr::n())
+    nearest_df_id <- nearest_df %>% dplyr::mutate(nearest_id = 1:dplyr::n())
 
     nearest_to_dist_df <- dist_df %>%
         dplyr::left_join(to_df_id,

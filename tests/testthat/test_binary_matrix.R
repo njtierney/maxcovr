@@ -21,12 +21,12 @@ facility <- dplyr::mutate(york, key = 1) %>%
     dplyr::rename(lat_facility = lat,
                   long_facility = long) %>%
     # create an ID for each row
-    dplyr::mutate(facility_id = 1:n())
+    dplyr::mutate(facility_id = 1:dplyr::n())
 
 user <- dplyr::mutate(york_crime, key = 1) %>%
     dplyr::rename(lat_user = lat,
                   long_user = long) %>%
-    dplyr::mutate(user_id = 1:n())
+    dplyr::mutate(user_id = 1:dplyr::n())
 
 my_bin_dplyr <- user %>%
     dplyr::left_join(facility,

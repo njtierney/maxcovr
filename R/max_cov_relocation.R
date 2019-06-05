@@ -178,7 +178,7 @@ max_coverage_relocation <- function(existing_facility = NULL,
         dplyr::filter(distance > distance_cutoff) # 100m is distance_cutoff
 
     # give user an index
-    user <- user %>% dplyr::mutate(user_id = 1:n())
+    user <- user %>% dplyr::mutate(user_id = 1:dplyr::n())
 
     # join them, to create the "not covered" set of data
     user_not_covered <- dat_nearest_no_cov %>%

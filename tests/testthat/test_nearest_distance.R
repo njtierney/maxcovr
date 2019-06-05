@@ -17,12 +17,12 @@ facility <- dplyr::mutate(york, key = 1) %>%
     dplyr::rename(lat_facility = lat,
                   long_facility = long) %>%
     # create an ID for each row
-    dplyr::mutate(facility_id = 1:n())
+    dplyr::mutate(facility_id = 1:dplyr::n())
 
 user <- dplyr::mutate(york_crime, key = 1) %>%
     dplyr::rename(lat_user = lat,
                   long_user = long) %>%
-    dplyr::mutate(user_id = 1:n())
+    dplyr::mutate(user_id = 1:dplyr::n())
 
 near_dplyr <- user %>%
     dplyr::left_join(facility,
@@ -36,7 +36,7 @@ near_dplyr <- user %>%
     dplyr::arrange(distance) %>%
     dplyr::group_by(user_id) %>%
     # find those that are closest to each other
-    dplyr::mutate(rank_distance = 1:n()) %>%
+    dplyr::mutate(rank_distance = 1:dplyr::n()) %>%
     dplyr::ungroup() %>%
     dplyr::filter(rank_distance == 1) %>%
     # drop the rank_distance

@@ -41,12 +41,12 @@ facility_user_dist <- function(facility,
         dplyr::rename(lat_facility = lat,
                       long_facility = long) %>%
         # create an ID for each row
-        dplyr::mutate(facility_id = 1:n())
+        dplyr::mutate(facility_id = 1:dplyr::n())
 
     user <- dplyr::mutate(user, key = 1) %>%
         dplyr::rename(lat_user = lat,
                       long_user = long) %>%
-        dplyr::mutate(user_id = 1:n())
+        dplyr::mutate(user_id = 1:dplyr::n())
 
     dist_df <- user %>%
         dplyr::left_join(facility,
@@ -68,7 +68,7 @@ facility_user_dist <- function(facility,
             dplyr::arrange(distance) %>%
             dplyr::group_by(user_id) %>%
             # find those closest to each other
-            dplyr::mutate(rank_distance = 1:n()) %>%
+            dplyr::mutate(rank_distance = 1:dplyr::n()) %>%
             dplyr::ungroup() %>%
             dplyr::filter(rank_distance == 1) %>%
             dplyr::select(-rank_distance) %>%
@@ -83,7 +83,7 @@ facility_user_dist <- function(facility,
         dist_df <- dist_df %>%
             dplyr::group_by(facility_id) %>%
             dplyr::arrange(distance) %>%
-            dplyr::mutate(rank_distance = 1:n()) %>%
+            dplyr::mutate(rank_distance = 1:dplyr::n()) %>%
             dplyr::ungroup() %>%
             dplyr::filter(rank_distance == 1) %>%
             dplyr::select(-rank_distance) %>%
