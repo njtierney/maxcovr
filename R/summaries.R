@@ -108,7 +108,7 @@ summary_mc_cv <- function(model,
 #'   `nearest(york_crime,york)` reads as "find the nearest crime in york to
 #'   each building in york, and returns a dataframe with every building in
 #'   york, the nearest york_crime to each building, and the distance in
-#'   metres between the two.
+#'   metres between the two."
 #'
 #' @param nearest_df dataframe containing latitude and longitude
 #' @param to_df dataframe containing latitude and longitude

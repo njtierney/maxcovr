@@ -14,7 +14,7 @@ Description: Solving the "maximal covering location problem" as described by
 Depends:
     R (>= 3.2.2)
 License: GPL-3
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.1
 LazyData: true
 ByteCompile: TRUE
 URL: https://github.com/njtierney/maxcovr
@@ -37,5 +37,6 @@ Suggests: testthat,
     modelr,
     leaflet,
     ggplot2
+Encoding: UTF-8
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
