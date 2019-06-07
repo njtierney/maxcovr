@@ -31,6 +31,12 @@ env:
 #   - R -e "install.packages('remotes'); suppressWarnings(remotes::install_deps(dependencies = TRUE))"
 #   - R -e "install.packages(c('covr', 'rmarkdown', 'testthat'))"
 
+
+addons:
+  apt:
+    packages:
+      - r-cran-rglpk
+
 after_success:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then Rscript -e 'covr::codecov()'; fi;
 
