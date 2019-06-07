@@ -27,9 +27,9 @@ env:
   global:
     - _R_CHECK_FORCE_SUGGESTS_=FALSE
 
-install:
-  - R -e "install.packages('remotes'); suppressWarnings(remotes::install_deps(dependencies = TRUE))"
-  - R -e "install.packages(c('covr', 'rmarkdown', 'testthat'))"
+# install:
+#   - R -e "install.packages('remotes'); suppressWarnings(remotes::install_deps(dependencies = TRUE))"
+#   - R -e "install.packages(c('covr', 'rmarkdown', 'testthat'))"
 
 after_success:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then Rscript -e 'covr::codecov()'; fi;
