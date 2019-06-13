@@ -67,7 +67,7 @@ The purpose of the game is to build towers in places so that they are within 100
 
 This can be illustrated with the following graphic, where the red circles indicate the current coverage of the building locations, so those blue crimes within the circles are within the coverage.
 
-```{r leaflet, echo = FALSE}
+```{r leaflet}
 
 library(leaflet)
 
@@ -82,7 +82,6 @@ leaflet() %>%
                opacity = 0.8,
                weight = 2,
                color = "coral") %>%
-    # addTiles() %>%
     addProviderTiles("CartoDB.Positron") %>%
     setView(lng = median(york$long),
             lat = median(york$lat),
@@ -92,7 +91,7 @@ leaflet() %>%
 
 Currently the coverage looks alright, but let's verify the coverage using the `nearest` function. `nearest` takes two dataframes and returns the nearest lat/long coords from the first dataframe to the second dataframe, along with the distances between them and the appropriate columns from the building dataframe.
 
-```{r}
+```{r print-york-selected-nearest-crime}
 
 dat_dist <- york_selected %>% nearest(york_crime)
 
@@ -102,7 +101,7 @@ head(dat_dist)
 
 You can instead return a dataframe which has every building in the rows, and the nearest crime to the building, by simply changing the order.
 
-```{r}
+```{r print-york-crime-nearest-selected}
 
 dat_dist_bldg <- york_crime %>% nearest(york_selected)
 head(dat_dist_bldg)
@@ -123,7 +122,7 @@ This tells us that out of all the crime, 18.68% of it is within 100m, 339 crimes
 
 Say then we want to add another 20 surveillance towers, but we want to use the best 20, we use `max_coverage`.
 
-```{r}
+```{r show-time-taken-maxcovr}
 
 system.time(
 # mc_20 <- max_coverage(A = dat_dist_indic,
@@ -138,7 +137,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
 
 `max_coverage` actually returns a dataframe of lists.
 
-```{r}
+```{r print-mc-20}
 mc_20
 ```
 
@@ -158,7 +157,7 @@ Important features here of this dataframe are:
 One can also use `map` from `purrr` to fit many different configurations of `n_added`.
 (Future work will look into allowing `n_added` to take a vector of arguments).
 
-```{r}
+```{r run-many-maxcovr}
 library(purrr)
 n_add_vec <- c(20, 40, 60, 80, 100)
 
@@ -175,7 +174,7 @@ map_mc_model <- map_df(.x = n_add_vec,
 
 This returns a list of dataframes, which we can bind together like so:
 
-```{r}
+```{r bind-results-rows}
 
 map_cov_results <- bind_rows(map_mc_model$model_coverage)
 
@@ -183,7 +182,7 @@ map_cov_results <- bind_rows(map_mc_model$model_coverage)
 
 We can then visualise the effect on coverage:
 
-```{r}
+```{r vis-coverage}
 library(ggplot2)
 bind_rows(map_mc_model$existing_coverage[[1]],
           map_cov_results) %>%
@@ -208,7 +207,7 @@ You can read more about the use of `max_coverage`, covering topics like cross va
 I will be focussing on making `maxcovr` work well within the `tidyverse`. This includes providing sensible standard summaries using key function verbs from `broom`, adding exploratory plots, improving speed using Rcpp, and allowing users to select the solver they want to use.
 
 
-```{r}
+```{r testing, echo = FALSE}
 # 
 # n_add_vec <- c(20,40)
 # 

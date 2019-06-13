@@ -89,11 +89,30 @@ help us choose ideal locations to place towers.
 
 This can be illustrated with the following graphic, where the red
 circles indicate the current coverage of the building locations, so
-those blue crimes within the circles are within the
-    coverage.
+those blue crimes within the circles are within the coverage.
 
-    #> Assuming "long" and "lat" are longitude and latitude, respectively
-    #> Assuming "long" and "lat" are longitude and latitude, respectively
+``` r
+
+library(leaflet)
+
+leaflet() %>%
+    addCircleMarkers(data = york, 
+                     radius = 1,
+                     color = "steelblue") %>%
+    addCircles(data = york_selected, 
+               radius = 100,
+               stroke = TRUE,
+               fill = NULL,
+               opacity = 0.8,
+               weight = 2,
+               color = "coral") %>%
+    addProviderTiles("CartoDB.Positron") %>%
+    setView(lng = median(york$long),
+            lat = median(york$lat),
+            zoom = 15)
+#> Assuming "long" and "lat" are longitude and latitude, respectively
+#> Assuming "long" and "lat" are longitude and latitude, respectively
+```
 
 ![](README-figs/leaflet-1.png)<!-- -->
 
@@ -117,7 +136,7 @@ head(dat_dist)
 #> 4     4         11    286.  anti-so… eb53e09ae46a… 2016…   54.0   -1.09
 #> 5     5         25    536.  anti-so… 6139f131b724… 2016…   54.0   -1.08
 #> 6     6         20    160.  anti-so… d8de26d5af47… 2016…   54.0   -1.08
-#> # ... with 14 more variables: street_id <chr>, street_name <chr>,
+#> # … with 14 more variables: street_id <chr>, street_name <chr>,
 #> #   context <chr>, id <chr>, location_type <chr>, location_subtype <chr>,
 #> #   outcome_status <chr>, long_nearest <dbl>, lat_nearest <dbl>,
 #> #   object_id <int>, desig_id <chr>, pref_ref <int>, name <chr>,
@@ -140,7 +159,7 @@ head(dat_dist_bldg)
 #> 4     4        273     44.3   -1.08   54.0      3461 DYO583     464427
 #> 5     5        908     26.5   -1.08   54.0      3460 DYO916     463764
 #> 6     6        495    326.    -1.13   54.0      3450 DYO1525    328614
-#> # ... with 14 more variables: name <chr>, grade <chr>, category <chr>,
+#> # … with 14 more variables: name <chr>, grade <chr>, category <chr>,
 #> #   persistent_id <chr>, date <chr>, lat_nearest <dbl>,
 #> #   long_nearest <dbl>, street_id <chr>, street_name <chr>, context <chr>,
 #> #   id <chr>, location_type <chr>, location_subtype <chr>,
@@ -181,7 +200,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.070   0.119   1.228
+#>   1.185   0.125   1.346
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -240,7 +259,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>   4.585   0.343   4.945
+#>   5.079   0.732   5.884
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -263,7 +282,7 @@ bind_rows(map_mc_model$existing_coverage[[1]],
     theme_minimal()
 ```
 
-![](README-figs/unnamed-chunk-8-1.png)<!-- -->
+![](README-figs/vis-coverage-1.png)<!-- -->
 
 You can read more about the use of `max_coverage`, covering topics like
 cross validation in the vignette.
@@ -296,35 +315,16 @@ key function verbs from `broom`, adding exploratory plots, improving
 speed using Rcpp, and allowing users to select the solver they want to
 use.
 
-``` r
-# 
-# n_add_vec <- c(20,40)
-# 
-# system.time(
-#     mc_cv_fit_many <- 
-#         map2_df(mc_cv$train, # training set goes here
-#                 n_add_vec,
-#                 .f = ~max_coverage,
-#                 existing_facility = york_selected,
-#                 proposed_facility = york_unselected,
-#                 distance_cutoff = 100)
-# )
-# 
-# 
-# system.time(
-#     mc_cv_fit_many <- 
-#         pmap(.l = list(user = mc_cv$train, # training set goes here
-#                        n_added = n_add_vec),
-#              .f = ~max_coverage,
-#              existing_facility = york_selected,
-#              proposed_facility = york_unselected,
-#              distance_cutoff = 100)
-# )
-```
-
 If you have any suggestions, please [file an
 issue](http://www.github.com/njtierney/maxcovr/issues/new) and I will
 get to it as soon as I can.
+
+# Code of Conduct
+
+Please note that this project is released with a [Contributor Code of
+Conduct](.github/CODE_OF_CONDUCT.md).
+
+By participating in this project you agree to abide by its terms.
 
 # Acknowledgements
 
