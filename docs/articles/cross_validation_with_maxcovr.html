@@ -150,7 +150,7 @@
 <a class="sourceLine" id="cb9-9" title="9">                                   <span class="dt">distance_cutoff =</span> <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb9-10" title="10">)</a></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   3.811   0.471   4.337</code></pre>
+##   3.536   0.423   3.978</code></pre>
 <p>Then we can use the <code>summary_mc_cv</code> function to extract out the summaries from each fold. This summary takes the facilities placed using the training set of users, and then takes the test set of users and counts what percent of these are being covered by the training model.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">summarised_cv &lt;-<span class="st"> </span><span class="kw"><a href="../reference/summary_mc_cv.html">summary_mc_cv</a></span>(mc_cv_fit, mc_cv)</a>
 <a class="sourceLine" id="cb11-2" title="2"></a>
@@ -172,56 +172,56 @@
 <td align="right">20</td>
 <td align="left">1</td>
 <td align="right">100</td>
-<td align="right">40</td>
-<td align="right">0.1101928</td>
-<td align="right">323</td>
-<td align="right">0.8898072</td>
-<td align="right">1080.533</td>
-<td align="right">1432.768</td>
+<td align="right">58</td>
+<td align="right">0.1597796</td>
+<td align="right">305</td>
+<td align="right">0.8402204</td>
+<td align="right">1065.714</td>
+<td align="right">1382.361</td>
 </tr>
 <tr class="even">
 <td align="right">20</td>
 <td align="left">2</td>
 <td align="right">100</td>
-<td align="right">48</td>
-<td align="right">0.1322314</td>
-<td align="right">315</td>
-<td align="right">0.8677686</td>
-<td align="right">1189.757</td>
-<td align="right">1591.785</td>
+<td align="right">45</td>
+<td align="right">0.1239669</td>
+<td align="right">318</td>
+<td align="right">0.8760331</td>
+<td align="right">1175.605</td>
+<td align="right">1604.221</td>
 </tr>
 <tr class="odd">
 <td align="right">20</td>
 <td align="left">3</td>
 <td align="right">100</td>
-<td align="right">51</td>
-<td align="right">0.1404959</td>
-<td align="right">312</td>
-<td align="right">0.8595041</td>
-<td align="right">1237.125</td>
-<td align="right">1551.386</td>
+<td align="right">37</td>
+<td align="right">0.1019284</td>
+<td align="right">326</td>
+<td align="right">0.8980716</td>
+<td align="right">1325.302</td>
+<td align="right">1703.502</td>
 </tr>
 <tr class="even">
 <td align="right">20</td>
 <td align="left">4</td>
 <td align="right">100</td>
-<td align="right">50</td>
-<td align="right">0.1377410</td>
-<td align="right">313</td>
-<td align="right">0.8622590</td>
-<td align="right">1087.978</td>
-<td align="right">1410.000</td>
+<td align="right">53</td>
+<td align="right">0.1460055</td>
+<td align="right">310</td>
+<td align="right">0.8539945</td>
+<td align="right">1024.408</td>
+<td align="right">1341.573</td>
 </tr>
 <tr class="odd">
 <td align="right">20</td>
 <td align="left">5</td>
 <td align="right">100</td>
-<td align="right">50</td>
-<td align="right">0.1381215</td>
-<td align="right">312</td>
-<td align="right">0.8618785</td>
-<td align="right">1094.707</td>
-<td align="right">1472.743</td>
+<td align="right">49</td>
+<td align="right">0.1353591</td>
+<td align="right">313</td>
+<td align="right">0.8646409</td>
+<td align="right">1104.269</td>
+<td align="right">1310.461</td>
 </tr>
 </tbody>
 </table>
@@ -247,7 +247,7 @@
 <a class="sourceLine" id="cb13-8" title="8">                                   <span class="dt">distance_cutoff =</span> <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb13-9" title="9">)</a></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   3.539   0.435   3.988</code></pre>
+##   3.329   0.412   3.745</code></pre>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(</a>
 <a class="sourceLine" id="cb15-2" title="2">    mc_cv_fit_n40 &lt;-<span class="st"> </span><span class="kw"><a href="https://purrr.tidyverse.org/reference/map.html">map_df</a></span>(mc_cv<span class="op">$</span>train,</a>
 <a class="sourceLine" id="cb15-3" title="3">                     <span class="op">~</span><span class="kw"><a href="../reference/max_coverage.html">max_coverage</a></span>(<span class="dt">existing_facility =</span> york_selected,</a>
@@ -257,7 +257,7 @@
 <a class="sourceLine" id="cb15-7" title="7">                                   <span class="dt">distance_cutoff =</span> <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb15-8" title="8">)</a></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   3.687   0.361   4.066</code></pre>
+##   3.400   0.332   3.739</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(</a>
 <a class="sourceLine" id="cb17-2" title="2">    mc_cv_fit_n60 &lt;-<span class="st"> </span><span class="kw"><a href="https://purrr.tidyverse.org/reference/map.html">map_df</a></span>(mc_cv<span class="op">$</span>train,</a>
 <a class="sourceLine" id="cb17-3" title="3">                     <span class="op">~</span><span class="kw"><a href="../reference/max_coverage.html">max_coverage</a></span>(<span class="dt">existing_facility =</span> york_selected,</a>
@@ -267,7 +267,7 @@
 <a class="sourceLine" id="cb17-7" title="7">                                   <span class="dt">distance_cutoff =</span> <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb17-8" title="8">)</a></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   3.645   0.347   4.018</code></pre>
+##   3.737   0.344   4.089</code></pre>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(</a>
 <a class="sourceLine" id="cb19-2" title="2">    mc_cv_fit_n80 &lt;-<span class="st"> </span><span class="kw"><a href="https://purrr.tidyverse.org/reference/map.html">map_df</a></span>(mc_cv<span class="op">$</span>train,</a>
 <a class="sourceLine" id="cb19-3" title="3">                     <span class="op">~</span><span class="kw"><a href="../reference/max_coverage.html">max_coverage</a></span>(<span class="dt">existing_facility =</span> york_selected,</a>
@@ -277,7 +277,7 @@
 <a class="sourceLine" id="cb19-7" title="7">                                   <span class="dt">distance_cutoff =</span> <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb19-8" title="8">)</a></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   3.390   0.458   3.901</code></pre>
+##   3.665   0.453   4.124</code></pre>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(</a>
 <a class="sourceLine" id="cb21-2" title="2">    mc_cv_fit_n100 &lt;-<span class="st"> </span><span class="kw"><a href="https://purrr.tidyverse.org/reference/map.html">map_df</a></span>(mc_cv<span class="op">$</span>train,</a>
 <a class="sourceLine" id="cb21-3" title="3">                     <span class="op">~</span><span class="kw"><a href="../reference/max_coverage.html">max_coverage</a></span>(<span class="dt">existing_facility =</span> york_selected,</a>
@@ -287,7 +287,7 @@
 <a class="sourceLine" id="cb21-7" title="7">                                   <span class="dt">distance_cutoff =</span> <span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb21-8" title="8">)</a></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   8.446   0.485   9.008</code></pre>
+##  31.324   0.593  32.095</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1">summarised_cv_n20 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/summary_mc_cv.html">summary_mc_cv</a></span>(mc_cv_fit_n20, mc_cv)</a>
 <a class="sourceLine" id="cb23-2" title="2">summarised_cv_n40 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/summary_mc_cv.html">summary_mc_cv</a></span>(mc_cv_fit_n40, mc_cv)</a>
 <a class="sourceLine" id="cb23-3" title="3">summarised_cv_n60 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/summary_mc_cv.html">summary_mc_cv</a></span>(mc_cv_fit_n60, mc_cv)</a>
