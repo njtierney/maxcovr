@@ -1,3 +1,9 @@
+url: http://naniar.njtierney.com/
+
+template:
+  params:
+    bootswatch: flatly
+
 home:
     links:
     - text: Learn more
