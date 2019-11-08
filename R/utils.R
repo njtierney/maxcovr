@@ -219,7 +219,7 @@ binary_distance_matrix <- function(facility,
                                         distance_cutoff = distance_cutoff)
     } else {
         # reduce d_proposed_user down to submitted `user_not_covered`:
-        d_proposed_user <- d_proposed_user [, user_not_covered$user_id]
+        d_proposed_user <- d_proposed_user [, user$user_id]
         d_proposed_user [is.na (d_proposed_user)] <-
             max (d_proposed_user, na.rm = TRUE)
         A <- t (d_proposed_user < distance_cutoff)
