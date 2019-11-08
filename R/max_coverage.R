@@ -18,6 +18,12 @@
 #'   you are interested in. If a number is less than distance_cutoff, it will be
 #'   1, if it is greater than it, it will be 0.
 #' @param n_added the maximum number of facilities to add.
+#' @param d_existing_user Optional distance matrix between existing facilities
+#' and users. Default distances are direct (geospherical ellipsoidal) distances;
+#' this allows alternative measures such as street-network distances to be
+#' submitted (see Examples).
+#' @param d_proposed_user Option distance matrix between proposed facilities and
+#' users (see Examples).
 #' @param solver character "glpk" (default) or "lpSolve". "gurobi" is currently
 #'   in development, see <https://github.com/njtierney/maxcovr/issues/25>
 #'
@@ -52,12 +58,36 @@
 #' # get the summaries
 #' mc_result$summary
 #'
+#' # Example of street-network distance calculations
+#' \dontrun{
+#' library(dodgr)
+#' net <- dodgr_streetnet_sf ("york england") %>%
+#'     weight_streetnet (wt_profile = "foot")
+#'
+#' from <- match_points_to_graph (v, york_selected [, c ("long", "lat")])
+#' to <- match_points_to_graph (v, york_crime [, c ("long", "lat")])
+#' d_existing_user <- dodgr_dists (net, from = from, to = to)
+#'
+#' from <- match_points_to_graph (v, york_unselected [, c ("long", "lat")])
+#' d_proposed_user <- dodgr_dists (net, from = from, to = to)
+#'
+#' mc_result <- max_coverage(existing_facility = york_selected,
+#'                           proposed_facility = york_unselected,
+#'                           user = york_crime,
+#'                           distance_cutoff = 100,
+#'                           n_added = 20,
+#'                           d_existing_user = d_existing_user,
+#'                           d_proposed_user = d_proposed_user)
+#'
+#' }
 #' @export
 max_coverage <- function(existing_facility,
                          proposed_facility,
                          user,
                          distance_cutoff,
                          n_added,
+                         d_existing_user = NULL,
+                         d_proposed_user = NULL,
                          solver = "glpk"){
 
     # give user an ID
@@ -65,11 +95,13 @@ max_coverage <- function(existing_facility,
 
     user_not_covered <- find_users_not_covered(existing_facility,
                                                user,
-                                               distance_cutoff)
+                                               distance_cutoff,
+                                               d_existing_user = d_existing_user)
 
     A <- binary_distance_matrix(facility = proposed_facility,
                                 user = user_not_covered,
-                                distance_cutoff = distance_cutoff)
+                                distance_cutoff = distance_cutoff,
+                                d_proposed_user = d_proposed_user)
 
     colnames(A) <- 1:nrow(proposed_facility)
     user_id_list <- 1:nrow(user_not_covered)

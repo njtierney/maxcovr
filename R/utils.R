@@ -202,19 +202,28 @@ nearest_facility_distances <- function(existing_facility,
 #'   0 otherwise.
 binary_distance_matrix <- function(facility,
                                    user,
-                                   distance_cutoff){
+                                   distance_cutoff,
+                                   d_proposed_user = NULL){
 
-    facility_cpp <- facility %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
+    if (is.null (d_proposed_user)){
+        facility_cpp <- facility %>%
+            dplyr::select(lat, long) %>%
+            as.matrix()
 
-    user_cpp <- user %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
+        user_cpp <- user %>%
+            dplyr::select(lat, long) %>%
+            as.matrix()
 
-    A <- maxcovr::binary_matrix_cpp(facility = facility_cpp,
-                                    user = user_cpp,
-                                    distance_cutoff = distance_cutoff)
+        A <- maxcovr::binary_matrix_cpp(facility = facility_cpp,
+                                        user = user_cpp,
+                                        distance_cutoff = distance_cutoff)
+    } else {
+        # reduce d_proposed_user down to submitted `user_not_covered`:
+        d_proposed_user <- d_proposed_user [, user_not_covered$user_id]
+        d_proposed_user [is.na (d_proposed_user)] <-
+            max (d_proposed_user, na.rm = TRUE)
+        A <- t (d_proposed_user < distance_cutoff)
+    }
 
     return(A)
 
@@ -225,20 +234,39 @@ binary_distance_matrix <- function(facility,
 #' @param existing_facility data.frame of existing facilities
 #' @param user  data.frame of existing users
 #' @param distance_cutoff integer of distance cutoff
+#' @param d_existing_user Optional distance matrix between existing facilities
+#' and users.
 #'
 #' @return data.frame of those users not covered by current facilities
 find_users_not_covered <- function(existing_facility,
                                    user,
-                                   distance_cutoff){
+                                   distance_cutoff,
+                                   d_existing_user = NULL){
 
 
-    # make nearest dist into dataframe
-    dat_nearest_no_cov <- nearest_facility_distances(
-        existing_facility = existing_facility,
-        user = user) %>%
-        # leave only those not covered
-        dplyr::filter(distance > distance_cutoff)
+    if (is.null (d_existing_user)){
+        # make nearest dist into dataframe
+        dat_nearest_no_cov <- nearest_facility_distances(
+            existing_facility = existing_facility,
+            user = user) %>%
+            # leave only those not covered
+            dplyr::filter(distance > distance_cutoff)
 
+    } else {
+        if (nrow (d_existing) != nrow (existing_facility) |
+            ncol (d_existing) != nrow (user))
+            stop ("'d_existing_user' must have same number of rows as 'user',",
+                  " and same number of columns as 'existing_facility'")
+
+        d_existing_user [is.na(d_existing_user)] <-
+            max(d_existing_user, na.rm = TRUE)
+        index <- which(apply(d_existing_user, 2, min) > distance_cutoff)
+        nearest_facility <- t(apply(d_existing_user [, index], 2,
+                                      function(i) c(which.min(i), min(i))))
+        dat_nearest_no_cov <- tibble::tibble (user_id = index,
+                                    facility_id = nearest_facility[, 1],
+                                    distance = nearest_facility[, 2])
+    }
     user_not_covered <- dplyr::left_join(dat_nearest_no_cov,
                                          user,
                                          by = "user_id")

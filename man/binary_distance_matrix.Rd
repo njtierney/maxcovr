@@ -4,7 +4,8 @@
 \alias{binary_distance_matrix}
 \title{(Internal) Create a binary distance matrix}
 \usage{
-binary_distance_matrix(facility, user, distance_cutoff)
+binary_distance_matrix(facility, user, distance_cutoff,
+  d_proposed_user = NULL)
 }
 \arguments{
 \item{facility}{data.frame of facilities}
