@@ -196,6 +196,8 @@ nearest_facility_distances <- function(existing_facility,
 #' @param facility data.frame of facilities
 #' @param user data.frame of users
 #' @param distance_cutoff integer of distance to use for cutoff
+#' @param d_proposed_user Option distance matrix between proposed facilities and
+#' users (see Examples).
 #'
 #' @return a logical matrix, of 1 if distance
 #'   between element i, j is less than or equal to the distance_cutoff, and

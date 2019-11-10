@@ -13,6 +13,9 @@ binary_distance_matrix(facility, user, distance_cutoff,
 \item{user}{data.frame of users}
 
 \item{distance_cutoff}{integer of distance to use for cutoff}
+
+\item{d_proposed_user}{Option distance matrix between proposed facilities and
+users (see Examples).}
 }
 \value{
 a logical matrix, of 1 if distance
