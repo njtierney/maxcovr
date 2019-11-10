@@ -17,11 +17,11 @@
 #' @param coverage_distance numeric indicating the coverage level for the
 #'   facilities to be within in metres to a user. Default value is 100 metres.
 #' @param nearest character Can be "facility", "user", and "both". Defaults to
-#'   "facility". When set to "facility", returns a dataframe where every row is
-#'   every crime, and the closest building to each crime. When set to "user",
-#'   returns a dataframe where every row is every building, and the closest
-#'   crime to each building. set to "both", which will return every pairwise
-#'   combination of distances. Be careful whenDefault is "facility"
+#'   "facility". When set to "facility", returns a dataframe where every row
+#'   refers to every user, and the closest facility to each user. When set to
+#'   "user", it returns a dataframe where every row is every facility, and the
+#'   closest user to each facility. When set to "both", which will return every
+#'   pairwise combination of distances. Be careful when default is "facility".
 #'
 #' @return a data frame containing the two datasets joined together with columns
 #'   named facility_id, lat_facility, long_facility, user_id, lat_user,

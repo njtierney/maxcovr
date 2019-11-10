@@ -5,8 +5,16 @@ library(tidyr)
 
 context("missings in distance_matrix")
 
-facility_test_cpp <- york %>% select(lat, long) %>% as.matrix()
-user_test_cpp <- york_crime %>% select(lat, long) %>% as.matrix()
+facility_test_cpp <- york %>%
+    select(lat, long) %>%
+    slice(1:100) %>%
+    as.matrix()
+
+user_test_cpp <- york_crime %>%
+    select(lat, long) %>%
+    slice(1:100) %>%
+    as.matrix()
+
 my_dist_cpp <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
 
 testthat::test_that("There are no missing values in distance_matrix",{
@@ -17,10 +25,12 @@ context("equality of distance matrices")
 
 facility_test_cpp <- york %>%
     select(lat, long) %>%
+    slice(1:100) %>%
     as.matrix()
 
 user_test_cpp <- york_crime %>%
     select(lat, long) %>%
+    slice(1:100) %>%
     as.matrix()
 
 my_dist_cpp <- distance_matrix_cpp(facility_test_cpp, user_test_cpp)
@@ -31,12 +41,14 @@ facility <- dplyr::mutate(york, key = 1) %>%
     dplyr::rename(lat_facility = lat,
                   long_facility = long) %>%
     # create an ID for each row
-    dplyr::mutate(facility_id = 1:dplyr::n())
+    dplyr::mutate(facility_id = 1:dplyr::n()) %>%
+    slice(1:100)
 
 user <- dplyr::mutate(york_crime, key = 1) %>%
     dplyr::rename(lat_user = lat,
                   long_user = long) %>%
-    dplyr::mutate(user_id = 1:dplyr::n())
+    dplyr::mutate(user_id = 1:dplyr::n()) %>%
+    slice(1:100)
 
 my_dist_dplyr <- user %>%
     dplyr::left_join(facility,

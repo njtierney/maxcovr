@@ -5,8 +5,16 @@ library(tibble)
 library(tidyr)
 library(maxcovr)
 
-facility_test_cpp <- york %>% select(lat, long) %>% as.matrix()
-user_test_cpp <- york_crime %>% select(lat, long) %>% as.matrix()
+set.seed(2019-11-10)
+facility_test_cpp <- york %>%
+    select(lat, long) %>%
+    slice(1:100) %>%
+    as.matrix()
+
+user_test_cpp <- york_crime %>%
+    select(lat, long) %>%
+    slice(1:100) %>%
+    as.matrix()
 
 near_cpp <- nearest_facility_dist(facility = facility_test_cpp,
                                   user = user_test_cpp)
@@ -17,12 +25,14 @@ facility <- dplyr::mutate(york, key = 1) %>%
     dplyr::rename(lat_facility = lat,
                   long_facility = long) %>%
     # create an ID for each row
-    dplyr::mutate(facility_id = 1:dplyr::n())
+    dplyr::mutate(facility_id = 1:dplyr::n()) %>%
+    slice(1:100)
 
 user <- dplyr::mutate(york_crime, key = 1) %>%
     dplyr::rename(lat_user = lat,
                   long_user = long) %>%
-    dplyr::mutate(user_id = 1:dplyr::n())
+    dplyr::mutate(user_id = 1:dplyr::n()) %>%
+    slice(1:100)
 
 near_dplyr <- user %>%
     dplyr::left_join(facility,

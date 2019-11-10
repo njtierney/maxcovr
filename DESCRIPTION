@@ -36,7 +36,8 @@ Imports: lpSolve,
     magrittr,
     Rglpk
 LinkingTo: Rcpp
-Suggests: testthat,
+Suggests: 
+    testthat (>= 2.1.0),
     covr,
     gurobi,
     knitr,

@@ -5,14 +5,15 @@ library(dplyr)
 library(tibble)
 library(tidyr)
 
+set.seed(2019-11-10)
 york_selected <- york %>% dplyr::filter(grade == "I")
-york_unselected <- york %>% dplyr::filter(grade != "I")
+york_unselected <- york %>% dplyr::filter(grade != "I") %>% sample_frac(0.1)
 
 mc_result_glpk <- max_coverage(existing_facility = york_selected,
                                proposed_facility = york_unselected,
                                user = york_crime,
                                distance_cutoff = 100,
-                               n_added = 20,
+                               n_added = 10,
                                solver = "glpk")
 
 testthat::test_that("maximum coverage glpk returns the correct names",{
@@ -47,7 +48,7 @@ mc_result_lpsolve <- max_coverage(existing_facility = york_selected,
                           proposed_facility = york_unselected,
                           user = york_crime,
                           distance_cutoff = 100,
-                          n_added = 20,
+                          n_added = 10,
                           solver = "lpSolve")
 
 testthat::test_that("maximum coverage lpsolve returns the correct names",{

@@ -5,8 +5,9 @@ library(dplyr)
 library(tibble)
 library(tidyr)
 
+set.seed(2019-11-10)
 york_selected <- york %>% dplyr::filter(grade == "I")
-york_unselected <- york %>% dplyr::filter(grade != "I")
+york_unselected <- york %>% dplyr::filter(grade != "I") %>% sample_frac(0.1)
 
 mc_relocate_glpk <-
     max_coverage_relocation(existing_facility = york_selected,
