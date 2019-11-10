@@ -17,5 +17,5 @@ dataframe
 }
 \description{
 Provides summary information of the coverage, using the distance dataframe
-created by \code{maxcovr::facility_user_dist}().
+created by \code{facility_user_dist}().
 }

@@ -101,9 +101,9 @@ user_cpp <- user_not_covered %>%
     dplyr::select(lat, long) %>%
     as.matrix()
 
-A <- maxcovr::binary_matrix_cpp(facility = proposed_facility_cpp,
-                                user = user_cpp,
-                                distance_cutoff = distance_cutoff)
+A <- binary_matrix_cpp(facility = proposed_facility_cpp,
+                       user = user_cpp,
+                       distance_cutoff = distance_cutoff)
 
 Nx <- nrow(A)
 Ny <- ncol(A)
@@ -351,8 +351,8 @@ user_sum_prep <- x$existing_user %>%
     as.matrix()
 
 dist_sum_df <-
-    maxcovr::nearest_facility_dist(facility = facility_sum_prep,
-                                   user = user_sum_prep) %>%
+    nearest_facility_dist(facility = facility_sum_prep,
+                          user = user_sum_prep) %>%
     tibble::as_tibble() %>%
     dplyr::rename(user_id = V1,
                   facility_id = V2,

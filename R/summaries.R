@@ -1,7 +1,7 @@
 #' summarise_coverage
 #'
 #' Provides summary information of the coverage, using the distance dataframe
-#'   created by `maxcovr::facility_user_dist`().
+#'   created by `facility_user_dist`().
 #'
 #' @param df_dist distance matrix, as computed by facility_user_dist
 #' @param distance_cutoff the critical distance range that you would like to
@@ -83,7 +83,7 @@ summary_mc_cv <- function(model,
                       n_added, # the number of AEDs added
                       n_fold){
 
-            maxcovr::nearest(nearest_df = facility_selected,
+            nearest(nearest_df = facility_selected,
                              to_df = test_data) %>%
                 dplyr::mutate(is_covered = (distance <= dist_cutoff)) %>%
                 dplyr::summarise(n_added = n_added,
@@ -201,7 +201,7 @@ summary_mc_cv_relocate <- function(model,
                       dist_cutoff, # the distance cutoff
                       n_added, # the number of AEDs added
                       n_fold){
-            maxcovr::nearest(nearest_df = facility_selected,
+            nearest(nearest_df = facility_selected,
                              to_df = test_data) %>%
                 dplyr::mutate(is_covered = (distance <= dist_cutoff)) %>%
                 dplyr::summarise(

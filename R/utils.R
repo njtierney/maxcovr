@@ -216,9 +216,9 @@ binary_distance_matrix <- function(facility,
             dplyr::select(lat, long) %>%
             as.matrix()
 
-        A <- maxcovr::binary_matrix_cpp(facility = facility_cpp,
-                                        user = user_cpp,
-                                        distance_cutoff = distance_cutoff)
+        A <- binary_matrix_cpp(facility = facility_cpp,
+                               user = user_cpp,
+                               distance_cutoff = distance_cutoff)
     } else {
         # reduce d_proposed_user down to submitted `user_not_covered`:
         d_proposed_user <- d_proposed_user [, user$user_id]
