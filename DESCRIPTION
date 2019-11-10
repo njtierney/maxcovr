@@ -7,7 +7,11 @@ Authors@R: c(
            family = "Tierney", 
            email = "nicholas.tierney@gmail.com",
            role = c("aut", "cre"),
-           comment = c(ORCID = "https://orcid.org/0000-0003-1460-8722"))
+           comment = c(ORCID = "https://orcid.org/0000-0003-1460-8722")),
+   person(given = "Mark", 
+          family = "Padgham", 
+          email = "mark.padgham@email.com", 
+          role = "aut")
     )
 Maintainer: Nicholas Tierney <nicholas.tierney@gmail.com>
 Description: Solving the "maximal covering location problem" as described by 
