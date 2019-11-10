@@ -8,9 +8,15 @@ NULL
 
 if (getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 
-globalVariables(c("is_installed",
+globalVariables(c("bind_rows",
+                  "distance",
+                  "d_existing",
+                  "facility_chosen",
+                  "facility_id",
+                  "is_installed",
                   "is_relocated",
                   "is_covered",
+                  "key",
                   "lat",
                   "lat.x",
                   "lat.y",
@@ -28,11 +34,7 @@ globalVariables(c("is_installed",
                   "sd",
                   "user_chosen",
                   "user_id",
-                  "distance",
                   "V1",
                   "V2",
-                  "V3",
-                  "bind_rows",
-                  "facility_chosen",
-                  "facility_id",
-                  "key"))
+                  "V3"
+                  ))
