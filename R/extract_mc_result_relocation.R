@@ -89,7 +89,7 @@ extract_mc_results_relocation <- function(x){
 
     dist_sum_df <- maxcovr::nearest_facility_dist(facility = facility_sum_prep,
                                                   user = user_sum_prep) %>%
-        dplyr::as_data_frame() %>%
+        tibble::as_tibble() %>%
         dplyr::rename(user_id = V1,
                       facility_id = V2,
                       distance = V3) %>%

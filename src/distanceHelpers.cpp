@@ -341,12 +341,12 @@ my_dist_cpp
 # my_indic_cpp <- maxcovr::facility_user_indic()
 
 
-facility_test_maxcovr <- dplyr::as_data_frame(facility_test_cpp)
+facility_test_maxcovr <- tibble::as_tibble()(facility_test_cpp)
 facility_test_maxcovr <- dplyr::rename(facility_test_maxcovr,
                                          lat = lat_facility,
                                          long = long_facility)
 
-user_test_maxcovr <- dplyr::as_data_frame(user_test_cpp)
+user_test_maxcovr <- tibble::as_tibble()(user_test_cpp)
 user_test_maxcovr <- dplyr::rename(user_test_maxcovr,
                                          lat = lat_user,
                                          long = long_user)

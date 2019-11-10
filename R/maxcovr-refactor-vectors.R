@@ -79,7 +79,7 @@ dat_nearest_dist <- nearest_facility_dist(facility = existing_facility_cpp,
 # make nearest dist into dataframe
 # leave only those not covered
 dat_nearest_no_cov <- dat_nearest_dist %>%
-    dplyr::as_data_frame() %>%
+    tibble::as_tibble() %>%
     dplyr::rename(user_id = V1,
                   facility_id = V2,
                   distance = V3) %>%
@@ -353,7 +353,7 @@ user_sum_prep <- x$existing_user %>%
 dist_sum_df <-
     maxcovr::nearest_facility_dist(facility = facility_sum_prep,
                                    user = user_sum_prep) %>%
-    dplyr::as_data_frame() %>%
+    tibble::as_tibble() %>%
     dplyr::rename(user_id = V1,
                   facility_id = V2,
                   distance = V3) %>%

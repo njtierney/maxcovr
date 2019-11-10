@@ -171,7 +171,7 @@ max_coverage_relocation <- function(existing_facility = NULL,
     # make nearest dist into dataframe
     # leave only those not covered
     dat_nearest_no_cov <- dat_nearest_dist %>%
-        dplyr::as_data_frame() %>%
+        tibble::as_tibble() %>%
         dplyr::rename(user_id = V1,
                       facility_id = V2,
                       distance = V3) %>%
