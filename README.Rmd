@@ -29,13 +29,9 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 # How to Install
 
-*warning: maxcovr is still undergoing development and testing*
-
 ```{r install, eval = FALSE}
-
 # install.packages("devtools")
 devtools::install_github("njtierney/maxcovr")
-
 ```
 
 # Using maxcovr

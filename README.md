@@ -36,10 +36,7 @@ abide by its terms.
 
 # How to Install
 
-*warning: maxcovr is still undergoing development and testing*
-
 ``` r
-
 # install.packages("devtools")
 devtools::install_github("njtierney/maxcovr")
 ```
@@ -200,7 +197,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   1.185   0.125   1.346
+#>   2.318   0.129   2.469
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -259,7 +256,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>   5.079   0.732   5.884
+#>  10.567   0.758  11.421
 ```
 
 This returns a list of dataframes, which we can bind together like so:
