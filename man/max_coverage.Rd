@@ -5,7 +5,8 @@
 \title{Solve the Maximal Covering Location Problem}
 \usage{
 max_coverage(existing_facility, proposed_facility, user, distance_cutoff,
-  n_added, solver = "glpk")
+  n_added, d_existing_user = NULL, d_proposed_user = NULL,
+  solver = "glpk")
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are
@@ -22,6 +23,14 @@ you are interested in. If a number is less than distance_cutoff, it will be
 1, if it is greater than it, it will be 0.}
 
 \item{n_added}{the maximum number of facilities to add.}
+
+\item{d_existing_user}{Optional distance matrix between existing facilities
+and users. Default distances are direct (geospherical ellipsoidal) distances;
+this allows alternative measures such as street-network distances to be
+submitted (see Examples).}
+
+\item{d_proposed_user}{Option distance matrix between proposed facilities and
+users (see Examples).}
 
 \item{solver}{character "glpk" (default) or "lpSolve". "gurobi" is currently
 in development, see \url{https://github.com/njtierney/maxcovr/issues/25}}
@@ -67,4 +76,26 @@ mc_result$user_affected
 # get the summaries
 mc_result$summary
 
+# Example of street-network distance calculations
+\dontrun{
+library(dodgr)
+net <- dodgr_streetnet_sf ("york england") \%>\%
+    weight_streetnet (wt_profile = "foot")
+
+from <- match_points_to_graph (v, york_selected [, c ("long", "lat")])
+to <- match_points_to_graph (v, york_crime [, c ("long", "lat")])
+d_existing_user <- dodgr_dists (net, from = from, to = to)
+
+from <- match_points_to_graph (v, york_unselected [, c ("long", "lat")])
+d_proposed_user <- dodgr_dists (net, from = from, to = to)
+
+mc_result <- max_coverage(existing_facility = york_selected,
+                          proposed_facility = york_unselected,
+                          user = york_crime,
+                          distance_cutoff = 100,
+                          n_added = 20,
+                          d_existing_user = d_existing_user,
+                          d_proposed_user = d_proposed_user)
+
+}
 }
