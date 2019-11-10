@@ -38,13 +38,9 @@ is.maxcovr_relocation <- function(x) {
 nearest_facility_distances <- function(existing_facility,
                                        user){
 
-    existing_facility_cpp <- existing_facility %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
+    existing_facility_cpp <- mc_mat_prep(existing_facility)
 
-    user_cpp <- user %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
+    user_cpp <- mc_mat_prep(user)
 
     dat_nearest_dist <-
         nearest_facility_dist(facility = existing_facility_cpp,
@@ -79,13 +75,9 @@ binary_distance_matrix <- function(facility,
                                    d_proposed_user = NULL){
 
     if (is.null (d_proposed_user)){
-        facility_cpp <- facility %>%
-            dplyr::select(lat, long) %>%
-            as.matrix()
+        facility_cpp <- mc_mat_prep(facility)
 
-        user_cpp <- user %>%
-            dplyr::select(lat, long) %>%
-            as.matrix()
+        user_cpp <- mc_mat_prep(user)
 
         A <- binary_matrix_cpp(facility = facility_cpp,
                                user = user_cpp,
@@ -145,4 +137,10 @@ find_users_not_covered <- function(existing_facility,
                                          by = "user_id")
 
     return(user_not_covered)
+}
+
+
+
+mc_mat_prep <- function(data){
+    as.matrix(data[ , c("lat", "long")])
 }

@@ -80,12 +80,9 @@ extract_mc_results_relocation <- function(x){
     # NOTE: I really should use `nearest`
     facility_sum_prep <- dplyr::bind_rows(facility_selected,
                                           x$existing_facility) %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
+        mc_mat_prep()
 
-    user_sum_prep <- x$existing_user %>%
-        dplyr::select(lat, long) %>%
-        as.matrix()
+    user_sum_prep <- mc_mat_prep(x$existing_user)
 
     dist_sum_df <- nearest_facility_dist(facility = facility_sum_prep,
                                          user = user_sum_prep) %>%

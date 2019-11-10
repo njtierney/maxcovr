@@ -71,13 +71,6 @@ max_coverage_relocation <- function(existing_facility = NULL,
 # or there should be a function to find the likely lat/long values
 # as in leaflet
 
-    mc_mat_prep <- function(data){
-        dplyr::select(data,
-                      lat,
-                      long) %>%
-            as.matrix()
-    }
-
     existing_facility_cpp <-
         binary_matrix_cpp(facility = mc_mat_prep(existing_facility),
                           user = mc_mat_prep(user),

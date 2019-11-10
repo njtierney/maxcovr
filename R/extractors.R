@@ -129,12 +129,10 @@ augment_user <- function(facilities_selected,
 
     # bind the selected and existing facilities together
     all_facilities <- dplyr::bind_rows({
-        facilities_selected %>%
-            dplyr::select(lat,long) %>%
+        facilities_selected[ , c("lat", "long")] %>%
             dplyr::mutate(type = "selected")
     },{
-        existing_facilities %>%
-            dplyr::select(lat,long) %>%
+        existing_facilities[ , c("lat", "long")] %>%
             dplyr::mutate(type = "existing")
     })
 
