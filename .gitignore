@@ -6,3 +6,4 @@
 inst/doc
 *.DS_Store
 *.log
+maxcovr_test/*
