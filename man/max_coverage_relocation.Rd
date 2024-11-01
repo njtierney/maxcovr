@@ -4,9 +4,17 @@
 \alias{max_coverage_relocation}
 \title{Maximum Coverage when considering relocation}
 \usage{
-max_coverage_relocation(existing_facility = NULL, proposed_facility,
-  user, distance_cutoff, cost_install, cost_removal, cost_total,
-  solver = "lpSolve", return_early = FALSE)
+max_coverage_relocation(
+  existing_facility = NULL,
+  proposed_facility,
+  user,
+  distance_cutoff,
+  cost_install,
+  cost_removal,
+  cost_total,
+  solver = "lpSolve",
+  return_early = FALSE
+)
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are

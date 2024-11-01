@@ -4,7 +4,8 @@
 \name{york_crime}
 \alias{york_crime}
 \title{York Crime Locations.}
-\format{A data frame with variables: \code{category}, \code{persistent_id},
+\format{
+A data frame with variables: \code{category}, \code{persistent_id},
 \code{date}, \code{lat}, \code{long}, \code{street_id}, \code{street_name}, \code{context}, \code{id}, \code{location_type}, \code{location_subtype}, and \code{outcome_status}.
 '
 \itemize{
@@ -20,7 +21,8 @@
 \item location_type: The type of the location. Either Force or BTP: Force indicates a normal police force location; BTP indicates a British Transport Police location. BTP locations fall within normal police force boundaries.
 \item location_subtype: For BTP locations, the type of location at which this crime was recorded.
 \item outcome_status: The category and date of the latest recorded outcome for the crime
-}}
+}
+}
 \usage{
 york_crime
 }

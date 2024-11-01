@@ -4,9 +4,16 @@
 \alias{max_coverage}
 \title{Solve the Maximal Covering Location Problem}
 \usage{
-max_coverage(existing_facility, proposed_facility, user, distance_cutoff,
-  n_added, d_existing_user = NULL, d_proposed_user = NULL,
-  solver = "glpk")
+max_coverage(
+  existing_facility,
+  proposed_facility,
+  user,
+  distance_cutoff,
+  n_added,
+  d_existing_user = NULL,
+  d_proposed_user = NULL,
+  solver = "glpk"
+)
 }
 \arguments{
 \item{existing_facility}{data.frame containing the facilities that are
