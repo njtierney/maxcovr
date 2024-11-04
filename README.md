@@ -3,32 +3,33 @@
 
 # maxcovr
 
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI
-Build
-Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)[![Coverage
-Status](https://img.shields.io/codecov/c/github/njtierney/maxcovr/master.svg)](https://codecov.io/github/njtierney/maxcovr?branch=master)
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/njtierney/maxcovr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/njtierney/maxcovr/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/njtierney/maxcovr/graph/badge.svg)](https://app.codecov.io/gh/njtierney/maxcovr)
+<!-- badges: end -->
 
 maxcovr was created to make it easy for a non expert to correctly solve
 the maximum covering location problem described by
 [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf).
 Implementations of this problem (such as [optimimum AED
-placement](https://www.resuscitationjournal.com/article/S0300-9572\(18\)30065-0/fulltext))
+placement](https://www.resuscitationjournal.com/article/S0300-9572(18)30065-0/fulltext))
 may use commercial software such as AMPL, Gurobi, or CPLEX, which
 require an expensive license, or use open source licenses but not
-provide source code to the analysis performed (e.g.,
-[Bonnet 2014](http://www.sciencedirect.com/science/article/pii/S0360835215003927))
+provide source code to the analysis performed (e.g., [Bonnet
+2014](http://www.sciencedirect.com/science/article/pii/S0360835215003927))
 This builds a substantial barrier to implement and reproduce these
 analyses.
 
 maxcovr was created to make results easy to implement, reproduce, and
 extend by using:
 
-  - R, a free and open source language
-  - Open source solvers, glpk and lpSolve, that can be used on Linux,
-    Windows, and OSX.
-  - Real-world, open source example data.
-  - Tidyverse principles to make it easy to use and reason with.
+- R, a free and open source language
+- Open source solvers, glpk and lpSolve, that can be used on Linux,
+  Windows, and OSX.
+- Real-world, open source example data.
+- Tidyverse principles to make it easy to use and reason with.
 
 Please note that this project is released with a [Contributor Code of
 Conduct](CONDUCT.md). By participating in this project you agree to
@@ -51,11 +52,11 @@ we need to place crime surveillance towers to detect crime.
 
 We have two datasets, `york`, and `york_crime`:
 
-  - `york` contains listed building GPS locations in the city of York,
-    provided by the city of york
-  - `york_crime` contains a set of crime data from the [`ukpolice`
-    package](https://www.github.com/njtierney/ukpolice), containing
-    crime data from September 2016.
+- `york` contains listed building GPS locations in the city of York,
+  provided by the city of york
+- `york_crime` contains a set of crime data from the [`ukpolice`
+  package](https://www.github.com/njtierney/ukpolice), containing crime
+  data from September 2016.
 
 In this game we already have a few towers built, which are placed on top
 of the listed buildings with a grade of I. We will call this dataset
@@ -122,22 +123,29 @@ columns from the building dataframe.
 ``` r
 
 dat_dist <- york_selected %>% nearest(york_crime)
+#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
+#> `.name_repair` is omitted as of tibble 2.0.0.
+#> ℹ Using compatibility `.name_repair`.
+#> ℹ The deprecated feature was likely used in the maxcovr package.
+#>   Please report the issue at <https://github.com/njtierney/maxcovr/issues>.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 
 head(dat_dist)
-#> # A tibble: 6 x 22
-#>   to_id nearest_id distance category persistent_id date  lat_to long_to
-#>   <dbl>      <dbl>    <dbl> <chr>    <chr>         <chr>  <dbl>   <dbl>
-#> 1     1         66    166.  anti-so… 62299914865f… 2016…   54.0   -1.08
-#> 2     2         48   2087.  anti-so… 4e34f53d247f… 2016…   54.0   -1.12
-#> 3     3         55     68.2 anti-so… 2a0062f3dfac… 2016…   54.0   -1.08
-#> 4     4         11    286.  anti-so… eb53e09ae46a… 2016…   54.0   -1.09
-#> 5     5         25    536.  anti-so… 6139f131b724… 2016…   54.0   -1.08
-#> 6     6         20    160.  anti-so… d8de26d5af47… 2016…   54.0   -1.08
-#> # … with 14 more variables: street_id <chr>, street_name <chr>,
-#> #   context <chr>, id <chr>, location_type <chr>, location_subtype <chr>,
+#> # A tibble: 6 × 22
+#>   to_id nearest_id distance category          persistent_id date  lat_to long_to
+#>   <dbl>      <dbl>    <dbl> <chr>             <chr>         <chr>  <dbl>   <dbl>
+#> 1     1         66    166.  anti-social-beha… 62299914865f… 2016…   54.0   -1.08
+#> 2     2         48   2087.  anti-social-beha… 4e34f53d247f… 2016…   54.0   -1.12
+#> 3     3         55     68.2 anti-social-beha… 2a0062f3dfac… 2016…   54.0   -1.08
+#> 4     4         11    286.  anti-social-beha… eb53e09ae46a… 2016…   54.0   -1.09
+#> 5     5         25    536.  anti-social-beha… 6139f131b724… 2016…   54.0   -1.08
+#> 6     6         20    160.  anti-social-beha… d8de26d5af47… 2016…   54.0   -1.08
+#> # ℹ 14 more variables: street_id <chr>, street_name <chr>, context <chr>,
+#> #   id <chr>, location_type <chr>, location_subtype <chr>,
 #> #   outcome_status <chr>, long_nearest <dbl>, lat_nearest <dbl>,
-#> #   object_id <int>, desig_id <chr>, pref_ref <int>, name <chr>,
-#> #   grade <chr>
+#> #   object_id <int>, desig_id <chr>, pref_ref <int>, name <chr>, grade <chr>
 ```
 
 You can instead return a dataframe which has every building in the rows,
@@ -147,20 +155,19 @@ and the nearest crime to the building, by simply changing the order.
 
 dat_dist_bldg <- york_crime %>% nearest(york_selected)
 head(dat_dist_bldg)
-#> # A tibble: 6 x 22
-#>   to_id nearest_id distance long_to lat_to object_id desig_id pref_ref
-#>   <dbl>      <dbl>    <dbl>   <dbl>  <dbl>     <int> <chr>       <int>
-#> 1     1         33     36.0   -1.09   54.0      6144 DYO1195    463280
-#> 2     2        183     35.8   -1.09   54.0      6142 DYO1373    462942
-#> 3     3        503     95.3   -1.08   54.0      3463 DYO365     464845
-#> 4     4        273     44.3   -1.08   54.0      3461 DYO583     464427
-#> 5     5        908     26.5   -1.08   54.0      3460 DYO916     463764
-#> 6     6        495    326.    -1.13   54.0      3450 DYO1525    328614
-#> # … with 14 more variables: name <chr>, grade <chr>, category <chr>,
-#> #   persistent_id <chr>, date <chr>, lat_nearest <dbl>,
-#> #   long_nearest <dbl>, street_id <chr>, street_name <chr>, context <chr>,
-#> #   id <chr>, location_type <chr>, location_subtype <chr>,
-#> #   outcome_status <chr>
+#> # A tibble: 6 × 22
+#>   to_id nearest_id distance long_to lat_to object_id desig_id pref_ref name     
+#>   <dbl>      <dbl>    <dbl>   <dbl>  <dbl>     <int> <chr>       <int> <chr>    
+#> 1     1         33     36.0   -1.09   54.0      6144 DYO1195    463280 GUILDHAL…
+#> 2     2        183     35.8   -1.09   54.0      6142 DYO1373    462942 BOOTHAM …
+#> 3     3        503     95.3   -1.08   54.0      3463 DYO365     464845 THE NORM…
+#> 4     4        273     44.3   -1.08   54.0      3461 DYO583     464427 CHURCH O…
+#> 5     5        908     26.5   -1.08   54.0      3460 DYO916     463764 CUMBERLA…
+#> 6     6        495    326.    -1.13   54.0      3450 DYO1525    328614 CHURCH O…
+#> # ℹ 13 more variables: grade <chr>, category <chr>, persistent_id <chr>,
+#> #   date <chr>, lat_nearest <dbl>, long_nearest <dbl>, street_id <chr>,
+#> #   street_name <chr>, context <chr>, id <chr>, location_type <chr>,
+#> #   location_subtype <chr>, outcome_status <chr>
 ```
 
 To evaluate the coverage we can use `coverage`. This reads as find the
@@ -171,7 +178,7 @@ covered by the first thing.
 ``` r
 
 coverage(york_selected, york_crime)
-#> # A tibble: 1 x 7
+#> # A tibble: 1 × 7
 #>   distance_within n_cov n_not_cov prop_cov prop_not_cov dist_avg dist_sd
 #>             <dbl> <int>     <int>    <dbl>        <dbl>    <dbl>   <dbl>
 #> 1             100   339      1475    0.187        0.813    1400.   1597.
@@ -197,7 +204,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   2.318   0.129   2.469
+#>   0.757   0.066   0.902
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -214,7 +221,7 @@ mc_20
 #> user:              york_crime 
 #> distance_cutoff:   100 
 #> n_added:           20 
-#> solver:            lpSolve 
+#> d_existing_user:            lpSolve 
 #> -------------------------------------------
 ```
 
@@ -225,19 +232,18 @@ dataframe, which makes it easier to do summaries and manipulate.
 
 Important features here of this dataframe are:
 
-  - `facility_selected`: A dataframe from `proposed_facilities`,
-    containing the facilities selected by the optimisation.
-  - `user_affected`: A dataframe from `user`, that contains the users
-    that were affected by the new optimised placement
-  - `model_coverage`: A dataframe containing summary info on the number
-    of users covered, the percentage of coverage, and the average
-    distance.
-  - `existing_coverage`: returns a similar summary dataframe the
-    original coverage, from `existing_facilities`.
-  - `summary`: returns the binded `model_coverage` and
-    `existing_coverage`.
-  - `n_added`: The number of things added
-  - `distance_cutoff`: the distance cutoff selected
+- `facility_selected`: A dataframe from `proposed_facilities`,
+  containing the facilities selected by the optimisation.
+- `user_affected`: A dataframe from `user`, that contains the users that
+  were affected by the new optimised placement
+- `model_coverage`: A dataframe containing summary info on the number of
+  users covered, the percentage of coverage, and the average distance.
+- `existing_coverage`: returns a similar summary dataframe the original
+  coverage, from `existing_facilities`.
+- `summary`: returns the binded `model_coverage` and
+  `existing_coverage`.
+- `n_added`: The number of things added
+- `distance_cutoff`: the distance cutoff selected
 
 One can also use `map` from `purrr` to fit many different configurations
 of `n_added`. (Future work will look into allowing `n_added` to take a
@@ -256,7 +262,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>  10.567   0.758  11.421
+#>   2.127   0.257   2.898
 ```
 
 This returns a list of dataframes, which we can bind together like so:
@@ -286,23 +292,23 @@ cross validation in the vignette.
 
 # Known Issues
 
-  - `max_coverage()` may take a bit of time to run, depending on your
-    data size. From initial testing, if the product of the number of
-    rows of the `proposed_facilities` and `users` exceeds 100 million,
-    it might take more than 1 minute. Of course, this may depend on the
-    structure / complexity of your data and problem.
+- `max_coverage()` may take a bit of time to run, depending on your data
+  size. From initial testing, if the product of the number of rows of
+  the `proposed_facilities` and `users` exceeds 100 million, it might
+  take more than 1 minute. Of course, this may depend on the structure /
+  complexity of your data and problem.
 
-  - The distances calculated in `maxcovr` use [haversines
-    formula](https://en.wikipedia.org/wiki/Haversine_formula), which
-    makes the assumption that the earth is a sphere and calculates the
-    greater circle distance. Whilst not wholly correct, haversine is a
-    useful approximation that is reasonable for small scale distances,
-    where the accuracy can be within metres which is what `maxcovr` was
-    initially built for. In the future `maxcovr` will use more accurate
-    distance functions provided in
-    [`geodist`](https://github.com/hypertidy/geodist), and give the user
-    control over the distance calculation used (haversines, vincenty,
-    cheap ruler, geodesic, etc).
+- The distances calculated in `maxcovr` use [haversines
+  formula](https://en.wikipedia.org/wiki/Haversine_formula), which makes
+  the assumption that the earth is a sphere and calculates the greater
+  circle distance. Whilst not wholly correct, haversine is a useful
+  approximation that is reasonable for small scale distances, where the
+  accuracy can be within metres which is what `maxcovr` was initially
+  built for. In the future `maxcovr` will use more accurate distance
+  functions provided in
+  [`geodist`](https://github.com/hypertidy/geodist), and give the user
+  control over the distance calculation used (haversines, vincenty,
+  cheap ruler, geodesic, etc).
 
 # Future Work
 
