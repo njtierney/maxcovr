@@ -4,8 +4,12 @@
 \alias{find_users_not_covered}
 \title{(Internal) Create a dataframe of the users not covered}
 \usage{
-find_users_not_covered(existing_facility, user, distance_cutoff,
-  d_existing_user = NULL)
+find_users_not_covered(
+  existing_facility,
+  user,
+  distance_cutoff,
+  d_existing_user = NULL
+)
 }
 \arguments{
 \item{existing_facility}{data.frame of existing facilities}

@@ -4,8 +4,14 @@
 \alias{nearest}
 \title{Find the nearest lat/long to another lat/long}
 \usage{
-nearest(nearest_df, to_df, nearest_lat = "lat", nearest_long = "long",
-  to_lat = "lat", to_long = "long")
+nearest(
+  nearest_df,
+  to_df,
+  nearest_lat = "lat",
+  nearest_long = "long",
+  to_lat = "lat",
+  to_long = "long"
+)
 }
 \arguments{
 \item{nearest_df}{a dataframe containing latitude and longitude}

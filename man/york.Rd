@@ -4,7 +4,8 @@
 \name{york}
 \alias{york}
 \title{York Listed Buildings.}
-\format{A data frame with seven variables: \code{long}, \code{lat},
+\format{
+A data frame with seven variables: \code{long}, \code{lat},
 \code{object_id}, \code{desig_id}, \code{pref_ref}, \code{name}, and
 \code{grade}.
 
@@ -18,7 +19,8 @@
 \item{\code{grade}}{one of the three (I, II, III) cateogories of listed buildings}
 }
 
-For further details, see \url{https://www.york.gov.uk/info/20215/conservation_and_listed_buildings/1346/listed_buildings} and \url{https://data.gov.uk/dataset/listed-buildings24/resource/8c32fb55-0e40-457f-98f9-6494503e283b}}
+For further details, see \url{https://www.york.gov.uk/info/20215/conservation_and_listed_buildings/1346/listed_buildings} and \url{https://data.gov.uk/dataset/listed-buildings24/resource/8c32fb55-0e40-457f-98f9-6494503e283b}
+}
 \usage{
 york
 }

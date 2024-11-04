@@ -58,7 +58,7 @@ extract_facility_selected <- function(solution_vector,
 #' @param A_mat A matrix
 #' @param solution_vector The vector of solutions
 #' @param user_id The IDs of the individuals
-#' @param users_not_covered # those users not covered by original AEDs
+#' @param users_not_covered those users not covered by original AEDs
 #'
 #' @return tibble taken from `users`, those who are affectd by new placements
 #'
