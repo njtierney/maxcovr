@@ -26,15 +26,16 @@ LazyData: true
 ByteCompile: TRUE
 URL: https://github.com/njtierney/maxcovr
 BugReports: https://github.com/njtierney/maxcovr/issues
-Imports: lpSolve,
+Imports: 
+    lpSolve,
     dplyr,
     tidyr,
     tibble,
     readr,
     Rcpp,
     purrr,
-    magrittr,
-    Rglpk
+    Rglpk,
+    cli
 LinkingTo: Rcpp
 Suggests: 
     testthat (>= 3.0.0),

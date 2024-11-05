@@ -158,7 +158,7 @@ extract_mc_results_relocation <- function(x){
 
         # simple summary info
         model_coverage = list(model_coverage),
-        existing_coverage_summary = list(existing_coverage_summary),
+        existing_coverage = list(existing_coverage_summary),
         summary = list(summary_coverage),
 
         # model_call stuff
