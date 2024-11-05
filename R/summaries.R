@@ -80,7 +80,7 @@ summary_mc_cv <- function(model,
         .f = function(facility_selected, # the facility selected by max_coverage
                       test_data, # the test data created by modelr
                       dist_cutoff, # the distance cutoff
-                      n_added, # the number of AEDs added
+                      n_added, # the number of facilities added
                       n_fold){
 
             mc <- nearest(nearest_df = facility_selected,
@@ -203,7 +203,7 @@ summary_mc_cv_relocate <- function(model,
         .f = function(facility_selected, # the facility selected by max_coverage
                       test_data, # the test data created by modelr
                       dist_cutoff, # the distance cutoff
-                      n_added, # the number of AEDs added
+                      n_added, # the number of facilities added
                       n_fold){
 
             mc <- nearest(nearest_df = facility_selected,

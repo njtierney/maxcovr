@@ -1,7 +1,7 @@
 #' facility_user_indic
 #'
 #' This is a data manipulation function for facility_user_dist. This function
-#'   creates a spread matrix of the distances between each ohca and each aed.
+#'   creates a spread matrix of the distances between each user and each facility.
 #'   There is an ohca_id column, and then a column for each aed_id, with a
 #'   given cell being the distance between an ohca in a row, and that column.
 #'   This distance is converted into an indicator variable, based upon whether

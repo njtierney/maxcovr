@@ -8,7 +8,7 @@
 #'   function was finding the distance from Automatic Electronic Defibrillators
 #'   (AEDs) to each Out of Hospital Cardiac Arrest (OHCA), where the locations
 #'   for AEDs and OHCAs are in separate dataframes. Currently
-#'   facifacility_user_dist makes the strict assumption that the facility and
+#'   facility_user_dist makes the strict assumption that the facility and
 #'   user dataframes have columns named aed_id, lat, and long, and ohca_id, lat,
 #'   and long. This will be updated soon.
 #'

@@ -112,9 +112,10 @@ max_coverage_relocation <- function(existing_facility = NULL,
 
     cost_relocate <- cost_install - cost_removal
 
-    # This is the gain of removing an AED from a location (as opposed to buying)
-    # existing facilities will have this cost (ncol(existing_facility_cpp)),
-    # proposed facilities don't have this cost (hence, 0s)
+    # This is the gain of removing a facility from a location (as opposed to
+    # buying) existing facilities will have this cost
+    # (ncol(existing_facility_cpp)), proposed facilities don't have this cost
+    # (hence, 0s)
     m_under_i <- c(rep(cost_relocate * -1, ncol(existing_facility_cpp)),
                    rep(0,ncol(proposed_facility_cpp)))
 
