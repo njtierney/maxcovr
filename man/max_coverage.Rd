@@ -59,10 +59,10 @@ locations to place AEDs.
 library(dplyr)
 
 # already existing locations
-york_selected <- york \%>\% filter(grade == "I")
+york_selected <- york |> filter(grade == "I")
 
 # proposed locations
-york_unselected <- york \%>\% filter(grade != "I")
+york_unselected <- york |> filter(grade != "I")
 
 mc_result <- max_coverage(existing_facility = york_selected,
                           proposed_facility = york_unselected,
@@ -86,7 +86,7 @@ mc_result$summary
 # Example of street-network distance calculations
 \dontrun{
 library(dodgr)
-net <- dodgr_streetnet_sf ("york england") \%>\%
+net <- dodgr_streetnet_sf ("york england") |>
     weight_streetnet (wt_profile = "foot")
 
 from <- match_points_to_graph (v, york_selected[, c ("long", "lat")])

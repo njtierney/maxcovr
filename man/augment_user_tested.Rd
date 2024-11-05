@@ -27,7 +27,7 @@ training set. This might be added to \code{nearest}, and may become obsolete.
 
 \dontrun{
 
-mc_cv_relocate_n100_cut \%>\%
+mc_cv_relocate_n100_cut |>
   mutate(user_nearest_test = map2(
     .x = facilities_selected,
     .y = test,

@@ -22,19 +22,19 @@ facility_user_indic <- function(df_dist,
 
     # get the distance data frame back
 
-    df_dist_indic_mat <- df_dist %>%
+    df_dist_indic_mat <- df_dist |>
         dplyr::select(user_id,
                       facility_id,
-                      distance) %>%
+                      distance) |>
         # create indicator variable whether distance is less than indicator?
         # *>* 100m is the default *<*
-        dplyr::mutate(distance_indic = (distance <= dist_indic)) %>%
-        dplyr::select(-distance) %>%
+        dplyr::mutate(distance_indic = (distance <= dist_indic)) |>
+        dplyr::select(-distance) |>
         # spread this out so we can get this in a matrix format
         # so df[1,1] is the distance between AED#1 and OHCA#1
         tidyr::spread(key = "facility_id",
                       value = "distance_indic",
-                      sep = "_") %>%
+                      sep = "_") |>
         as.matrix()
 
     return(df_dist_indic_mat)

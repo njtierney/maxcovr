@@ -3,7 +3,6 @@
 #' @name maxcovr
 #' @useDynLib maxcovr
 #' @importFrom Rcpp sourceCpp
-#' @importFrom magrittr %>%
 NULL
 
 #' @keywords internal

@@ -45,11 +45,11 @@ nearest_facility_distances <- function(existing_facility,
 
     dat_nearest_dist <-
         nearest_facility_dist(facility = existing_facility_cpp,
-                              user = user_cpp) %>%
-        tibble::as_tibble() %>%
-        dplyr::rename(user_id = V1,
-                      facility_id = V2,
-                      distance = V3)
+                              user = user_cpp) |>
+        tibble::as_tibble(.name_repair = "unique_quiet") |>
+        dplyr::rename(user_id = `...1`,
+                      facility_id = `...2`,
+                      distance = `...3`)
 
     return(dat_nearest_dist)
 
@@ -116,7 +116,7 @@ find_users_not_covered <- function(existing_facility,
         # make nearest dist into dataframe
         dat_nearest_no_cov <- nearest_facility_distances(
             existing_facility = existing_facility,
-            user = user) %>%
+            user = user) |>
             # leave only those not covered
             dplyr::filter(distance > distance_cutoff)
 

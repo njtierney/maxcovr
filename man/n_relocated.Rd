@@ -20,11 +20,11 @@ Extract the number of facilities relocated.
 
 \dontrun{
 
-mc_cv_n100_test \%>\%
+mc_cv_n100_test |>
   mutate(n_relocated = map(
     .x = existing_facility,
-    .f = n_relocated)) \%>\%
-  select(n_relocated) \%>\%
+    .f = n_relocated)) |>
+  select(n_relocated) |>
   .[[1]]
 
 }

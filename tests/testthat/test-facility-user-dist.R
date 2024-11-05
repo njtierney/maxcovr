@@ -56,9 +56,9 @@ test_that("facility_user_dist colnames are correct", {
   expect_equal(names(fud_both), fud_names)
 })
 
-# fud$distance[1:10] %>% clipr::write_clip()
-# fud_user$distance[1:10] %>% clipr::write_clip()
-# fud_both$distance[1:10] %>% clipr::write_clip()
+# fud$distance[1:10] |> clipr::write_clip()
+# fud_user$distance[1:10] |> clipr::write_clip()
+# fud_both$distance[1:10] |> clipr::write_clip()
 
 test_dist <- c(35.9538304360533,
   39.1579634183108,

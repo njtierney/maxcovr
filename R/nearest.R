@@ -30,12 +30,7 @@
 #'
 #' # you can use the pipe as well
 #'
-#' \dontrun{
-#'
-#' library(magrittr)
-#' york_crime %>% nearest(york)
-#'
-#' }
+#' york_crime |> nearest(york)
 #'
 #' @export
 nearest <- function(nearest_df,
@@ -55,11 +50,11 @@ nearest <- function(nearest_df,
     dist_mat <- nearest_facility_dist(facility = nearest_mat,
                                       user = to_mat)
 
-    dist_df <- dist_mat %>%
-        tibble::as_tibble() %>%
-        dplyr::rename(to_id = V1,
-                      nearest_id = V2,
-                      distance = V3)
+    dist_df <- dist_mat |>
+        tibble::as_tibble(.name_repair = "unique_quiet") |>
+        dplyr::rename(to_id = `...1`,
+                      nearest_id = `...2`,
+                      distance = `...3`)
 
     # there will need to be an option to add your own special ID
     # because we are sorta hard coding the IDs
@@ -69,11 +64,11 @@ nearest <- function(nearest_df,
     to_df_id <-  dplyr::mutate(to_df, to_id = 1:dplyr::n())
     nearest_df_id <- dplyr::mutate(nearest_df, nearest_id = 1:dplyr::n())
 
-    nearest_to_dist_df <- dist_df %>%
+    nearest_to_dist_df <- dist_df |>
         dplyr::left_join(to_df_id,
-                         by = "to_id") %>%
+                         by = "to_id") |>
         dplyr::left_join(nearest_df_id,
-                         by = "nearest_id") %>%
+                         by = "nearest_id") |>
         dplyr::rename(long_to = long.x,
                       lat_to = lat.x,
                       long_nearest = long.y,

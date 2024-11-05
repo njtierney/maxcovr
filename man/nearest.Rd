@@ -51,11 +51,6 @@ nearest(nearest_df = york_crime,
 
 # you can use the pipe as well
 
-\dontrun{
-
-library(magrittr)
-york_crime \%>\% nearest(york)
-
-}
+york_crime |> nearest(york)
 
 }

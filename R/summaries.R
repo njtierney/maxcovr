@@ -14,7 +14,7 @@ summarise_coverage <- function(df_dist,
                                distance_cutoff = 100){
 
    # Programmatically specify a column named "distance"
-    df_dist %>%
+    df_dist |>
         dplyr::summarise(
             distance_within = distance_cutoff,
             n_cov = sum(is_covered),
@@ -45,10 +45,10 @@ summarise_coverage <- function(df_dist,
 #' library(maxcovr)
 #' library(tidyverse)
 #'
-#' york_selected <- york %>% filter(grade == "I")
-#' york_unselected <- york %>% filter(grade != "I")
+#' york_selected <- york |> filter(grade == "I")
+#' york_unselected <- york |> filter(grade != "I")
 #'
-#' mc_cv_fixed <- modelr::crossv_kfold(york_crime, 5) %>%
+#' mc_cv_fixed <- modelr::crossv_kfold(york_crime, 5) |>
 #'                  mutate(test = map(test,as_tibble),
 #'                  train = map(train,as_tibble))
 #'
@@ -83,16 +83,20 @@ summary_mc_cv <- function(model,
                       n_added, # the number of AEDs added
                       n_fold){
 
-            nearest(nearest_df = facility_selected,
-                             to_df = test_data) %>%
-                dplyr::mutate(is_covered = (distance <= dist_cutoff)) %>%
+            mc <- nearest(nearest_df = facility_selected,
+                             to_df = test_data) |>
+                dplyr::mutate(is_covered = (distance <= dist_cutoff))
+
+            nrow_mc <- nrow(mc)
+
+            mc |>
                 dplyr::summarise(n_added = n_added,
                                  n_fold = n_fold,
                                  distance_within = dist_cutoff,
                                  n_cov = sum(is_covered),
-                                 pct_cov = (sum(is_covered) / nrow(.)),
+                                 pct_cov = (sum(is_covered) / nrow_mc),
                                  n_not_cov =  (sum(is_covered == 0)),
-                                 pct_not_cov = (sum(is_covered == 0) / nrow(.)),
+                                 pct_not_cov = (sum(is_covered == 0) / nrow_mc),
                                  dist_avg = mean(distance),
                                  dist_sd = stats::sd(distance))
 
@@ -128,10 +132,10 @@ summary_mc_cv <- function(model,
 #' library(dplyr)
 #'
 #' # already existing locations
-#' york_selected <- york %>% filter(grade == "I")
+#' york_selected <- york |> filter(grade == "I")
 #'
 #' # proposed locations
-#' york_unselected <- york %>% filter(grade != "I")
+#' york_unselected <- york |> filter(grade != "I")
 #' coverage(york_selected, york_crime)
 #' coverage(york_crime, york_selected)
 #'
@@ -141,9 +145,9 @@ coverage <- function(nearest_df,
                      distance_cutoff = 100,
                      ...){
 
-    nearest_df %>%
-        nearest(to_df, ...) %>%
-        dplyr::mutate(is_covered = distance <= distance_cutoff) %>%
+    nearest_df |>
+        nearest(to_df, ...) |>
+        dplyr::mutate(is_covered = distance <= distance_cutoff) |>
         summarise_coverage(distance_cutoff = distance_cutoff)
 
 }
@@ -162,10 +166,10 @@ coverage <- function(nearest_df,
 #' library(maxcovr)
 #' library(tidyverse)
 #'
-#' york_selected <- york %>% filter(grade == "I")
-#' york_unselected <- york %>% filter(grade != "I")
+#' york_selected <- york |> filter(grade == "I")
+#' york_unselected <- york |> filter(grade != "I")
 #'
-#' mc_cv <- modelr::crossv_kfold(york_crime, 5) %>%
+#' mc_cv <- modelr::crossv_kfold(york_crime, 5) |>
 #'                  mutate(test = map(test,as_tibble),
 #'                  train = map(train,as_tibble))
 #'
@@ -201,21 +205,26 @@ summary_mc_cv_relocate <- function(model,
                       dist_cutoff, # the distance cutoff
                       n_added, # the number of AEDs added
                       n_fold){
-            nearest(nearest_df = facility_selected,
-                             to_df = test_data) %>%
-                dplyr::mutate(is_covered = (distance <= dist_cutoff)) %>%
+
+            mc <- nearest(nearest_df = facility_selected,
+                             to_df = test_data) |>
+                dplyr::mutate(is_covered = (distance <= dist_cutoff))
+
+            mc_nrow <- nrow(mc)
+
+            mc |>
                 dplyr::summarise(
                     n_fold = n_fold,
                     distance_within = dist_cutoff,
                     n_cov = sum(is_covered),
-                    pct_cov = (sum(is_covered) / nrow(.)),
+                    pct_cov = (sum(is_covered) / mc_nrow),
                     n_not_cov =  (sum(is_covered == 0)),
-                    pct_not_cov = (sum(is_covered == 0) / nrow(.)),
+                    pct_not_cov = (sum(is_covered == 0) / mc_nrow),
                     dist_avg = mean(distance),
                     dist_sd = stats::sd(distance))
 
         } # end internal function
-        ) %>%
+        ) |>
             dplyr::mutate(cost = cost)
 
     } # close function

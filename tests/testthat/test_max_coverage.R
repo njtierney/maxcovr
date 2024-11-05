@@ -3,8 +3,8 @@ library(tibble)
 library(tidyr)
 
 set.seed(2019-11-10)
-york_selected <- york %>% filter(grade == "I")
-york_unselected <- york %>% filter(grade != "I") %>% sample_frac(0.1)
+york_selected <- york |> filter(grade == "I")
+york_unselected <- york |> filter(grade != "I") |> sample_frac(0.1)
 
 mc_result_glpk <- max_coverage(existing_facility = york_selected,
                                proposed_facility = york_unselected,
@@ -32,12 +32,12 @@ test_that("maximum coverage glpk returns the correct names",{
     })
 
 test_that("max_coverage glpk returns has the right class",{
-    expect_is(mc_result_glpk, "maxcovr")
+    expect_s3_class(mc_result_glpk, "maxcovr")
     expect_true(is.maxcovr(mc_result_glpk))
     })
 
 test_that("max_coverage glpk returns an integer, not numeric", {
-    expect_is(mc_result_glpk$solution[[1]]$solution, "integer")
+    expect_type(mc_result_glpk$solution[[1]]$solution, "integer")
 })
 
 
@@ -67,11 +67,11 @@ test_that("maximum coverage lpsolve returns the correct names",{
     })
 
 test_that("max_coverage lpsolve returns has the right class",{
-    expect_is(mc_result_lpsolve, "maxcovr")
+    expect_s3_class(mc_result_lpsolve, "maxcovr")
     expect_true(is.maxcovr(mc_result_lpsolve))
     })
 
 test_that("max_coverage lpsolve returns an integer, not numeric", {
-    expect_is(mc_result_lpsolve$solution[[1]]$solution, "integer")
+    expect_type(mc_result_lpsolve$solution[[1]]$solution, "integer")
 })
 

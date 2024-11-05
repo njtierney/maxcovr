@@ -54,13 +54,13 @@ extract_mc_results_relocation <- function(x){
 
     # which facilities are selected?
     facility_temp <- tibble::tibble(facility_id = facility_id,
-                                    facility_chosen = facility_solution) %>%
+                                    facility_chosen = facility_solution) |>
         dplyr::filter(facility_chosen == 1)
 
     facility_selected <- dplyr::bind_rows(x$existing_facility,
-                                          x$proposed_facility) %>%
-        dplyr::mutate(facility_id = facility_id) %>%
-        dplyr::filter(facility_id %in% facility_temp$facility_id) %>%
+                                          x$proposed_facility) |>
+        dplyr::mutate(facility_id = facility_id) |>
+        dplyr::filter(facility_id %in% facility_temp$facility_id) |>
         # facility_id is not needed anymore
         dplyr::select(-facility_id)
 
@@ -68,7 +68,7 @@ extract_mc_results_relocation <- function(x){
     user_solution <- solution[c(I + 1):c(I + J)]
 
     user_temp <- tibble::tibble(user_id = x$user_id,
-                                user_chosen = user_solution) %>%
+                                user_chosen = user_solution) |>
         dplyr::filter(user_chosen == 1)
 
     user_affected <- dplyr::left_join(user_temp,
@@ -79,20 +79,21 @@ extract_mc_results_relocation <- function(x){
 
     # NOTE: I really should use `nearest`
     facility_sum_prep <- dplyr::bind_rows(facility_selected,
-                                          x$existing_facility) %>%
+                                          x$existing_facility) |>
         mc_mat_prep()
 
     user_sum_prep <- mc_mat_prep(x$existing_user)
 
     dist_sum_df <- nearest_facility_dist(facility = facility_sum_prep,
-                                         user = user_sum_prep) %>%
-        tibble::as_tibble() %>%
-        dplyr::rename(user_id = V1,
-                      facility_id = V2,
-                      distance = V3) %>%
+                                         user = user_sum_prep) |>
+        tibble::as_tibble(.name_repair = "unique_quiet") |>
+        dplyr::rename(user_id = `...1`,
+                      facility_id = `...2`,
+                      distance = `...3`) |>
         dplyr::mutate(is_covered = (distance <= x$distance_cutoff))
 
-    model_coverage <-  dist_sum_df %>%
+    dist_sum_df_nrow <- nrow(dist_sum_df)
+    model_coverage <-  dist_sum_df |>
         dplyr::summarise(total_cost = as.numeric(x$cost_total),
                          install_cost = as.numeric(x$cost_install),
                          cost_removal = as.numeric(x$cost_removal),
@@ -100,46 +101,50 @@ extract_mc_results_relocation <- function(x){
                          n_existing_removed = n_existing_removed,
                          distance_within = as.numeric(x$distance_cutoff),
                          n_cov = sum(is_covered),
-                         pct_cov = (sum(is_covered) / nrow(.)),
+                         pct_cov = (sum(is_covered) / dist_sum_df_nrow),
                          n_not_cov =  (sum(is_covered == 0)),
-                         pct_not_cov = (sum(is_covered == 0) / nrow(.)),
+                         pct_not_cov = (sum(is_covered == 0) / dist_sum_df_nrow),
                          dist_avg = mean(distance),
                          dist_sd = stats::sd(distance))
 
     # add the original coverage
-    existing_coverage <- x$existing_facility %>%
-        nearest(x$existing_user) %>%
-        dplyr::mutate(is_covered = (distance <= x$distance_cutoff)) %>%
+    existing_coverage <- x$existing_facility |>
+        nearest(x$existing_user) |>
+        dplyr::mutate(is_covered = (distance <= x$distance_cutoff))
+
+    nrow_existing_coverage <- nrow(existing_coverage)
+
+    existing_coverage_summary <- existing_coverage |>
         dplyr::summarise(distance_within = as.numeric(x$distance_cutoff),
                          n_cov = sum(is_covered),
-                         pct_cov = (sum(is_covered) / nrow(.)),
+                         pct_cov = (sum(is_covered) / nrow_existing_coverage),
                          n_not_cov =  (sum(is_covered == 0)),
-                         pct_not_cov = (sum(is_covered == 0) / nrow(.)),
+                         pct_not_cov = (sum(is_covered == 0) / nrow_existing_coverage),
                          dist_avg = mean(distance),
                          dist_sd = stats::sd(distance))
 
-    summary_coverage <- dplyr::bind_rows(existing_coverage,
+    summary_coverage <- dplyr::bind_rows(existing_coverage_summary,
                                          model_coverage)
 
     # which proposed facilities had a facility installed?
     is_installed_prep <- solution[n_existing_1:n_facilities]
 
     # update proposed facilities with this info
-    x$proposed_facility <- x$proposed_facility %>%
+    x$proposed_facility <- x$proposed_facility |>
         dplyr::mutate(is_installed = is_installed_prep)
 
     # which existing facilities were relocated?
     is_relocated <- !solution[1:n_existing]
 
     # update existing facilities with information about relocation
-    x$existing_facility <- x$existing_facility %>%
+    x$existing_facility <- x$existing_facility |>
         dplyr::mutate(is_relocated = is_relocated)
 
     # which users were affected?
     is_covered <- solution[n_bit_3:n_bit_4]
 
     # update users with information about relocation
-    x$existing_user <- x$existing_user %>%
+    x$existing_user <- x$existing_user |>
         dplyr::mutate(is_covered = is_covered)
 
     res <- tibble::tibble(
@@ -153,7 +158,7 @@ extract_mc_results_relocation <- function(x){
 
         # simple summary info
         model_coverage = list(model_coverage),
-        existing_coverage = list(existing_coverage),
+        existing_coverage_summary = list(existing_coverage_summary),
         summary = list(summary_coverage),
 
         # model_call stuff

@@ -37,24 +37,25 @@ facility_user_dist <- function(facility,
 
     # do a dodgy cross product by adding a column of 1
     # and then joining on this column
-    facility <- dplyr::mutate(facility, key = 1) %>%
+    facility <- dplyr::mutate(facility, key = 1) |>
         dplyr::rename(lat_facility = lat,
-                      long_facility = long) %>%
+                      long_facility = long) |>
         # create an ID for each row
         dplyr::mutate(facility_id = 1:dplyr::n())
 
-    user <- dplyr::mutate(user, key = 1) %>%
+    user <- dplyr::mutate(user, key = 1) |>
         dplyr::rename(lat_user = lat,
-                      long_user = long) %>%
+                      long_user = long) |>
         dplyr::mutate(user_id = 1:dplyr::n())
 
-    dist_df <- user %>%
+    dist_df <- user |>
         dplyr::left_join(facility,
-                         by = "key") %>%
+                         by = "key",
+                         relationship = "many-to-many") |>
         dplyr::mutate(distance = spherical_distance(lat1 = lat_user,
                                                     long1 = long_user,
                                                     lat2 = lat_facility,
-                                                    long2 = long_facility)) %>%
+                                                    long2 = long_facility)) |>
         # drop key
         dplyr::select(-key)
 
@@ -64,14 +65,14 @@ facility_user_dist <- function(facility,
 
     if (nearest == "facility"){
 
-        dist_df <- dist_df %>%
-            dplyr::arrange(distance) %>%
-            dplyr::group_by(user_id) %>%
+        dist_df <- dist_df |>
+            dplyr::arrange(distance) |>
+            dplyr::group_by(user_id) |>
             # find those closest to each other
-            dplyr::mutate(rank_distance = 1:dplyr::n()) %>%
-            dplyr::ungroup() %>%
-            dplyr::filter(rank_distance == 1) %>%
-            dplyr::select(-rank_distance) %>%
+            dplyr::mutate(rank_distance = 1:dplyr::n()) |>
+            dplyr::ungroup() |>
+            dplyr::filter(rank_distance == 1) |>
+            dplyr::select(-rank_distance) |>
             dplyr::mutate(is_covered = (distance < coverage_distance))
 
         return(dist_df)
@@ -80,13 +81,13 @@ facility_user_dist <- function(facility,
 
     if (nearest == "user") {
 
-        dist_df <- dist_df %>%
-            dplyr::group_by(facility_id) %>%
-            dplyr::arrange(distance) %>%
-            dplyr::mutate(rank_distance = 1:dplyr::n()) %>%
-            dplyr::ungroup() %>%
-            dplyr::filter(rank_distance == 1) %>%
-            dplyr::select(-rank_distance) %>%
+        dist_df <- dist_df |>
+            dplyr::group_by(facility_id) |>
+            dplyr::arrange(distance) |>
+            dplyr::mutate(rank_distance = 1:dplyr::n()) |>
+            dplyr::ungroup() |>
+            dplyr::filter(rank_distance == 1) |>
+            dplyr::select(-rank_distance) |>
             dplyr::mutate(is_covered = (distance < coverage_distance))
 
         return(dist_df)
@@ -95,7 +96,7 @@ facility_user_dist <- function(facility,
 
     if (nearest == "both") {
 
-        dist_df <- dist_df %>%
+        dist_df <- dist_df |>
             dplyr::mutate(is_covered = (distance < coverage_distance))
 
         return(dist_df)
