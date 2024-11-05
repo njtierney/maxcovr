@@ -69,8 +69,7 @@ my_dist_dplyr <- user |>
     select(-user_id) |>
     as.matrix()
 
-
 test_that("cpp distance matrix produces same numeric result as using dplyr",{
     # I still need to make a method that gives the big matrix names
-    expect_equal(my_dist_cpp,my_dist_dplyr)
+    expect_equal(my_dist_cpp,my_dist_dplyr, ignore_attr = TRUE)
 })

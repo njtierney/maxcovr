@@ -13,8 +13,8 @@
 #' @param df_dist dataframe from facility_user_dist. Requires nearest = "both"
 #' @param dist_indic an indicator of the distance you want to be TRUE / FALSE
 #'
-#' @return dataframe with variables ohca_id, and aed_id_number, with the id
-#'   from each aed_id being transposed into each column name.
+#' @return dataframe with variables user_id, and facility_id_number, with the id
+#'   from each facility_id being transposed into each column name.
 #' @export
 #'
 facility_user_indic <- function(df_dist,
@@ -28,7 +28,7 @@ facility_user_indic <- function(df_dist,
                       distance) |>
         # create indicator variable whether distance is less than indicator?
         # *>* 100m is the default *<*
-        dplyr::mutate(distance_indic = (distance <= dist_indic)) |>
+        dplyr::mutate(distance_indic = as.integer((distance <= dist_indic))) |>
         dplyr::select(-distance) |>
         # spread this out so we can get this in a matrix format
         # so df[1,1] is the distance between AED#1 and OHCA#1

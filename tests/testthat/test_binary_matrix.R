@@ -39,25 +39,12 @@ my_bin_dplyr <- user |>
                                                 long2 = long_facility)) |>
     # drop key
     select(-key) |>
-    select(user_id,
-                  facility_id,
-                  distance) |>
-    # create the indicator variable - is the distance
-    # less than the indicator? 100m is the default
-    mutate(distance_indic = (distance <= 100)) |>
-    select(-distance) |>
-    # spread this out so we can get this in a matrix format
-    # so df[1,1] is the distance between AED#1 and OHCA#1
-    spread(key = "facility_id",
-                  value = "distance_indic",
-                  sep = "_") |>
-    # drop the ID column (for proper comparison)
-    select(-user_id) |>
-    as.matrix()
+    facility_user_indic(dist_indic = 100) |>
+    # drop ID column
+    _[,-1]
 
-
-test_that("cpp binary matrix produces  integer result as using dplyr method",{
+test_that("cpp binary matrix produces integer result as using dplyr method",{
     # I still need to make a method that gives the big matrix names
-    expect_equal(my_bin_cpp,my_bin_dplyr)
+    expect_equal(my_bin_cpp,my_bin_dplyr, ignore_attr = TRUE)
 })
 
