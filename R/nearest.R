@@ -10,12 +10,12 @@
 #'   the names of the latitude and longitude are "lat" and "long", but you can
 #'   provide these names.
 #'
-#' @param nearest_df a dataframe containing latitude and longitude
-#' @param to_df a dataframe containing latitude and longitude
-#' @param nearest_lat name of latitude in nearest_df
-#' @param nearest_long name of longitude in nearest_df
-#' @param to_lat name of latitude in to_df
-#' @param to_long name of longitude in to_df
+#' @param nearest_df a dataframe containing latitude and longitude.
+#' @param to_df a dataframe containing latitude and longitude.
+#' @param nearest_lat name of latitude in nearest_df.
+#' @param nearest_long name of longitude in nearest_df.
+#' @param to_lat name of latitude in to_df.
+#' @param to_long name of longitude in to_df.
 #'
 #' @return dataframe of "to_df" along with the nearest "nearest_df" to each row,
 #'   along with the distance between the two, and the nearest_id, the row
@@ -66,8 +66,8 @@ nearest <- function(nearest_df,
     # this would all break apart if the rows were differently arranged.
 
     # create some IDs to join by
-    to_df_id <- to_df %>% dplyr::mutate(to_id = 1:dplyr::n())
-    nearest_df_id <- nearest_df %>% dplyr::mutate(nearest_id = 1:dplyr::n())
+    to_df_id <-  dplyr::mutate(to_df, to_id = 1:dplyr::n())
+    nearest_df_id <- dplyr::mutate(nearest_df, nearest_id = 1:dplyr::n())
 
     nearest_to_dist_df <- dist_df %>%
         dplyr::left_join(to_df_id,

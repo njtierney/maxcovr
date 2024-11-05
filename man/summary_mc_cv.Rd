@@ -7,9 +7,9 @@
 summary_mc_cv(model, test_data)
 }
 \arguments{
-\item{model}{the cross validated model}
+\item{model}{the cross validated model.}
 
-\item{test_data}{the cross validated test data}
+\item{test_data}{the cross validated test data.}
 }
 \value{
 a summary dataframe

@@ -13,7 +13,7 @@ extract_users_affected(A_mat, solution_vector, user_id, users_not_covered)
 
 \item{user_id}{The IDs of the individuals}
 
-\item{users_not_covered}{those users not covered by original AEDs}
+\item{users_not_covered}{number of those users not covered by original AEDs}
 }
 \value{
 tibble taken from \code{users}, those who are affectd by new placements

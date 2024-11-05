@@ -4,8 +4,12 @@
 \alias{facility_user_dist}
 \title{facility_user_dist}
 \usage{
-facility_user_dist(facility, user, coverage_distance = 100,
-  nearest = "facility")
+facility_user_dist(
+  facility,
+  user,
+  coverage_distance = 100,
+  nearest = "facility"
+)
 }
 \arguments{
 \item{facility}{a dataframe containing columns named "lat", and "long".}

@@ -264,10 +264,7 @@ max_coverage_relocation <- function(existing_facility = NULL,
 
     if (solver == "gurobi") {
 
-    if (!requireNamespace("gurobi", quietly = TRUE)) {
-        stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
-
-    }
+        check_gurobi_installed()
 
     model_call <- match.call()
 

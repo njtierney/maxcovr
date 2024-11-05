@@ -4,8 +4,7 @@
 \alias{binary_distance_matrix}
 \title{(Internal) Create a binary distance matrix}
 \usage{
-binary_distance_matrix(facility, user, distance_cutoff,
-  d_proposed_user = NULL)
+binary_distance_matrix(facility, user, distance_cutoff, d_proposed_user = NULL)
 }
 \arguments{
 \item{facility}{data.frame of facilities}
@@ -27,3 +26,4 @@ This is a wrapper function that returns a logical matrix, of 1 if distance
 between element i, j is less than or equal to the distance_cutoff, and
 0 otherwise.
 }
+\keyword{internal}

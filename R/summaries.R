@@ -1,11 +1,11 @@
-#' summarise_coverage
+#' Summarise coverage
 #'
 #' Provides summary information of the coverage, using the distance dataframe
-#'   created by `facility_user_dist`().
+#'   created by [facility_user_dist()].
 #'
-#' @param df_dist distance matrix, as computed by facility_user_dist
+#' @param df_dist distance matrix, as computed by [facility_user_dist()].
 #' @param distance_cutoff the critical distance range that you would like to
-#'   know. The default is 100m.
+#'   know in metres. The default is 100m.
 #'
 #' @return dataframe
 #' @export
@@ -33,8 +33,8 @@ summarise_coverage <- function(df_dist,
 
 #' Summary for max_coverage cross validation
 #'
-#' @param model the cross validated model
-#' @param test_data the cross validated test data
+#' @param model the cross validated model.
+#' @param test_data the cross validated test data.
 #'
 #' @return a summary dataframe
 #'
@@ -188,7 +188,7 @@ coverage <- function(nearest_df,
 summary_mc_cv_relocate <- function(model,
                                    test_data){
 
-        cost = model$total_cost[[1]]
+        cost <- model$total_cost[[1]]
         purrr::pmap_df(.l = list(
             facility_selected = model$facility_selected,
             test_data = test_data$test,

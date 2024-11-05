@@ -21,7 +21,7 @@ Description: Solving the "maximal covering location problem" as described by
 Depends:
     R (>= 4.1.0)
 License: GPL-3
-RoxygenNote: 6.1.1
+RoxygenNote: 7.3.2
 LazyData: true
 ByteCompile: TRUE
 URL: https://github.com/njtierney/maxcovr
