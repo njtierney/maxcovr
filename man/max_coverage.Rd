@@ -40,7 +40,7 @@ submitted (see Examples).}
 users (see Examples).}
 
 \item{solver}{character "glpk" (default) or "lpSolve". "gurobi" is currently
-in development, see \url{https://github.com/njtierney/maxcovr/issues/25}}
+in development, see \url{https://github.com/njtierney/maxcovr/issues/25}.}
 }
 \value{
 dataframe of results
@@ -59,10 +59,10 @@ locations to place AEDs.
 library(dplyr)
 
 # already existing locations
-york_selected <- york \%>\% filter(grade == "I")
+york_selected <- york |> filter(grade == "I")
 
 # proposed locations
-york_unselected <- york \%>\% filter(grade != "I")
+york_unselected <- york |> filter(grade != "I")
 
 mc_result <- max_coverage(existing_facility = york_selected,
                           proposed_facility = york_unselected,
@@ -86,14 +86,14 @@ mc_result$summary
 # Example of street-network distance calculations
 \dontrun{
 library(dodgr)
-net <- dodgr_streetnet_sf ("york england") \%>\%
+net <- dodgr_streetnet_sf ("york england") |>
     weight_streetnet (wt_profile = "foot")
 
-from <- match_points_to_graph (v, york_selected [, c ("long", "lat")])
-to <- match_points_to_graph (v, york_crime [, c ("long", "lat")])
+from <- match_points_to_graph (v, york_selected[, c ("long", "lat")])
+to <- match_points_to_graph (v, york_crime[, c ("long", "lat")])
 d_existing_user <- dodgr_dists (net, from = from, to = to)
 
-from <- match_points_to_graph (v, york_unselected [, c ("long", "lat")])
+from <- match_points_to_graph (v, york_unselected[, c ("long", "lat")])
 d_proposed_user <- dodgr_dists (net, from = from, to = to)
 
 mc_result <- max_coverage(existing_facility = york_selected,

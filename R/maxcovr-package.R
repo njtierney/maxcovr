@@ -3,8 +3,10 @@
 #' @name maxcovr
 #' @useDynLib maxcovr
 #' @importFrom Rcpp sourceCpp
-#' @importFrom magrittr %>%
 NULL
+
+#' @keywords internal
+"_PACKAGE"
 
 if (getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 
@@ -34,7 +36,7 @@ globalVariables(c("bind_rows",
                   "sd",
                   "user_chosen",
                   "user_id",
-                  "V1",
-                  "V2",
-                  "V3"
+                  "...1",
+                  "...2",
+                  "...3"
                   ))

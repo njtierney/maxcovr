@@ -26,3 +26,4 @@ This is a wrapper function that returns a logical matrix, of 1 if distance
 between element i, j is less than or equal to the distance_cutoff, and
 0 otherwise.
 }
+\keyword{internal}

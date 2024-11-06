@@ -29,6 +29,7 @@ is.maxcovr_relocation <- function(x) {
 #'
 #' @param existing_facility dataframe of existing facilities
 #' @param user dataframe of users to place facilities to cover
+#' @keywords internal
 #'
 #' @return A tibble with 3 columns: user_id, facility_id, distance, where the
 #'   user_id is the identifier for the user, the facility_id is the identifier
@@ -44,11 +45,11 @@ nearest_facility_distances <- function(existing_facility,
 
     dat_nearest_dist <-
         nearest_facility_dist(facility = existing_facility_cpp,
-                              user = user_cpp) %>%
-        tibble::as_tibble() %>%
-        dplyr::rename(user_id = V1,
-                      facility_id = V2,
-                      distance = V3)
+                              user = user_cpp) |>
+        tibble::as_tibble(.name_repair = "unique_quiet") |>
+        dplyr::rename(user_id = `...1`,
+                      facility_id = `...2`,
+                      distance = `...3`)
 
     return(dat_nearest_dist)
 
@@ -65,6 +66,7 @@ nearest_facility_distances <- function(existing_facility,
 #' @param distance_cutoff integer of distance to use for cutoff
 #' @param d_proposed_user Option distance matrix between proposed facilities and
 #' users (see Examples).
+#' @keywords internal
 #'
 #' @return a logical matrix, of 1 if distance
 #'   between element i, j is less than or equal to the distance_cutoff, and
@@ -84,8 +86,8 @@ binary_distance_matrix <- function(facility,
                                distance_cutoff = distance_cutoff)
     } else {
         # reduce d_proposed_user down to submitted `user_not_covered`:
-        d_proposed_user <- d_proposed_user [, user$user_id]
-        d_proposed_user [is.na (d_proposed_user)] <-
+        d_proposed_user <- d_proposed_user[, user$user_id]
+        d_proposed_user[is.na (d_proposed_user)] <-
             max (d_proposed_user, na.rm = TRUE)
         A <- t (d_proposed_user < distance_cutoff)
     }
@@ -101,6 +103,7 @@ binary_distance_matrix <- function(facility,
 #' @param distance_cutoff integer of distance cutoff
 #' @param d_existing_user Optional distance matrix between existing facilities
 #' and users.
+#' @keywords internal
 #'
 #' @return data.frame of those users not covered by current facilities
 find_users_not_covered <- function(existing_facility,
@@ -113,7 +116,7 @@ find_users_not_covered <- function(existing_facility,
         # make nearest dist into dataframe
         dat_nearest_no_cov <- nearest_facility_distances(
             existing_facility = existing_facility,
-            user = user) %>%
+            user = user) |>
             # leave only those not covered
             dplyr::filter(distance > distance_cutoff)
 
@@ -123,12 +126,12 @@ find_users_not_covered <- function(existing_facility,
             stop ("'d_existing_user' must have same number of rows as 'user',",
                   " and same number of columns as 'existing_facility'")
 
-        d_existing_user [is.na(d_existing_user)] <-
+        d_existing_user[is.na(d_existing_user)] <-
             max(d_existing_user, na.rm = TRUE)
         index <- which(apply(d_existing_user, 2, min) > distance_cutoff)
-        nearest_facility <- t(apply(d_existing_user [, index], 2,
+        nearest_facility <- t(apply(d_existing_user[, index], 2,
                                       function(i) c(which.min(i), min(i))))
-        dat_nearest_no_cov <- tibble::tibble (user_id = index,
+        dat_nearest_no_cov <- tibble::tibble(user_id = index,
                                     facility_id = nearest_facility[, 1],
                                     distance = nearest_facility[, 2])
     }

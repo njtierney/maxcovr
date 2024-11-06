@@ -14,17 +14,17 @@ nearest(
 )
 }
 \arguments{
-\item{nearest_df}{a dataframe containing latitude and longitude}
+\item{nearest_df}{a dataframe containing latitude and longitude.}
 
-\item{to_df}{a dataframe containing latitude and longitude}
+\item{to_df}{a dataframe containing latitude and longitude.}
 
-\item{nearest_lat}{name of latitude in nearest_df}
+\item{nearest_lat}{name of latitude in nearest_df.}
 
-\item{nearest_long}{name of longitude in nearest_df}
+\item{nearest_long}{name of longitude in nearest_df.}
 
-\item{to_lat}{name of latitude in to_df}
+\item{to_lat}{name of latitude in to_df.}
 
-\item{to_long}{name of longitude in to_df}
+\item{to_long}{name of longitude in to_df.}
 }
 \value{
 dataframe of "to_df" along with the nearest "nearest_df" to each row,
@@ -51,11 +51,6 @@ nearest(nearest_df = york_crime,
 
 # you can use the pipe as well
 
-\dontrun{
-
-library(magrittr)
-york_crime \%>\% nearest(york)
-
-}
+york_crime |> nearest(york)
 
 }

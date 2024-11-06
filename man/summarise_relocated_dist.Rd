@@ -22,7 +22,7 @@ distance between the two.
 
 \dontrun{
 
-mc_cv_n100_test \%>\%
+mc_cv_n100_test |>
     mutate(
         facility_distances = map2(
             .x = proposed_facility,
@@ -33,9 +33,9 @@ mc_cv_n100_test \%>\%
             .x = facility_distances,
             .f = summarise_relocated_dist
         )
-    ) \%>\%
-    # select(facility_distances) \%>\%
-    select(summary_relocated_dist) \%>\%
+    ) |>
+    # select(facility_distances) |>
+    select(summary_relocated_dist) |>
     .[[1]]
 
 }

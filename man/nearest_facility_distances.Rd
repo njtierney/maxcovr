@@ -22,3 +22,4 @@ This function is a wrapper for the similarly named, \code{nearest_facility_dist}
 function used inside \code{max_coverage} to calculate distances
 so that the nearest facilities can be found.
 }
+\keyword{internal}

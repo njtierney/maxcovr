@@ -12,12 +12,12 @@ facility_user_indic(df_dist, dist_indic)
 \item{dist_indic}{an indicator of the distance you want to be TRUE / FALSE}
 }
 \value{
-dataframe with variables ohca_id, and aed_id_number, with the id
-from each aed_id being transposed into each column name.
+dataframe with variables user_id, and facility_id_number, with the id
+from each facility_id being transposed into each column name.
 }
 \description{
 This is a data manipulation function for facility_user_dist. This function
-creates a spread matrix of the distances between each ohca and each aed.
+creates a spread matrix of the distances between each user and each facility.
 There is an ohca_id column, and then a column for each aed_id, with a
 given cell being the distance between an ohca in a row, and that column.
 This distance is converted into an indicator variable, based upon whether

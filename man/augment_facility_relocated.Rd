@@ -27,12 +27,12 @@ relocated to.
 
 \dontrun{
 
-mc_cv_n100_test \%>\%
+mc_cv_n100_test |>
   mutate(facility_distances = map2(
     .x = proposed_facility,
     .y = existing_facility,
-    .f = augment_facility_relocated)) \%>\%
-  select(facility_distances) \%>\%
+    .f = augment_facility_relocated)) |>
+  select(facility_distances) |>
   .[[1]]
 
 }
