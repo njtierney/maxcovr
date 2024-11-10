@@ -32,9 +32,19 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 # How to Install
 
+Install the development version of `maxcovr` from [r-universe](http://njtierney.r-universe.dev/):
+
+```r
+install.packages("maxcovr", repos = c("https://njtierney.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+(Note - installing from r-universe is just like installing from CRAN, and should be faster and more convenient than installing from GitHub)
+
+Or install using `remotes`:
+
 ```{r install, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("njtierney/maxcovr")
+# install.packages("remotes")
+remotes::install_github("njtierney/maxcovr")
 ```
 
 # Using maxcovr

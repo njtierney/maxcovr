@@ -37,9 +37,21 @@ abide by its terms.
 
 # How to Install
 
+Install the development version of `maxcovr` from
+[r-universe](http://njtierney.r-universe.dev/):
+
 ``` r
-# install.packages("devtools")
-devtools::install_github("njtierney/maxcovr")
+install.packages("maxcovr", repos = c("https://njtierney.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+(Note - installing from r-universe is just like installing from CRAN,
+and should be faster and more convenient than installing from GitHub)
+
+Or install using `remotes`:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("njtierney/maxcovr")
 ```
 
 # Using maxcovr
@@ -123,14 +135,6 @@ columns from the building dataframe.
 ``` r
 
 dat_dist <- york_selected %>% nearest(york_crime)
-#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
-#> `.name_repair` is omitted as of tibble 2.0.0.
-#> ℹ Using compatibility `.name_repair`.
-#> ℹ The deprecated feature was likely used in the maxcovr package.
-#>   Please report the issue at <https://github.com/njtierney/maxcovr/issues>.
-#> This warning is displayed once every 8 hours.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
 
 head(dat_dist)
 #> # A tibble: 6 × 22
@@ -204,7 +208,7 @@ mc_20 <- max_coverage(existing_facility = york_selected,
                       distance_cutoff = 100)
 )
 #>    user  system elapsed 
-#>   0.757   0.066   0.902
+#>   0.556   0.032   0.604
 ```
 
 `max_coverage` actually returns a dataframe of lists.
@@ -262,7 +266,7 @@ map_mc_model <- map_df(.x = n_add_vec,
                                           n_added = .))
 )
 #>    user  system elapsed 
-#>   2.127   0.257   2.898
+#>   1.848   0.085   1.940
 ```
 
 This returns a list of dataframes, which we can bind together like so:
