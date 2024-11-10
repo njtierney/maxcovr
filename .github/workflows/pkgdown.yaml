@@ -33,8 +33,19 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.
+          extra-packages: |
+            any::covr
+            any::xml2
+            any::rcmdcheck
+            any::testthat
+            any::covr
+            any::knitr
+            any::rmarkdown
+            any::modelr
+            any::leaflet
+            any::ggplot2
           needs: website
+          dependencies: '"hard"'
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
