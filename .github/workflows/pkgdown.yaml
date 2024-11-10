@@ -44,6 +44,7 @@ jobs:
             any::modelr
             any::leaflet
             any::ggplot2
+            any::pkgdown
           needs: website
           dependencies: '"hard"'
 
