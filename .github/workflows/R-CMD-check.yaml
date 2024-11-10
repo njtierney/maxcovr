@@ -43,9 +43,17 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
+            any::testthat
+            any::covr
+            any::knitr
+            any::rmarkdown
+            any::modelr
+            any::leaflet
+            any::ggplot2
           needs: check
-          dependencies: hard
+          dependencies: '"hard"'
 
       - uses: r-lib/actions/check-r-package@v2
         with:
