@@ -11,6 +11,7 @@ Solving the "maximal covering location problem" as described by Church can be di
 Useful links:
 \itemize{
   \item \url{https://github.com/njtierney/maxcovr}
+  \item \url{https://njtierney.github.io/maxcovr/}
   \item Report bugs at \url{https://github.com/njtierney/maxcovr/issues}
 }
 
