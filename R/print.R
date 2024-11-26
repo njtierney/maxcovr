@@ -79,18 +79,19 @@ print.maxcovr <- function(x, ...){
 
     model_input <- c("model_used",names(formals(max_coverage)))
 
-    cat("\n-------------------------------------------" ,
-        "\nModel Fit: maxcovr fixed location model",
-        "\n-------------------------------------------",
-        sprintf("\n%s:        %s", model_input[[1]], user_input[[1]]),
-        sprintf("\n%s: %s", model_input[[2]], user_input[[2]]),
-        sprintf("\n%s: %s", model_input[[3]], user_input[[3]]),
-        sprintf("\n%s:              %s", model_input[[4]], user_input[[4]]),
-        sprintf("\n%s:   %s", model_input[[5]], user_input[[5]]),
-        sprintf("\n%s:           %s", model_input[[6]], user_input[[6]]),
-        sprintf("\n%s:            %s", model_input[[7]], user_input[[7]]),
-        "\n-------------------------------------------\n"
+    cli::cli_h1("Model Fit: maxcovr fixed location model")
+    cli::cli_bullets(
+        c(
+            "*" = "{.strong {model_input[[1]]}}:      {user_input[[1]]}",
+            "*" = "{.strong {model_input[[2]]}}: {user_input[[2]]}",
+            "*" = "{.strong {model_input[[3]]}}: {user_input[[3]]}",
+            "*" = "{.strong {model_input[[4]]}}: {user_input[[4]]}",
+            "*" = "{.strong {model_input[[5]]}}: {user_input[[5]]}",
+            "*" = "{.strong {model_input[[6]]}}: {user_input[[6]]}",
+            "*" = "{.strong {model_input[[7]]}}: {user_input[[7]]}"
+        )
     )
+    cli::cli_rule()
 
 }
 
