@@ -45,6 +45,7 @@ jobs:
             any::leaflet
             any::ggplot2
             any::pkgdown
+            local::.
           needs: website
           dependencies: '"hard"'
 
