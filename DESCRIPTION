@@ -24,7 +24,7 @@ License: GPL-3
 RoxygenNote: 7.3.2
 LazyData: true
 ByteCompile: TRUE
-URL: https://github.com/njtierney/maxcovr, https://njtierney.github.io/maxcovr/
+URL: https://github.com/njtierney/maxcovr, https://njtierney.github.io/maxcovr/, https://maxcovr.njtierney.com/
 BugReports: https://github.com/njtierney/maxcovr/issues
 Imports: 
     lpSolve,
