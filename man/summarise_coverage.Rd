@@ -2,20 +2,20 @@
 % Please edit documentation in R/summaries.R
 \name{summarise_coverage}
 \alias{summarise_coverage}
-\title{summarise_coverage}
+\title{Summarise coverage}
 \usage{
 summarise_coverage(df_dist, distance_cutoff = 100)
 }
 \arguments{
-\item{df_dist}{distance matrix, as computed by facility_user_dist}
+\item{df_dist}{distance matrix, as computed by \code{\link[=facility_user_dist]{facility_user_dist()}}.}
 
 \item{distance_cutoff}{the critical distance range that you would like to
-know. The default is 100m.}
+know in metres. The default is 100m.}
 }
 \value{
 dataframe
 }
 \description{
 Provides summary information of the coverage, using the distance dataframe
-created by \code{facility_user_dist}().
+created by \code{\link[=facility_user_dist]{facility_user_dist()}}.
 }

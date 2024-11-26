@@ -21,13 +21,12 @@ Summary for max_coverage cross validation for relocation models
 
 \dontrun{
 
-library(maxcovr)
 library(tidyverse)
 
-york_selected <- york \%>\% filter(grade == "I")
-york_unselected <- york \%>\% filter(grade != "I")
+york_selected <- york |> filter(grade == "I")
+york_unselected <- york |> filter(grade != "I")
 
-mc_cv <- modelr::crossv_kfold(york_crime, 5) \%>\%
+mc_cv <- modelr::crossv_kfold(york_crime, 5) |>
                  mutate(test = map(test,as_tibble),
                  train = map(train,as_tibble))
 

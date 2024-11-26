@@ -10,22 +10,22 @@ polygon(york_poly$long, york_poly$lat, asp=1)
 
 york_poly_mat <- cbind(york_poly$long, york_poly$lat)
 
-centroid <- Polygon(york_poly_mat) %>%
-    SpatialPoints %>%
-    gCentroid %>%
+centroid <- Polygon(york_poly_mat) |>
+    SpatialPoints |>
+    gCentroid |>
     data.frame
 
 points(centroid, col="red")
 
 z <- 0.05
 
-newhull <- cbind(york_poly_mat, centroid) %>%
+newhull <- cbind(york_poly_mat, centroid) |>
     mutate(dx = `1` - x,
-           dy = `2` - y) %>%
+           dy = `2` - y) |>
     # euclidean distance
     mutate(dr = sqrt(dx^2 + dy^2),
            dx = dx/dr,
-           dy = dy/dr) %>%
+           dy = dy/dr) |>
     mutate(newx = `1` + z*dx,
            newy = `2` + z*dy)
 

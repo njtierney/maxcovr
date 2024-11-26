@@ -27,3 +27,4 @@ data.frame of those users not covered by current facilities
 \description{
 (Internal) Create a dataframe of the users not covered
 }
+\keyword{internal}

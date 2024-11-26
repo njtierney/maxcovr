@@ -19,25 +19,26 @@ Description: Solving the "maximal covering location problem" as described by
     maxcovr provides functions to make it easy to solve this problem, and tools
     to calculate facility coverage.
 Depends:
-    R (>= 3.2.2)
+    R (>= 4.1.0)
 License: GPL-3
 RoxygenNote: 7.3.2
 LazyData: true
 ByteCompile: TRUE
-URL: https://github.com/njtierney/maxcovr
+URL: https://github.com/njtierney/maxcovr, https://njtierney.github.io/maxcovr/, https://maxcovr.njtierney.com/
 BugReports: https://github.com/njtierney/maxcovr/issues
-Imports: lpSolve,
+Imports: 
+    lpSolve,
     dplyr,
     tidyr,
     tibble,
     readr,
     Rcpp,
     purrr,
-    magrittr,
-    Rglpk
+    Rglpk,
+    cli
 LinkingTo: Rcpp
 Suggests: 
-    testthat (>= 2.1.0),
+    testthat (>= 3.0.0),
     covr,
     gurobi,
     knitr,
@@ -48,3 +49,4 @@ Suggests:
 Encoding: UTF-8
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3

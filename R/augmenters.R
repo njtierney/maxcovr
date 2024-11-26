@@ -21,7 +21,7 @@
 #'
 #' \dontrun{
 #'
-#' mc_cv_relocate_n100_cut %>%
+#' mc_cv_relocate_n100_cut |>
 #'   mutate(user_nearest_test = map2(
 #'     .x = facilities_selected,
 #'     .y = test,
@@ -37,7 +37,7 @@ augment_user_tested <- function(all_facilities,
                                 distance_threshold = 100){
 
     nearest(nearest_df = all_facilities,
-            to_df = test_data) %>%
+            to_df = test_data) |>
         dplyr::mutate(is_covered = (distance <= distance_threshold))
 
 }
@@ -61,8 +61,8 @@ augment_user_tested <- function(all_facilities,
 #'
 #'summarise_user_cov(augmented_user_test)
 #'
-# augmented_user_test %>%
-#   group_by(area) %>%
+# augmented_user_test |>
+#   group_by(area) |>
 #   summarise_user_cov()
 #'
 #' }
@@ -71,12 +71,12 @@ augment_user_tested <- function(all_facilities,
 #'
 summarise_user_cov <- function(user){
 
-    user %>%
+    user |>
         dplyr::summarise(n_users = n(),
                          n_cov = sum(is_covered),
                          pct_cov = mean(is_covered),
                          dist_avg = mean(distance),
-                         dist_sd = sd(distance))
+                         dist_sd = stats::sd(distance))
 
 }
 
@@ -99,12 +99,12 @@ summarise_user_cov <- function(user){
 #'
 #' \dontrun{
 #'
-#' mc_cv_n100_test %>%
+#' mc_cv_n100_test |>
 #'   mutate(facility_distances = map2(
 #'     .x = proposed_facility,
 #'     .y = existing_facility,
-#'     .f = augment_facility_relocated)) %>%
-#'   select(facility_distances) %>%
+#'     .f = augment_facility_relocated)) |>
+#'   select(facility_distances) |>
 #'   .[[1]]
 #'
 #' }
@@ -135,11 +135,11 @@ augment_facility_relocated <- function(proposed_facility,
 #'
 #' \dontrun{
 #'
-#' mc_cv_n100_test %>%
+#' mc_cv_n100_test |>
 #'   mutate(n_relocated = map(
 #'     .x = existing_facility,
-#'     .f = n_relocated)) %>%
-#'   select(n_relocated) %>%
+#'     .f = n_relocated)) |>
+#'   select(n_relocated) |>
 #'   .[[1]]
 #'
 #' }
@@ -148,7 +148,7 @@ augment_facility_relocated <- function(proposed_facility,
 #'
 n_relocated <- function(existing_facility){
 
-    existing_facility %>%
+    existing_facility |>
         dplyr::summarise(n_relocated = sum(is_relocated))
 }
 
@@ -167,12 +167,12 @@ n_relocated <- function(existing_facility){
 #'
 #' \dontrun{
 #'
-#' mc_cv_n100_test %>%
+#' mc_cv_n100_test |>
 #'     mutate(n_installed = map(
 #'         .x = proposed_facility,
 #'         .f = n_installed
-#'     )) %>%
-#'     select(n_installed) %>%
+#'     )) |>
+#'     select(n_installed) |>
 #'     .[[1]]
 #'
 #' }
@@ -181,7 +181,7 @@ n_relocated <- function(existing_facility){
 #'
 n_installed <- function(proposed_facility){
 
-    proposed_facility %>%
+    proposed_facility |>
         dplyr::summarise(n_installed = sum(is_installed))
 
 }
@@ -202,7 +202,7 @@ n_installed <- function(proposed_facility){
 #'
 #' \dontrun{
 #'
-#' mc_cv_n100_test %>%
+#' mc_cv_n100_test |>
 #'     mutate(
 #'         facility_distances = map2(
 #'             .x = proposed_facility,
@@ -213,9 +213,9 @@ n_installed <- function(proposed_facility){
 #'             .x = facility_distances,
 #'             .f = summarise_relocated_dist
 #'         )
-#'     ) %>%
-#'     # select(facility_distances) %>%
-#'     select(summary_relocated_dist) %>%
+#'     ) |>
+#'     # select(facility_distances) |>
+#'     select(summary_relocated_dist) |>
 #'     .[[1]]
 #'
 #' }
@@ -224,9 +224,9 @@ n_installed <- function(proposed_facility){
 #'
 summarise_relocated_dist <- function(augment_facility_relocated){
 
-    augment_facility_relocated %>%
+    augment_facility_relocated |>
         dplyr::summarise(dist_avg = mean(distance),
-                         dist_sd = sd(distance))
+                         dist_sd = stats::sd(distance))
 
 }
 

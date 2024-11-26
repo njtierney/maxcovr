@@ -1,40 +1,41 @@
-#' maxcovr
-#'
-#' @name maxcovr
-#' @useDynLib maxcovr
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
-#' @importFrom magrittr %>%
+#' @useDynLib maxcovr, .registration = TRUE
+## usethis namespace: end
 NULL
 
-if (getRversion() >= "2.15.1")  utils::globalVariables(c("."))
-
-globalVariables(c("bind_rows",
-                  "distance",
-                  "d_existing",
-                  "facility_chosen",
-                  "facility_id",
-                  "is_installed",
-                  "is_relocated",
-                  "is_covered",
-                  "key",
-                  "lat",
-                  "lat.x",
-                  "lat.y",
-                  "lat_facility",
-                  "lat_user",
-                  "long",
-                  "long.x",
-                  "long.y",
-                  "long_facility",
-                  "long_user",
-                  "n",
-                  "n_cov",
-                  "n_not_cov",
-                  "rank_distance",
-                  "sd",
-                  "user_chosen",
-                  "user_id",
-                  "V1",
-                  "V2",
-                  "V3"
-                  ))
+utils::globalVariables(
+    c(
+        "...1",
+        "...2",
+        "...3",
+        "d_existing",
+        "distance",
+        "facility_chosen",
+        "facility_id",
+        "is_covered",
+        "is_installed",
+        "is_relocated",
+        "key",
+        "lat",
+        "lat.x",
+        "lat.y",
+        "lat_facility",
+        "lat_user",
+        "long",
+        "long.x",
+        "long.y",
+        "long_facility",
+        "long_user",
+        "n",
+        "n_cov",
+        "n_not_cov",
+        "rank_distance",
+        "sd",
+        "user_chosen",
+        "user_id"
+    )
+)

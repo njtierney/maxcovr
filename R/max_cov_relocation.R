@@ -28,9 +28,9 @@
 #' library(dplyr)
 #' # subset to be the places with towers built on them.
 #'
-#' york_selected <- york %>% filter(grade == "I")
+#' york_selected <- york |> filter(grade == "I")
 #'
-#' york_unselected <- york %>% filter(grade != "I")
+#' york_unselected <- york |> filter(grade != "I")
 #'
 #' # OK, what if I just use some really crazy small data to optimise over.
 #'
@@ -112,9 +112,10 @@ max_coverage_relocation <- function(existing_facility = NULL,
 
     cost_relocate <- cost_install - cost_removal
 
-    # This is the gain of removing an AED from a location (as opposed to buying)
-    # existing facilities will have this cost (ncol(existing_facility_cpp)),
-    # proposed facilities don't have this cost (hence, 0s)
+    # This is the gain of removing a facility from a location (as opposed to
+    # buying) existing facilities will have this cost
+    # (ncol(existing_facility_cpp)), proposed facilities don't have this cost
+    # (hence, 0s)
     m_under_i <- c(rep(cost_relocate * -1, ncol(existing_facility_cpp)),
                    rep(0,ncol(proposed_facility_cpp)))
 
@@ -163,18 +164,18 @@ max_coverage_relocation <- function(existing_facility = NULL,
 
     # make nearest dist into dataframe
     # leave only those not covered
-    dat_nearest_no_cov <- dat_nearest_dist %>%
-        tibble::as_tibble() %>%
-        dplyr::rename(user_id = V1,
-                      facility_id = V2,
-                      distance = V3) %>%
+    dat_nearest_no_cov <- dat_nearest_dist |>
+        tibble::as_tibble(.name_repair = "unique_quiet") |>
+        dplyr::rename(user_id = `...1`,
+                      facility_id = `...2`,
+                      distance = `...3`) |>
         dplyr::filter(distance > distance_cutoff) # 100m is distance_cutoff
 
     # give user an index
-    user <- user %>% dplyr::mutate(user_id = 1:dplyr::n())
+    user <- user |> dplyr::mutate(user_id = 1:dplyr::n())
 
     # join them, to create the "not covered" set of data
-    user_not_covered <- dat_nearest_no_cov %>%
+    user_not_covered <- dat_nearest_no_cov |>
         dplyr::left_join(user,
                          by = "user_id")
 
@@ -264,10 +265,7 @@ max_coverage_relocation <- function(existing_facility = NULL,
 
     if (solver == "gurobi") {
 
-    if (!requireNamespace("gurobi", quietly = TRUE)) {
-        stop("Make sure that you have installed the Gurobi software and accompanying Gurobi R package, more details at https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
-
-    }
+        check_gurobi_installed()
 
     model_call <- match.call()
 
