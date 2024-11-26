@@ -5,7 +5,7 @@ articles:
   cross_validation_with_maxcovr: cross_validation_with_maxcovr.html
   intro_to_maxcovr: intro_to_maxcovr.html
   using_max_coverage_relocation: using_max_coverage_relocation.html
-last_built: 2024-11-26T02:25Z
+last_built: 2024-11-26T02:28Z
 urls:
   reference: https://maxcovr.njtierney.com/reference
   article: https://maxcovr.njtierney.com/articles
