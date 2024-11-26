@@ -135,7 +135,7 @@ from the <code>purrr</code> package.</p>
 <span>                                   distance_cutoff <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   2.670   0.055   2.725</span></span></code></pre>
+<span><span class="co">##   2.721   0.035   2.756</span></span></code></pre>
 <p>Then we can use the <code>summary_mc_cv</code> function to extract
 out the summaries from each fold. This summary takes the facilities
 placed using the training set of users, and then takes the test set of
@@ -257,7 +257,7 @@ enable n_added to take a vector of values.</p>
 <span>                                   distance_cutoff <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   2.313   0.040   2.353</span></span></code></pre>
+<span><span class="co">##   2.365   0.024   2.389</span></span></code></pre>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
 <span>    <span class="va">mc_cv_fit_n40</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_df</a></span><span class="op">(</span><span class="va">mc_cv</span><span class="op">$</span><span class="va">train</span>,</span>
@@ -268,7 +268,7 @@ enable n_added to take a vector of values.</p>
 <span>                                   distance_cutoff <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   2.271   0.004   2.276</span></span></code></pre>
+<span><span class="co">##   2.324   0.004   2.328</span></span></code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
 <span>    <span class="va">mc_cv_fit_n60</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_df</a></span><span class="op">(</span><span class="va">mc_cv</span><span class="op">$</span><span class="va">train</span>,</span>
@@ -279,7 +279,7 @@ enable n_added to take a vector of values.</p>
 <span>                                   distance_cutoff <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   2.411   0.000   2.411</span></span></code></pre>
+<span><span class="co">##   2.433   0.004   2.437</span></span></code></pre>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
 <span>    <span class="va">mc_cv_fit_n80</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_df</a></span><span class="op">(</span><span class="va">mc_cv</span><span class="op">$</span><span class="va">train</span>,</span>
@@ -290,7 +290,7 @@ enable n_added to take a vector of values.</p>
 <span>                                   distance_cutoff <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   2.452   0.008   2.459</span></span></code></pre>
+<span><span class="co">##   2.460   0.008   2.468</span></span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
 <span>    <span class="va">mc_cv_fit_n100</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_df</a></span><span class="op">(</span><span class="va">mc_cv</span><span class="op">$</span><span class="va">train</span>,</span>
@@ -301,7 +301,7 @@ enable n_added to take a vector of values.</p>
 <span>                                   distance_cutoff <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##  13.313   0.028  13.341</span></span></code></pre>
+<span><span class="co">##  13.356   0.028  13.384</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summarised_cv_n20</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_mc_cv.html">summary_mc_cv</a></span><span class="op">(</span><span class="va">mc_cv_fit_n20</span>, <span class="va">mc_cv</span><span class="op">)</span></span>
 <span><span class="va">summarised_cv_n40</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_mc_cv.html">summary_mc_cv</a></span><span class="op">(</span><span class="va">mc_cv_fit_n40</span>, <span class="va">mc_cv</span><span class="op">)</span></span>
