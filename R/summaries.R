@@ -42,7 +42,6 @@ summarise_coverage <- function(df_dist,
 #'
 #' \dontrun{
 #'
-#' library(maxcovr)
 #' library(tidyverse)
 #'
 #' york_selected <- york |> filter(grade == "I")
@@ -163,7 +162,6 @@ coverage <- function(nearest_df,
 #'
 #' \dontrun{
 #'
-#' library(maxcovr)
 #' library(tidyverse)
 #'
 #' york_selected <- york |> filter(grade == "I")

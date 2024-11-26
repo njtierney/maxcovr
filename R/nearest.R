@@ -23,8 +23,6 @@
 #'
 #' @examples
 #'
-#' library(maxcovr)
-#'
 #' nearest(nearest_df = york_crime,
 #'         to_df = york)
 #'

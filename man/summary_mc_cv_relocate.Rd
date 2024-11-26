@@ -21,7 +21,6 @@ Summary for max_coverage cross validation for relocation models
 
 \dontrun{
 
-library(maxcovr)
 library(tidyverse)
 
 york_selected <- york |> filter(grade == "I")
