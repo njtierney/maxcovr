@@ -23,7 +23,8 @@
 #'   A_mat = x$A,
 #'   proposed_facilities = x$proposed_facility)
 #'   }
-#'
+#' @keywords internal
+#' @noRd
 extract_facility_selected <- function(solution_vector,
                                       A_mat,
                                       proposed_facilities){
@@ -71,7 +72,8 @@ extract_facility_selected <- function(solution_vector,
 #'     user_id = x$user_id,
 #'     users_not_covered = x$user_not_covered)
 #'     }
-#'
+#' @keywords internal
+#' @noRd
 extract_users_affected <- function(A_mat,
                                    solution_vector,
                                    user_id,
@@ -170,7 +172,8 @@ augment_user <- function(facilities_selected,
 #'     distance_cutoff = x$distance_cutoff,
 #'     n_added = x$n_added)
 #' }
-#'
+#' @keywords internal
+#' @noRd
 
 extract_model_coverage <- function(augmented_user,
                                    distance_cutoff,
@@ -204,7 +207,8 @@ extract_model_coverage <- function(augmented_user,
 #'    existing_users = x$existing_user,
 #'    distance_cutoff = x$distance_cutoff)
 #'    }
-
+#' @keywords internal
+#' @noRd
 extract_existing_coverage <- function(existing_facilities,
                                       existing_users,
                                       distance_cutoff){

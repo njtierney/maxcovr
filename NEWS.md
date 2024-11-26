@@ -1,25 +1,25 @@
 # maxcovr 0.1.3.9200 (development version)
 
-# Minor changes
+## Minor changes
 
 - Update to use `dplyr::n()` instead of just `n()`.
 
 # maxcovr 0.1.3.9100
 
-# Minor changes
+## Minor changes
 
 - Changed solution vector to be integer, not numeric, to reduce space - #42
 
 # maxcovr 0.1.3.9000
 
-# Minor changes
+## Minor changes
 
 - Removed `return_early` argument from `max_coverage`.
 - Refactored the solving process for `max_coverage`
 
 # maxcovr 0.1.1.9300
 
-# Minor changes
+## Minor changes
 
 - `max_coverage` now has consistent output for solver `glpk`
 - `summarise_coverage` now uses `distance_cutoff` instead of `dist_indic`
@@ -108,7 +108,7 @@ that used this software. The API of maxcovr is likely to change from here.
 
 # maxcovr 0.0.0.9700
 
-# New features
+## New features
 
 - renamed from `copertura` to `maxcovr`
 - added `york` listed building data, taken from [data.gov.uk](https://data.gov.uk/dataset/listed-buildings24/resource/8c32fb55-0e40-457f-98f9-6494503e283b)

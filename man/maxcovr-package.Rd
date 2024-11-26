@@ -2,6 +2,7 @@
 % Please edit documentation in R/maxcovr-package.R
 \docType{package}
 \name{maxcovr-package}
+\alias{maxcovr}
 \alias{maxcovr-package}
 \title{maxcovr: A Set of Tools For Solving The Maximal Covering Location Problem}
 \description{

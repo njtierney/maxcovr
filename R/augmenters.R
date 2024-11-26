@@ -76,7 +76,7 @@ summarise_user_cov <- function(user){
                          n_cov = sum(is_covered),
                          pct_cov = mean(is_covered),
                          dist_avg = mean(distance),
-                         dist_sd = sd(distance))
+                         dist_sd = stats::sd(distance))
 
 }
 
@@ -226,7 +226,7 @@ summarise_relocated_dist <- function(augment_facility_relocated){
 
     augment_facility_relocated |>
         dplyr::summarise(dist_avg = mean(distance),
-                         dist_sd = sd(distance))
+                         dist_sd = stats::sd(distance))
 
 }
 
