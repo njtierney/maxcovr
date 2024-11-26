@@ -22,12 +22,12 @@ number of events installed.
 
 \dontrun{
 
-mc_cv_n100_test \%>\%
+mc_cv_n100_test |>
     mutate(n_installed = map(
         .x = proposed_facility,
         .f = n_installed
-    )) \%>\%
-    select(n_installed) \%>\%
+    )) |>
+    select(n_installed) |>
     .[[1]]
 
 }

@@ -1,13 +1,12 @@
-url: http://maxcovr.njtierney.com/
-
+url: https://maxcovr.njtierney.com/
 template:
-  params:
-    bootswatch: flatly
+  bootstrap: 5
 
 home:
     links:
     - text: Learn more
       href: https://github.com/njtierney/maxcovr
+
 reference:
     - title: "Data"
       desc: >
@@ -41,3 +40,20 @@ reference:
         - summary_mc_cv
         - extract_mc_results
         - extract_mc_results_relocation
+        - augment_facility_relocated
+        - augment_user
+        - augment_user_tested
+        - coverage
+        - summarise_relocated_dist
+        - summarise_user_cov
+        - summary_mc_cv_relocate
+    - title: "Helpers"
+      desc: >
+        Little helper functions
+      contents:
+        - deg2rad_cpp
+        - is.maxcovr
+        - is.maxcovr_relocation
+        - n_installed
+        - n_relocated
+        - spherical_distance_cpp_vec

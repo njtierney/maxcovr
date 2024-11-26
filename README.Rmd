@@ -14,7 +14,10 @@ knitr::opts_chunk$set(
 
 # maxcovr
 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/njtierney/maxcovr?branch=master&svg=true)](https://ci.appveyor.com/project/njtierney/maxcovr)[![Travis-CI Build Status](https://travis-ci.org/njtierney/maxcovr.svg?branch=master)](https://travis-ci.org/njtierney/maxcovr)[![Coverage Status](https://img.shields.io/codecov/c/github/njtierney/maxcovr/master.svg)](https://codecov.io/github/njtierney/maxcovr?branch=master)
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/njtierney/maxcovr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/njtierney/maxcovr/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/njtierney/maxcovr/graph/badge.svg)](https://app.codecov.io/gh/njtierney/maxcovr)
+<!-- badges: end -->
 
 maxcovr was created to make it easy for a non expert to correctly solve the maximum covering location problem described by [Church](http://www.geog.ucsb.edu/~forest/G294download/MAX_COVER_RLC_CSR.pdf). Implementations of this problem (such as [optimimum AED placement](https://www.resuscitationjournal.com/article/S0300-9572(18)30065-0/fulltext)) may use commercial software such as AMPL, Gurobi, or CPLEX, which require an expensive license, or use open source licenses but not provide source code to the analysis performed (e.g., [Bonnet 2014 ](http://www.sciencedirect.com/science/article/pii/S0360835215003927)) This builds a substantial barrier to implement and reproduce these analyses.
 
@@ -29,9 +32,19 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 # How to Install
 
+Install the development version of `maxcovr` from [r-universe](http://njtierney.r-universe.dev/):
+
+```r
+install.packages("maxcovr", repos = c("https://njtierney.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+(Note - installing from r-universe is just like installing from CRAN, and should be faster and more convenient than installing from GitHub)
+
+Or install using `remotes`:
+
 ```{r install, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("njtierney/maxcovr")
+# install.packages("remotes")
+remotes::install_github("njtierney/maxcovr")
 ```
 
 # Using maxcovr

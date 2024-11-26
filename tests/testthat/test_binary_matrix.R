@@ -1,65 +1,50 @@
-context("equality of binary matrices")
-
 library(dplyr)
 library(tibble)
 library(tidyr)
-library(maxcovr)
 
-facility_test_cpp <- york %>%
-    select(lat, long) %>%
-    slice(1:100) %>%
+facility_test_cpp <- york |>
+    select(lat, long) |>
+    slice(1:100) |>
     as.matrix()
 
-user_test_cpp <- york_crime %>%
-    select(lat, long) %>%
-    slice(1:100) %>%
+user_test_cpp <- york_crime |>
+    select(lat, long) |>
+    slice(1:100) |>
     as.matrix()
 
 my_bin_cpp <- binary_matrix_cpp(facility = facility_test_cpp,
                                 user = user_test_cpp,
                                 distance_cutoff = 100)
 
-facility <- dplyr::mutate(york, key = 1) %>%
-    dplyr::rename(lat_facility = lat,
-                  long_facility = long) %>%
+facility <- mutate(york, key = 1) |>
+    rename(lat_facility = lat,
+                  long_facility = long) |>
     # create an ID for each row
-    dplyr::mutate(facility_id = 1:dplyr::n()) %>%
+    mutate(facility_id = 1:n()) |>
     slice(1:100)
 
-user <- dplyr::mutate(york_crime, key = 1) %>%
-    dplyr::rename(lat_user = lat,
-                  long_user = long) %>%
-    dplyr::mutate(user_id = 1:dplyr::n()) %>%
+user <- mutate(york_crime, key = 1) |>
+    rename(lat_user = lat,
+                  long_user = long) |>
+    mutate(user_id = 1:n()) |>
     slice(1:100)
 
-my_bin_dplyr <- user %>%
-    dplyr::left_join(facility,
-                     by = "key") %>%
-    dplyr::mutate(distance = spherical_distance(lat1 = lat_user,
+my_bin_dplyr <- user |>
+    left_join(facility,
+              by = "key",
+              relationship = "many-to-many") |>
+    mutate(distance = spherical_distance(lat1 = lat_user,
                                                 long1 = long_user,
                                                 lat2 = lat_facility,
-                                                long2 = long_facility)) %>%
+                                                long2 = long_facility)) |>
     # drop key
-    dplyr::select(-key) %>%
-    dplyr::select(user_id,
-                  facility_id,
-                  distance) %>%
-    # create the indicator variable - is the distance
-    # less than the indicator? 100m is the default
-    dplyr::mutate(distance_indic = (distance <= 100)) %>%
-    dplyr::select(-distance) %>%
-    # spread this out so we can get this in a matrix format
-    # so df[1,1] is the distance between AED#1 and OHCA#1
-    tidyr::spread(key = "facility_id",
-                  value = "distance_indic",
-                  sep = "_") %>%
-    # drop the ID column (for proper comparison)
-    dplyr::select(-user_id) %>%
-    as.matrix()
+    select(-key) |>
+    facility_user_indic(dist_indic = 100) |>
+    # drop ID column
+    _[,-1]
 
-
-testthat::test_that("cpp binary matrix produces the integer result as using dplyr method",{
+test_that("cpp binary matrix produces integer result as using dplyr method",{
     # I still need to make a method that gives the big matrix names
-    testthat::expect_equal(my_bin_cpp,my_bin_dplyr, check.attributes = FALSE)
+    expect_equal(my_bin_cpp,my_bin_dplyr, ignore_attr = TRUE)
 })
 

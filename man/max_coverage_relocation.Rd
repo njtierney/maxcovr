@@ -55,9 +55,9 @@ This function adds a relocation step
 library(dplyr)
 # subset to be the places with towers built on them.
 
-york_selected <- york \%>\% filter(grade == "I")
+york_selected <- york |> filter(grade == "I")
 
-york_unselected <- york \%>\% filter(grade != "I")
+york_unselected <- york |> filter(grade != "I")
 
 # OK, what if I just use some really crazy small data to optimise over.
 

@@ -49,8 +49,6 @@ spherical_distance <- function(lat1,
 
     # return distance in kilometres
     d <- d * 1000
-    # return(d)
-    # return the distance in kilometers
     return(d)
 
 } # End function
@@ -60,7 +58,9 @@ spherical_distance <- function(lat1,
 #' @param deg A numeric vector in units of degrees.
 #'
 #' @return The input numeric vector, converted to units of radians.
+#' @noRd
+#' @keywords internal
 deg2rad <- function(deg) {
     return(deg * pi / 180)
-} # End deg2rad
+}
 

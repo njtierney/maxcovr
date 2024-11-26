@@ -25,7 +25,7 @@
 #' @param d_proposed_user Option distance matrix between proposed facilities and
 #' users (see Examples).
 #' @param solver character "glpk" (default) or "lpSolve". "gurobi" is currently
-#'   in development, see <https://github.com/njtierney/maxcovr/issues/25>
+#'   in development, see <https://github.com/njtierney/maxcovr/issues/25>.
 #'
 #' @return dataframe of results
 #'
@@ -34,10 +34,10 @@
 #' library(dplyr)
 #'
 #' # already existing locations
-#' york_selected <- york %>% filter(grade == "I")
+#' york_selected <- york |> filter(grade == "I")
 #'
 #' # proposed locations
-#' york_unselected <- york %>% filter(grade != "I")
+#' york_unselected <- york |> filter(grade != "I")
 #'
 #' mc_result <- max_coverage(existing_facility = york_selected,
 #'                           proposed_facility = york_unselected,
@@ -61,14 +61,14 @@
 #' # Example of street-network distance calculations
 #' \dontrun{
 #' library(dodgr)
-#' net <- dodgr_streetnet_sf ("york england") %>%
+#' net <- dodgr_streetnet_sf ("york england") |>
 #'     weight_streetnet (wt_profile = "foot")
 #'
-#' from <- match_points_to_graph (v, york_selected [, c ("long", "lat")])
-#' to <- match_points_to_graph (v, york_crime [, c ("long", "lat")])
+#' from <- match_points_to_graph (v, york_selected[, c ("long", "lat")])
+#' to <- match_points_to_graph (v, york_crime[, c ("long", "lat")])
 #' d_existing_user <- dodgr_dists (net, from = from, to = to)
 #'
-#' from <- match_points_to_graph (v, york_unselected [, c ("long", "lat")])
+#' from <- match_points_to_graph (v, york_unselected[, c ("long", "lat")])
 #' d_proposed_user <- dodgr_dists (net, from = from, to = to)
 #'
 #' mc_result <- max_coverage(existing_facility = york_selected,
@@ -93,10 +93,12 @@ max_coverage <- function(existing_facility,
     # give user an ID
     user <- tibble::rowid_to_column(user, var = "user_id")
 
-    user_not_covered <- find_users_not_covered(existing_facility,
-                                               user,
-                                               distance_cutoff,
-                                               d_existing_user = d_existing_user)
+    user_not_covered <- find_users_not_covered(
+        existing_facility = existing_facility,
+        user = user,
+        distance_cutoff = distance_cutoff,
+        d_existing_user = d_existing_user
+        )
 
     A <- binary_distance_matrix(facility = proposed_facility,
                                 user = user_not_covered,
@@ -152,11 +154,7 @@ max_coverage <- function(existing_facility,
     }
 
     if (solver == "gurobi") {
-        if (!requireNamespace("gurobi", quietly = TRUE)) {
-            stop("You must have installed the Gurobi software and accompanying
-                 Gurobi R package. For more details, see
-                 https://www.gurobi.com/documentation/7.0/refman/r_api_overview.html")
-        }
+        check_gurobi_installed()
 
         model <- list()
         model$A <- constraint_matrix

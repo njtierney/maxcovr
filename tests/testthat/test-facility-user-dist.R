@@ -56,9 +56,9 @@ test_that("facility_user_dist colnames are correct", {
   expect_equal(names(fud_both), fud_names)
 })
 
-# fud$distance[1:10] %>% clipr::write_clip()
-# fud_user$distance[1:10] %>% clipr::write_clip()
-# fud_both$distance[1:10] %>% clipr::write_clip()
+# fud$distance[1:10] |> clipr::write_clip()
+# fud_user$distance[1:10] |> clipr::write_clip()
+# fud_both$distance[1:10] |> clipr::write_clip()
 
 test_dist <- c(35.9538304360533,
   39.1579634183108,
@@ -96,7 +96,7 @@ test_dist_both <- c(499.677213095804,
                     471.860232504794)
 
 test_that("facility_user_dist is reasonably close", {
-    expect_true(all(dplyr::near(fud$distance[1:10], test_dist)))
-    expect_true(all(dplyr::near(fud_user$distance[1:10], test_dist_user)))
-    expect_true(all(dplyr::near(fud_both$distance[1:10], test_dist_both)))
+    expect_true(all(near(fud$distance[1:10], test_dist)))
+    expect_true(all(near(fud_user$distance[1:10], test_dist_user)))
+    expect_true(all(near(fud_both$distance[1:10], test_dist_both)))
 })

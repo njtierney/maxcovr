@@ -23,7 +23,8 @@
 #'   A_mat = x$A,
 #'   proposed_facilities = x$proposed_facility)
 #'   }
-#'
+#' @keywords internal
+#' @noRd
 extract_facility_selected <- function(solution_vector,
                                       A_mat,
                                       proposed_facilities){
@@ -37,13 +38,13 @@ extract_facility_selected <- function(solution_vector,
 
     # Which facilities were selected -------------------------------------------
     facility_temp <- tibble::tibble(facility_id = facility_id,
-                                    facility_chosen = facility_solution) %>%
+                                    facility_chosen = facility_solution) |>
         dplyr::filter(facility_chosen == 1)
 
     # join these back on.
-    facility_selected <- proposed_facilities %>%
-        dplyr::mutate(facility_id = facility_id) %>%
-        dplyr::filter(facility_id %in% facility_temp$facility_id) %>%
+    facility_selected <- proposed_facilities |>
+        dplyr::mutate(facility_id = facility_id) |>
+        dplyr::filter(facility_id %in% facility_temp$facility_id) |>
         # drop facility_id as it is not needed anymore
         dplyr::select(-facility_id)
 
@@ -58,7 +59,7 @@ extract_facility_selected <- function(solution_vector,
 #' @param A_mat A matrix
 #' @param solution_vector The vector of solutions
 #' @param user_id The IDs of the individuals
-#' @param users_not_covered those users not covered by original AEDs
+#' @param users_not_covered those users not covered by original facilities
 #'
 #' @return tibble taken from `users`, those who are affectd by new placements
 #'
@@ -71,7 +72,8 @@ extract_facility_selected <- function(solution_vector,
 #'     user_id = x$user_id,
 #'     users_not_covered = x$user_not_covered)
 #'     }
-#'
+#' @keywords internal
+#' @noRd
 extract_users_affected <- function(A_mat,
                                    solution_vector,
                                    user_id,
@@ -83,7 +85,7 @@ extract_users_affected <- function(A_mat,
     user_solution <- solution_vector[c(I + 1):c(I + J)]
 
     user_temp <- tibble::tibble(user_id = user_id,
-                                user_chosen = user_solution) %>%
+                                user_chosen = user_solution) |>
         dplyr::filter(user_chosen == 1)
 
     user_affected <- dplyr::left_join(user_temp,
@@ -129,10 +131,10 @@ augment_user <- function(facilities_selected,
 
     # bind the selected and existing facilities together
     all_facilities <- dplyr::bind_rows({
-        facilities_selected[ , c("lat", "long")] %>%
+        facilities_selected[ , c("lat", "long")] |>
             dplyr::mutate(type = "selected")
     },{
-        existing_facilities[ , c("lat", "long")] %>%
+        existing_facilities[ , c("lat", "long")] |>
             dplyr::mutate(type = "existing")
     })
 
@@ -170,14 +172,15 @@ augment_user <- function(facilities_selected,
 #'     distance_cutoff = x$distance_cutoff,
 #'     n_added = x$n_added)
 #' }
-#'
+#' @keywords internal
+#' @noRd
 
 extract_model_coverage <- function(augmented_user,
                                    distance_cutoff,
                                    n_added){
 
-    augmented_user %>%
-        dplyr::mutate(is_covered = (distance <= distance_cutoff)) %>%
+    augmented_user |>
+        dplyr::mutate(is_covered = (distance <= distance_cutoff)) |>
         dplyr::summarise(n_added = as.numeric(n_added),
                          distance_within = as.numeric(distance_cutoff),
                          n_cov = sum(is_covered),
@@ -204,14 +207,15 @@ extract_model_coverage <- function(augmented_user,
 #'    existing_users = x$existing_user,
 #'    distance_cutoff = x$distance_cutoff)
 #'    }
-
+#' @keywords internal
+#' @noRd
 extract_existing_coverage <- function(existing_facilities,
                                       existing_users,
                                       distance_cutoff){
 
     existing_coverage <- nearest(existing_facilities,
-                                 existing_users) %>%
-        dplyr::mutate(is_covered = (distance <= distance_cutoff)) %>%
+                                 existing_users) |>
+        dplyr::mutate(is_covered = (distance <= distance_cutoff)) |>
         # very similar summary function is called here and above,
         # ideally this should be written up as a function
         # it is already written up as `summarise_coverage`
