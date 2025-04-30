@@ -1,11 +1,11 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   cross_validation_with_maxcovr: cross_validation_with_maxcovr.html
   intro_to_maxcovr: intro_to_maxcovr.html
   using_max_coverage_relocation: using_max_coverage_relocation.html
-last_built: 2024-11-26T02:28Z
+last_built: 2025-04-30T01:47Z
 urls:
   reference: https://maxcovr.njtierney.com/reference
   article: https://maxcovr.njtierney.com/articles
